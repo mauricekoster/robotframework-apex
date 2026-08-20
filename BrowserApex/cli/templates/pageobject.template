@@ -1,0 +1,12 @@
+*** Settings ***
+### PAGEGEN:BEGIN:SETTINGS ------------------------------------------
+### PAGEGEN:END:SETTINGS --------------------------------------------
+{% include "custom-settings.template" %}
+
+*** Variables ***
+### PAGEGEN:BEGIN:VARIABLES -----------------------------------------
+### PAGEGEN:END:VARIABLES -------------------------------------------
+
+*** Keywords ***
+### PAGEGEN:BEGIN:KEYWORDS ------------------------------------------
+### PAGEGEN:END:KEYWORDS --------------------------------------------
