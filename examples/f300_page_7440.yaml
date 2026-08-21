@@ -1,0 +1,2327 @@
+---
+# ====== Page: Overzicht standaard griffierecht ==============
+id: 7440
+identification: 
+  name: Overzicht standaard griffierecht
+  alias: OVERZICHT-STANDAARD-GRIFFIERECHT
+  title: '&AI_SECTOR_CODE.&AI_OMGEVING. Overzicht standaard griffierecht'
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+
+security: 
+  authorization-scheme: Mag pagina lezen # 88982822417386354
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Container ===================================
+  id: 92615547235121542
+  identification: 
+    name: Container
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--stretchInputs
+    - t-Form--leftLabels
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 97570701243305545
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 4442603438704883
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Standaard griffierecht ======================
+  id: 99007351552528745
+  identification: 
+    name: Standaard griffierecht
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Container # 92615547235121542
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Onderhoud standaard griffierecht ============
+  id: 102158929377353136
+  identification: 
+    name: Onderhoud standaard griffierecht
+    type: Form
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select VNRBEDGRFRCHT,
+             CDPWET,
+             CATEGORIE,
+             DTAANVANG,
+             DTEIND,
+             BEDGRFRCHT,
+             OMSCHR,
+             DATUM_AANMAAK,
+             AANGEMAAKT_DOOR,
+             DATUM_WIJZIGING,
+             GEWIJZIGD_DOOR
+        from TSTANDBEDGRFRCHT
+       order by dtaanvang desc
+
+  layout: 
+    sequence: 30
+    parent-region: Standaard griffierecht # 99007351552528745
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 12
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--labelsAbove
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: onderhoud-standaard-griffierecht
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P7440_REGION
+
+  read-only: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: 'berber_autorisatie.is_landelijk_beheerder(p_gebruiker => :APP_USER) = false'
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: false
+
+- # ====== Region: Standaard griffierecht ======================
+  id: 102478596575559785
+  identification: 
+    name: Standaard griffierecht
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select 
+        sbt.cdpwet
+      , sbt.vnrbedgrfrcht
+      , sbt.categorie 
+      , sbt.bedgrfrcht
+      , sbt.omschr
+      , sbt.dtaanvang
+      , sbt.dteind
+      from TSTANDBEDGRFRCHT sbt -- landelijke tabel in berber_common
+      where (:P7440_VNR_ZK is null or sbt.VNRBEDGRFRCHT like :P7440_VNR_ZK)
+      and   (:P7440_OMSCHR_ZK is null or sbt.omschr like :P7440_OMSCHR_ZK collate binary_ai)
+      and   (:P7440_CATEGORIE_ZK is null or sbt.categorie = :P7440_CATEGORIE_ZK)
+      and   (:P7440_JAAR_ZK is null or to_char(sbt.dtaanvang, 'YYYY') like :P7440_JAAR_ZK)
+      order by sbt.dtaanvang desc, sbt.categorie asc
+    page-items-to-submit: 
+    - P7440_VNR_ZK
+    - P7440_OMSCHR_ZK
+    - P7440_CATEGORIE_ZK
+
+  layout: 
+    sequence: 40
+    parent-region: Standaard griffierecht # 99007351552528745
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--stretchInputs
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: standaard-griffierecht
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: false
+
+    messages: 
+      when-no-data-found: Geen griffierechtbedragen gevonden.
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: CATEGORIE ===================================
+    id: 43598336139020913
+    identification: 
+      column-name: CATEGORIE
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Categorie
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TLIST_OF_VALUES_GRFCAT # 43945914275947046
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OMSCHR ======================================
+    id: 43598431285020914
+    identification: 
+      column-name: OMSCHR
+      type: Plain Text
+
+    heading: 
+      heading: Omschrijving
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTAANVANG ===================================
+    id: 43598586103020915
+    identification: 
+      column-name: DTAANVANG
+      type: Plain Text
+
+    heading: 
+      heading: Aanvangsdatum
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTEIND ======================================
+    id: 43598699694020916
+    identification: 
+      column-name: DTEIND
+      type: Plain Text
+
+    heading: 
+      heading: Einddatum
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDPWET ======================================
+    id: 43599554912020925
+    identification: 
+      column-name: CDPWET
+      type: Hidden
+
+    layout: 
+      sequence: 150
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 74970838264450028
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:7440:&SESSION.::&DEBUG.::P7440_VNRBEDGRFRCHT,P7440_REGION,P7440_CDPWET:#VNRBEDGRFRCHT#,E,#CDPWET#'
+        page: 7440 # Overzicht standaard griffierecht
+        values: 
+          p7440_vnrbedgrfrcht: '#VNRBEDGRFRCHT#'
+          p7440_region: E
+          p7440_cdpwet: '#CDPWET#'
+
+      link-text: '&SS_LINK_BEWERKEN.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: 'berber_autorisatie.is_landelijk_beheerder(p_gebruiker => :APP_USER)'
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: BEDGRFRCHT ==================================
+    id: 74972097005450029
+    identification: 
+      column-name: BEDGRFRCHT
+      type: Plain Text
+
+    heading: 
+      heading: Bedrag
+      alignment: end
+
+    layout: 
+      sequence: 90
+      column-alignment: end
+
+    accessibility: 
+      value-identifies-row: false
+
+    appearance: 
+      format-mask: 999990D90
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VNRBEDGRFRCHT ===============================
+    id: 74972477999450029
+    identification: 
+      column-name: VNRBEDGRFRCHT
+      type: Plain Text
+
+    heading: 
+      heading: Volgnummer
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Zoeken ======================================
+  id: 102499668117802433
+  identification: 
+    name: Zoeken
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Container # 92615547235121542
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    - t-Form--stretchInputs
+    - t-Form--leftLabels
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+page-items: 
+- # ====== Page Item: P7440_CDPWET =============================
+  id: 43598795277020917
+  identification: 
+    name: P7440_CDPWET
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 140
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: CDPWET
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Static
+    static-value: AWB
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_CATEGORIE ==========================
+  id: 43598882235020918
+  identification: 
+    name: P7440_CATEGORIE
+    type: Select List
+
+  label: 
+    label: Categorie
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 30
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: 2
+    new-column: true
+    column-span: 2
+    label-column-span: 1
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: true
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TLIST_OF_VALUES_GRFCAT # 43945914275947046
+    display-extra-values: false
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: CATEGORIE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_DTAANVANG ==========================
+  id: 43598934745020919
+  identification: 
+    name: P7440_DTAANVANG
+    type: Date Picker
+
+  label: 
+    label: Aanvangsdatum
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Native HTML
+    minimum-date: None
+    maximum-date: None
+
+  layout: 
+    sequence: 70
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: 9
+    new-column: true
+    column-span: 2
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: YYYY-MM-DD
+    width: 30
+
+  validation: 
+    value-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: DTAANVANG
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_DTEIND =============================
+  id: 43599061233020920
+  identification: 
+    name: P7440_DTEIND
+    type: Date Picker
+
+  label: 
+    label: Einddatum
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Native HTML
+    minimum-date: None
+    maximum-date: None
+
+  layout: 
+    sequence: 80
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: 11
+    new-column: true
+    column-span: 2
+    label-column-span: 1
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: YYYY-MM-DD
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: DTEIND
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_DATUM_AANMAAK ======================
+  id: 43599148399020921
+  identification: 
+    name: P7440_DATUM_AANMAAK
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: DATUM_AANMAAK
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_AANGEMAAKT_DOOR ====================
+  id: 43599228868020922
+  identification: 
+    name: P7440_AANGEMAAKT_DOOR
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 100
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: AANGEMAAKT_DOOR
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_DATUM_WIJZIGING ====================
+  id: 43599320734020923
+  identification: 
+    name: P7440_DATUM_WIJZIGING
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 110
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: DATUM_WIJZIGING
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_GEWIJZIGD_DOOR =====================
+  id: 43599412863020924
+  identification: 
+    name: P7440_GEWIJZIGD_DOOR
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 120
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: GEWIJZIGD_DOOR
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_CATEGORIE_ZK =======================
+  id: 43601274767020942
+  identification: 
+    name: P7440_CATEGORIE_ZK
+    type: Select List
+
+  label: 
+    label: Categorie
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 40
+    region: Zoeken # 102499668117802433
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 4
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TLIST_OF_VALUES_GRFCAT # 43945914275947046
+    display-extra-values: false
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_JAAR_ZK ============================
+  id: 44177377511925535
+  identification: 
+    name: P7440_JAAR_ZK
+    type: Number Field
+
+  label: 
+    label: Aanvangsjaar
+    alignment: Left
+
+  settings: 
+    number-alignment: Start
+    virtual-keyboard: Decimal
+
+  layout: 
+    sequence: 60
+    region: Zoeken # 102499668117802433
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 4
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 4
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_BEDGRFRCHT =========================
+  id: 73682530981511409
+  identification: 
+    name: P7440_BEDGRFRCHT
+    type: Number Field
+
+  label: 
+    label: Bedrag
+    alignment: Left
+
+  settings: 
+    number-alignment: End
+    virtual-keyboard: Text
+
+  layout: 
+    sequence: 50
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: 7
+    new-column: true
+    column-span: 2
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: 999999999999999999D90
+    width: 30
+
+  validation: 
+    value-required: true
+    maximum-length: 9
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: BEDGRFRCHT
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_REGION =============================
+  id: 74965264286450020
+  identification: 
+    name: P7440_REGION
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 10
+    region: Container # 92615547235121542
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_OMSCHR =============================
+  id: 74967402628450024
+  identification: 
+    name: P7440_OMSCHR
+    type: Text Field
+
+  label: 
+    label: Omschrijving
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 40
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: 4
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 40
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: OMSCHR
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_VNRBEDGRFRCHT ======================
+  id: 74968294268450024
+  identification: 
+    name: P7440_VNRBEDGRFRCHT
+    type: Display Only
+
+  label: 
+    label: Volgnr
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 20
+    region: Onderhoud standaard griffierecht # 102158929377353136
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: 1
+    new-column: true
+    column-span: 1
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+    column: VNRBEDGRFRCHT
+    data-type: NUMBER
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_AANTAL_RIJEN =======================
+  id: 74975137607450030
+  identification: 
+    name: P7440_AANTAL_RIJEN
+    type: Display Only
+
+  label: 
+    label: Aantal
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: false
+
+  layout: 
+    sequence: 10
+    region: Zoeken # 102499668117802433
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 4
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_VNR_ZK =============================
+  id: 74975556435450030
+  identification: 
+    name: P7440_VNR_ZK
+    type: Text Field
+
+  label: 
+    label: Volgnummer
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: true
+    disabled: false
+
+  layout: 
+    sequence: 30
+    region: Zoeken # 102499668117802433
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 4
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P7440_OMSCHR_ZK ==========================
+  id: 74975969540450030
+  identification: 
+    name: P7440_OMSCHR_ZK
+    type: Text Field
+
+  label: 
+    label: Omschrijving
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: true
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Zoeken # 102499668117802433
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 4
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 40
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CREATE_NEW_SBT ==============================
+  id: 74965920114450023
+  identification: 
+    button-name: CREATE_NEW_SBT
+    label: '&SS_BTN_CREATE_NEW.'
+
+  layout: 
+    sequence: 30
+    region: Standaard griffierecht # 99007351552528745
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - BUTTON_CREATE_NEW
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:7440:&SESSION.::&DEBUG.:7440:P7440_REGION:N'
+      page: 7440 # Overzicht standaard griffierecht
+      clear-cache: 7440
+      values: 
+        p7440_region: N
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: 'berber_autorisatie.is_landelijk_beheerder(p_gebruiker => :APP_USER)'
+
+- # ====== Button: CLEAR =======================================
+  id: 74974366037450029
+  identification: 
+    button-name: CLEAR
+    label: '&SS_BTN_CLEAR.'
+
+  layout: 
+    sequence: 10
+    region: Zoeken # 102499668117802433
+    slot: COPY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:7440:&SESSION.::&DEBUG.:RP,7440::'
+      page: 7440 # Overzicht standaard griffierecht
+      clear-cache: RP,7440
+
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: SEARCH ======================================
+  id: 74974744040450030
+  identification: 
+    button-name: SEARCH
+    label: '&SS_BTN_SEARCH.'
+
+  layout: 
+    sequence: 20
+    region: Zoeken # 102499668117802433
+    slot: COPY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - BUTTON_SEARCH
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: DELETE ======================================
+  id: 74977012742450031
+  identification: 
+    button-name: DELETE
+    label: '&SS_BTN_DELETE.'
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 97570701243305545
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL DELETE action
+
+  confirmation: 
+    message: '&SS_DELETE_CONFIRM_MESSAGE.'
+    style: Default
+
+  server-side-condition: 
+    type: Item = Value
+    item: P7440_REGION
+    value: E
+
+- # ====== Button: CREATE ======================================
+  id: 74977408130450031
+  identification: 
+    button-name: CREATE
+    label: '&SS_BTN_CREATE.'
+
+  layout: 
+    sequence: 40
+    region: Breadcrumb # 97570701243305545
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    css-classes: 
+    - BUTTON_CREATE
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL INSERT action
+
+  server-side-condition: 
+    type: Item = Value
+    item: P7440_REGION
+    value: N
+
+- # ====== Button: SAVE ========================================
+  id: 77040900624850435
+  identification: 
+    button-name: SAVE
+    label: '&SS_BTN_SAVE.'
+
+  layout: 
+    sequence: 40
+    region: Breadcrumb # 97570701243305545
+    slot: COPY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    css-classes: 
+    - BUTTON_SAVE
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+    database-action: SQL UPDATE action
+
+  server-side-condition: 
+    type: Item = Value
+    item: P7440_REGION
+    value: E
+
+dynamic-actions: 
+- # ====== Dynamic Action: Lose Focus BEDGRFRCHT - Validate Item
+  id: 43599904488020929
+  identification: 
+    name: Lose Focus BEDGRFRCHT - Validate Item
+
+  execution: 
+    sequence: 60
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P7440_BEDGRFRCHT
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 43600047661020930
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p7440.live_validate(
+                p_page_item_name  => 'P7440_BEDGRFRCHT'
+            ,   p_page_item_value => :P7440_BEDGRFRCHT
+            ,   p_page_item_error =>:P0_VALIDATE_ITEM_ERROR
+        );
+      items-to-submit: 
+      - P7440_BEDGRFRCHT
+      - ' P0_VALIDATE_ITEM_ERROR'
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 20
+      event: Lose Focus BEDGRFRCHT - Validate Item # 43599904488020929
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 43600168875020931
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 40
+      event: Lose Focus BEDGRFRCHT - Validate Item # 43599904488020929
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 43601813543020948
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p7440.live_render(
+                p_page_item_name => 'P7440_BEDGRFRCHT'
+            ,   p_page_item_value => :P7440_BEDGRFRCHT
+            );
+      items-to-submit: 
+      - P7440_BEDGRFRCHT
+      items-to-return: 
+      - P7440_BEDGRFRCHT
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose Focus BEDGRFRCHT - Validate Item # 43599904488020929
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Lose Focus OMSCHR - Validate Item ===
+  id: 43600288983020932
+  identification: 
+    name: Lose Focus OMSCHR - Validate Item
+
+  execution: 
+    sequence: 90
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P7440_OMSCHR
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 43600371026020933
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p7440.live_validate(
+                p_page_item_name  => 'P7440_OMSCHR'
+            ,   p_page_item_value => :P7440_OMSCHR
+            ,   p_page_item_error =>:P0_VALIDATE_ITEM_ERROR
+        );
+      items-to-submit: 
+      - P7440_OMSCHR
+      - ' P0_VALIDATE_ITEM_ERROR'
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose Focus OMSCHR - Validate Item # 43600288983020932
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 43600407135020934
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: Lose Focus OMSCHR - Validate Item # 43600288983020932
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Lose Focus DTAANVANG - Validate Item 
+  id: 43600560441020935
+  identification: 
+    name: Lose Focus DTAANVANG - Validate Item
+
+  execution: 
+    sequence: 70
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P7440_DTAANVANG
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 43600632834020936
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p7440.live_validate(
+                p_page_item_name  => 'P7440_DTAANVANG'
+            ,   p_page_item_value => :P7440_DTAANVANG
+            ,   p_page_item_error =>:P0_VALIDATE_ITEM_ERROR
+        );
+      items-to-submit: 
+      - P7440_DTAANVANG
+      - ' P0_VALIDATE_ITEM_ERROR'
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose Focus DTAANVANG - Validate Item # 43600560441020935
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 43600743651020937
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: Lose Focus DTAANVANG - Validate Item # 43600560441020935
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Lose Focus DTEIND - Validate Item ===
+  id: 43600877094020938
+  identification: 
+    name: Lose Focus DTEIND - Validate Item
+
+  execution: 
+    sequence: 80
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P7440_DTEIND
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 43600955680020939
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p7440.live_validate(
+                p_page_item_name  => 'P7440_DTEIND'
+            ,   p_page_item_value => :P7440_DTEIND
+            ,   p_page_item_error => :P0_VALIDATE_ITEM_ERROR
+        );
+      items-to-submit: 
+      - P7440_DTAANVANG
+      - P7440_DTEIND
+      - P0_VALIDATE_ITEM_ERROR
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose Focus DTEIND - Validate Item # 43600877094020938
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 43601073023020940
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: Lose Focus DTEIND - Validate Item # 43600877094020938
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: After Refresh - Selected row ========
+  id: 74979742008450038
+  identification: 
+    name: After Refresh - Selected row
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: After Refresh
+    selection-type: Region
+    region: Standaard griffierecht # 99007351552528745
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 74980273604450039
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: report.selected_row('P7440_VNRBEDGRFRCHT');
+
+    execution: 
+      sequence: 10
+      event: After Refresh - Selected row # 74979742008450038
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item is not null
+      item: P7440_VNRBEDGRFRCHT
+
+- # ====== Dynamic Action: Page load - Init Javascript functions
+  id: 74983882750450041
+  identification: 
+    name: Page load - Init Javascript functions
+
+  execution: 
+    sequence: 40
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 43599862083020928
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: item.focus_first("onderhoud-standaard-griffierecht");
+
+    execution: 
+      sequence: 20
+      event: Page load - Init Javascript functions # 74983882750450041
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+    client-side-condition: 
+      type: Item is not null
+      item: P7440_REGION
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 74984320062450041
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        region.focus();
+        item.focus_first();
+        
+
+    execution: 
+      sequence: 10
+      event: Page load - Init Javascript functions # 74983882750450041
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Key down (key_next or key_previous) -
+  id: 74984788595450041
+  identification: 
+    name: Key down (key_next or key_previous) - Switch item
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Key Down
+    selection-type: jQuery Selector
+    jquery-selector: body
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: this.browserEvent.which === region.key_previous || this.browserEvent.which === region.key_next
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 74985224258450041
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: region.switch(this.browserEvent);
+
+    execution: 
+      sequence: 10
+      event: Key down (key_next or key_previous) - Switch item # 74984788595450041
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: After Refresh - Clickable row =======
+  id: 74987946668450042
+  identification: 
+    name: After Refresh - Clickable row
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: After Refresh
+    selection-type: Region
+    region: Zoeken # 102499668117802433
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 74988483599450042
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        report.clickable_row('overzicht-standaard-griffierecht');
+        
+
+    execution: 
+      sequence: 10
+      event: After Refresh - Clickable row # 74987946668450042
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Change P7440- Verander aantal rijen =
+  id: 74988830891450043
+  identification: 
+    name: Change P7440- Verander aantal rijen
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P7440_VNR_ZK
+    - P7440_OMSCHR_ZK
+    - P7440_CATEGORIE_ZK
+    - P7440_JAAR_ZK
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 74989330887450043
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: SQL Statement
+      sql-statement: |
+        SELECT COUNT(*) FROM 
+            (select sbt.vnrbedgrfrcht
+            , sbt.cdpwet
+            , sbt.bedgrfrcht
+            , sbt.omschr as sbt_omschr 
+        from TSTANDBEDGRFRCHT sbt -- landelijke tabel in berber_common
+        where (:P7440_VNR_ZK is null or sbt.VNRBEDGRFRCHT like :P7440_VNR_ZK)
+        and   (:P7440_OMSCHR_ZK is null or sbt.omschr like :P7440_OMSCHR_ZK collate binary_ai)
+        and   (:P7440_CATEGORIE_ZK is null or sbt.categorie = :P7440_CATEGORIE_ZK)
+        and   (:P7440_JAAR_ZK is null or to_char(sbt.dtaanvang, 'YYYY') like :P7440_JAAR_ZK)
+            order by sbt.vnrbedgrfrcht desc)
+      items-to-submit: 
+      - P7440_VNR_ZK
+      - P7440_OMSCHR_ZK
+      - P7440_CATEGORIE_ZK
+      - P7440_JAAR_ZK
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P7440_AANTAL_RIJEN
+
+    execution: 
+      sequence: 10
+      event: Change P7440- Verander aantal rijen # 74988830891450043
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+validations: 
+- # ====== Validation: Validate ================================
+  id: 74979036640450038
+  identification: 
+    name: Validate
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Function Body (returning Error Text)
+    language: PL/SQL
+    pl/sql-function-body-returning-error-text: |
+      berber_p7440.validate(
+          p_request           => :REQUEST
+      ,   p_vnrbedgrfrcht     => :P7440_VNRBEDGRFRCHT
+      ,   p_categorie         => :P7440_CATEGORIE
+      ,   p_omschr            => :P7440_OMSCHR
+      ,   p_bedgrfrcht        => :P7440_BEDGRFRCHT
+      ,   p_dtaanvang         => :P7440_DTAANVANG
+      ,   p_dteind            => :P7440_DTEIND
+      );
+    always-execute: true
+
+  error: 
+    display-location: Inline with Field and in Notification
+
+  server-side-condition: 
+    type: Request is contained in Value
+    value: CREATE,SAVE,DELETE
+
+computations: 
+- # ====== Computation: P7440_VNRBEDGRFRCHT ====================
+  id: 43599794246020927
+  identification: 
+    item-name: P7440_VNRBEDGRFRCHT
+
+  execution: 
+    sequence: 10
+    point: After Submit
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select TSTANDBEDGRFRCHT_SEQ.NEXTVAL from DUAL;
+      
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P7440_VNRBEDGRFRCHT
+
+- # ====== Computation: P7440_AANTAL_RIJEN =====================
+  id: 74978615218450038
+  identification: 
+    item-name: P7440_AANTAL_RIJEN
+
+  execution: 
+    sequence: 30
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      SELECT COUNT(*) FROM 
+          (select sbt.vnrbedgrfrcht
+          , sbt.cdpwet
+          , sbt.bedgrfrcht
+          , sbt.omschr as sbt_omschr 
+      from TSTANDBEDGRFRCHT sbt -- landelijke tabel in berber_common
+      where (:P7440_VNR_ZK is null or sbt.VNRBEDGRFRCHT like :P7440_VNR_ZK)
+      and   (:P7440_OMSCHR_ZK is null or sbt.omschr like :P7440_OMSCHR_ZK collate binary_ai)
+      and   (:P7440_CATEGORIE_ZK is null or sbt.categorie = :P7440_CATEGORIE_ZK)
+      and   (:P7440_JAAR_ZK is null or to_char(sbt.dtaanvang, 'YYYY') like :P7440_JAAR_ZK)
+          );
+
+processes: 
+- # ====== Process: Process form Onderhoud standaard griffierech
+  id: 43599697715020926
+  identification: 
+    name: Process form Onderhoud standaard griffierecht
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: Wijziging doorgevoerd
+
+  error: 
+    error-message: Er is iets mis gegaan. Neem contact op met team ABC.
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ":REQUEST not in ('SEARCH', 'CLEAR')"
+
+- # ====== Process: Initialise Onderhoud standaard griffierecht 
+  id: 73682721159511411
+  identification: 
+    name: Initialise Onderhoud standaard griffierecht
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Onderhoud standaard griffierecht # 102158929377353136
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P7440_REGION
+
+- # ====== Process: Reset Pagination ===========================
+  id: 74979308952450038
+  identification: 
+    name: Reset Pagination
+    type: Reset Pagination
+    execution-chain: None
+
+  settings: 
+    target: This Page
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+branches: 
+- # ====== Branch: After Delete ================================
+  id: 77040237874850428
+  identification: 
+    name: After Delete
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:7440:&SESSION.::&DEBUG.:7440::&success_msg=#SUCCESS_MSG#'
+      page: 7440 # Overzicht standaard griffierecht
+      clear-cache: 7440
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 74977012742450031
+

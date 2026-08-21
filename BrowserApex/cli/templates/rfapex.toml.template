@@ -1,0 +1,3 @@
+[output]
+folder = "pageobjects"
+mainresource = "pageobjects.resource"

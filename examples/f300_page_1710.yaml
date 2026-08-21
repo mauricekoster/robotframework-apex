@@ -1,0 +1,8039 @@
+---
+# ====== Page: Onderhoud casus ===============================
+id: 1710
+identification: 
+  name: Onderhoud casus
+  alias: ONDERHOUD-CASUS
+  title: '&AI_SECTOR_CODE.&AI_OMGEVING. Onderhoud casus'
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+
+security: 
+  authorization-scheme: Mag pagina lezen # 88982822417386354
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Breadcrumb ==================================
+  id: 39507436053285271
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 4442603438704883
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    css-classes: 
+    - breadcrumb_large
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: Casus =======================================
+  id: 39520655610496604
+  identification: 
+    name: Casus
+    type: Form
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select  VNRCASUS
+          ,   CDAFD
+          ,   OMSCHRSHNG
+          ,   NRBETRFPR
+          ,   NRBETRRCH
+          ,   NRBETRGRF
+          ,   NRZITTPLTS
+          ,   CDARROND
+      from    TCASUS css
+
+  layout: 
+    sequence: 10
+    parent-region: Container # 61168106131096244
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - margin-bottom-sm
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: false
+
+- # ====== Region: Besluiten ===================================
+  id: 39520710521496605
+  identification: 
+    name: Besluiten
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select  bst.vnrbslt
+          ,   bst.dtbslt
+          ,   bst.jraansl
+          ,   bst.dtbeginaansl
+          ,   bst.dteindaansl
+          ,   bbe.nrbetr
+          ,   bst.vnrbslt as delete_row
+      from    tbesluit bst
+      left join tbsltbetro bbe on bbe.vnrbslt = bst.vnrbslt and bbe.cdsrt in ('VWR', 'REA')
+      where   vnrcasus = :P1710_VNRCASUS
+      order by vnrbslt
+    page-items-to-submit: 
+    - P1710_VNRCASUS
+
+  layout: 
+    sequence: 20
+    parent-region: Besluiten # 47205539934298507
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - focusable_region
+    - null
+    - container_small
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: Er zijn geen gekoppelde besluiten gevonden.
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: VNRBSLT =====================================
+    id: 39522298183496620
+    identification: 
+      column-name: VNRBSLT
+      type: Plain Text
+
+    heading: 
+      heading: Nummer
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTBSLT ======================================
+    id: 39522453134496622
+    identification: 
+      column-name: DTBSLT
+      type: Plain Text
+
+    heading: 
+      heading: Datum besluit
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NRBETR ======================================
+    id: 39524744495496645
+    identification: 
+      column-name: NRBETR
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Verweerder
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TAPPELLANT # 5573193979628032
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 39524898671496646
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1710:&SESSION.::&DEBUG.::P1710_VNRCASUS,P1710_VNRBSLT:&P1710_VNRCASUS.,#VNRBSLT#'
+        page: 1710 # Onderhoud casus
+        values: 
+          p1710_vnrcasus: '&P1710_VNRCASUS.'
+          p1710_vnrbslt: '#VNRBSLT#'
+
+      link-text: '&SS_LINK_RAADPLEGEN.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    security: 
+      authorization-scheme: Mag pagina schrijven # 88986082208467641
+      escape-special-characters: true
+
+  - # ====== Column: DELETE_ROW ==================================
+    id: 137501053974625139
+    identification: 
+      column-name: DELETE_ROW
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 'javascript:void(null);'
+      link-text: <span class="t-Icon fa fa-trash-o delete_row_besluit" aria-hidden="true"></span>
+      link-attributes: data-id=#DELETE_ROW# id="delete_row_besluit_link"
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: 'BERBER_P1710.mag_ik_verwijderen(p_vnrbslt => :P1710_VNRBSLT, p_vnrcasus => :P1710_VNRCASUS)'
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: JRAANSL =====================================
+    id: 142188898115001010
+    identification: 
+      column-name: JRAANSL
+      type: Hidden
+
+    layout: 
+      sequence: 100
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTBEGINAANSL ================================
+    id: 142188910404001011
+    identification: 
+      column-name: DTBEGINAANSL
+      type: Hidden
+
+    layout: 
+      sequence: 110
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTEINDAANSL =================================
+    id: 142189053186001012
+    identification: 
+      column-name: DTEINDAANSL
+      type: Hidden
+
+    layout: 
+      sequence: 120
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Zaken bij besluit ===========================
+  id: 39520817919496606
+  identification: 
+    name: Zaken bij besluit
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select  pce.pce_id
+          ,   pce.cdcatproc
+          ,   pce.cdsrtproc
+          ,   pbe.nrbetr
+          ,   berber_zaak.is_griffierecht_betaald_j_n(pce.pce_id) as grfrcht_vldn
+      from    tproc pce
+      left join tprocbelang pbe on pbe.pce_id = pce.pce_id and pbe.cdsrt = 'COR'
+      where   pce.vnrbslt = :P1710_VNRBSLT
+      order by pce.jaar
+          ,   pce.vnrproc
+    page-items-to-submit: 
+    - P1710_VNRBSLT
+
+  layout: 
+    sequence: 30
+    parent-region: Zaken bij besluit # 137501763680625146
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: Er zijn geen zaken bij dit besluit
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: GRFRCHT_VLDN ================================
+    id: 30987477792133440
+    identification: 
+      column-name: GRFRCHT_VLDN
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Griffierecht
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Static Values
+      static-values: 'STATIC:Voldaan;J,Niet voldaan;N'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDCATPROC ===================================
+    id: 40626627548144801
+    identification: 
+      column-name: CDCATPROC
+      type: Plain Text
+
+    heading: 
+      heading: Categorie
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDSRTPROC ===================================
+    id: 40626722556144802
+    identification: 
+      column-name: CDSRTPROC
+      type: Plain Text
+
+    heading: 
+      heading: Soort
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PCE_ID ======================================
+    id: 40632427525144809
+    identification: 
+      column-name: PCE_ID
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Zaaknummer
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TPROC # 164422233610579586
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NRBETR ======================================
+    id: 40632609628144811
+    identification: 
+      column-name: NRBETR
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Correspondent
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TAPPELLANT # 5573193979628032
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Casus =======================================
+  id: 40632841395144813
+  identification: 
+    name: Casus
+    type: Static Content
+
+  layout: 
+    sequence: 90
+    parent-region: Casus # 39520655610496604
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - container_small
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    static-id: casus_blok
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Casusdetails ================================
+  id: 40632949162144814
+  identification: 
+    name: Casusdetails
+    type: Static Content
+
+  layout: 
+    sequence: 100
+    parent-region: Casus # 39520655610496604
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_VNRBSLT
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Tabs container ==============================
+  id: 40635083116144835
+  identification: 
+    name: Tabs container
+    type: Static Content
+
+  layout: 
+    sequence: 40
+    parent-region: Container # 61168106131096244
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - t-TabsRegion-mod--simple
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Clusters ====================================
+  id: 40635314174144838
+  identification: 
+    name: Clusters
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select  cdpwet
+          ,   vnrcasus
+          ,   cdclust
+          ,   cdarrond
+          ,   vnrcasus || '.' ||cdclust as delete_row
+      from    tcluprocasus
+      where   vnrcasus = :P1710_VNRCASUS
+      and    pce_id is null
+      order by cdclust;
+      
+    page-items-to-submit: 
+    - P1710_VNRCASUS
+
+  layout: 
+    sequence: 30
+    parent-region: Tabs container # 40635083116144835
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_VNRBSLT
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: Casus is niet gekoppeld aan een cluster
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: CDPWET ======================================
+    id: 40635428408144839
+    identification: 
+      column-name: CDPWET
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Proceswet
+      alignment: start
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TPWET # 4713476255797722
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDCLUST =====================================
+    id: 40635558196144840
+    identification: 
+      column-name: CDCLUST
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Cluster
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TCLUSTER # 9690954800101206
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 800
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDARROND ====================================
+    id: 40635880060144843
+    identification: 
+      column-name: CDARROND
+      type: Hidden
+
+    layout: 
+      sequence: 50
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VNRCASUS ====================================
+    id: 40636442276144849
+    identification: 
+      column-name: VNRCASUS
+      type: Hidden
+
+    layout: 
+      sequence: 110
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DELETE_ROW ==================================
+    id: 47206057448298512
+    identification: 
+      column-name: DELETE_ROW
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 'javascript:void(null);'
+      link-text: <span class="t-Icon fa fa-trash-o delete_row_cluster" aria-hidden="true"></span>
+      link-attributes: data-id=#DELETE_ROW# id="delete_row_cluster_link"
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      authorization-scheme: Mag pagina schrijven # 88986082208467641
+      escape-special-characters: true
+
+- # ====== Region: Beschrijving ================================
+  id: 47205067095298502
+  identification: 
+    name: Beschrijving
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select  VNRCASUS
+          ,   VNRREG
+          ,   OMSCHR
+          ,   vnrcasus || '.' || vnrreg as delete_row
+      from    TCASUSOMSCHR
+      where   vnrcasus = :P1710_VNRCASUS
+      order by vnrreg
+    page-items-to-submit: 
+    - P1710_VNRCASUS
+
+  layout: 
+    sequence: 40
+    parent-region: Tabs container # 40635083116144835
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_VNRBSLT
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: Er is geen beschrijving bekend
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: VNRCASUS ====================================
+    id: 47205192777298503
+    identification: 
+      column-name: VNRCASUS
+      type: Hidden
+
+    layout: 
+      sequence: 20
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VNRREG ======================================
+    id: 47205241332298504
+    identification: 
+      column-name: VNRREG
+      type: Hidden
+
+    layout: 
+      sequence: 30
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OMSCHR ======================================
+    id: 47205303202298505
+    identification: 
+      column-name: OMSCHR
+      type: Plain Text
+
+    heading: 
+      heading: Beschrijving
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 47207376817298525
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1710:&SESSION.::&DEBUG.::P1710_VNRCASUS,P1710_VNRREG,P1710_REGION:#VNRCASUS#,#VNRREG#,COG'
+        page: 1710 # Onderhoud casus
+        values: 
+          p1710_vnrcasus: '#VNRCASUS#'
+          p1710_vnrreg: '#VNRREG#'
+          p1710_region: COG
+
+      link-text: '&SS_LINK_BEWERKEN.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    security: 
+      authorization-scheme: Mag pagina schrijven # 88986082208467641
+      escape-special-characters: true
+
+  - # ====== Column: DELETE_ROW ==================================
+    id: 47207408719298526
+    identification: 
+      column-name: DELETE_ROW
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 'javascript:void(null);'
+      link-text: <span class="t-Icon fa fa-trash-o delete_row_omschrijving" aria-hidden="true"></span>
+      link-attributes: data-id=#DELETE_ROW# id="delete_row_omschrijving_link"
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      authorization-scheme: Mag pagina schrijven # 88986082208467641
+      escape-special-characters: true
+
+- # ====== Region: Besluiten ===================================
+  id: 47205539934298507
+  identification: 
+    name: Besluiten
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Tabs container # 40635083116144835
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Container ===================================
+  id: 61168106131096244
+  identification: 
+    name: Container
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--stretchInputs
+    - t-Form--leftLabels
+    css-classes: 
+    - container_large
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  read-only: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      not berber_autorisatie.mag_pagina_schrijven(
+          p_gebruiker => :APP_USER
+      ,   p_pagina    => :APP_PAGE_ID
+      ,   p_cdarrond  => :P0_CDARROND_USER
+      )
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Links =======================================
+  id: 72763556567032504
+  identification: 
+    name: Links
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: Register # 72763761669032506
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Rechts ======================================
+  id: 72763604586032505
+  identification: 
+    name: Rechts
+    type: Static Content
+
+  layout: 
+    sequence: 20
+    parent-region: Register # 72763761669032506
+    slot: BODY
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 5
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Register ====================================
+  id: 72763761669032506
+  identification: 
+    name: Register
+    type: Static Content
+
+  layout: 
+    sequence: 140
+    parent-region: Tabs container # 40635083116144835
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_VNRBSLT
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Register ====================================
+  id: 74943163484257916
+  identification: 
+    name: Register
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select rcs.vnrcasus
+      ,      rcs.vnrreg
+      ,      rcs.cdactie
+      ,      rcs.nrbetr 
+      ,      dke.cdbetr
+      ,      case when rcs.nrbetr is not null then dke.cdbetr end as inddesk
+      ,      rcs.dtstart
+      ,      ate.termrapactie as termijn
+      ,      rcs.termverl
+      ,      case when ate.termrapactie is not null or rcs.termverl is not null then rcs.dtstart + nvl(ate.termrapactie, 0) + nvl(rcs.termverl, 0) end as dteind
+      ,      case when rcs.dtcompl is not null then rcs.dtcompl || '<br><em>' || rcs.gewijzigd_door || '</em>' end as dtcompl
+      ,      rcs.cdcompl as cdcompl
+      ,      ate.omschr  as omschrijving
+      ,      rcs.idgebr   
+      from   tregcasus    rcs
+      left join  tdeskundige dke on (dke.nrbetr = rcs.nrbetr)
+      left join  tactie ate on (ate.cdactie = rcs.cdactie and ate.cdsrt = rcs.cdsrt)
+      left join tdocregcas drs on (rcs.vnrcasus = drs.vnrcasus and rcs.vnrreg = drs.vnrreg)
+      left join tdocaanvraag dag on (dag.idfile = drs.idfile)
+      where  rcs.vnrcasus = :P1710_VNRCASUS
+      and    rcs.indlogv is null 
+      order by rcs.dtcompl desc, rcs.dtstart desc, rcs.vnrreg desc
+    page-items-to-submit: 
+    - P1710_VNRCASUS
+
+  layout: 
+    sequence: 20
+    parent-region: Register # 72763761669032506
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: false
+
+    messages: 
+      when-no-data-found: Geen registeracties gevonden
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: TERMVERL ====================================
+    id: 11904712280622314
+    identification: 
+      column-name: TERMVERL
+      type: Plain Text
+
+    heading: 
+      heading: Verlenging
+      alignment: start
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VNRCASUS ====================================
+    id: 63433526502111315
+    identification: 
+      column-name: VNRCASUS
+      type: Hidden
+
+    layout: 
+      sequence: 180
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTEIND ======================================
+    id: 67700687479144399
+    identification: 
+      column-name: DTEIND
+      type: Plain Text
+
+    heading: 
+      heading: Einddatum
+      alignment: start
+
+    layout: 
+      sequence: 150
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTCOMPL =====================================
+    id: 67701070899144400
+    identification: 
+      column-name: DTCOMPL
+      type: Plain Text
+
+    heading: 
+      heading: Datum compleet
+      alignment: start
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: CDCOMPL =====================================
+    id: 67701401177144400
+    identification: 
+      column-name: CDCOMPL
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Code compleet
+      alignment: start
+
+    layout: 
+      sequence: 170
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TABEL_CODE_COMPLEET # 9097153207177388
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: INDDESK =====================================
+    id: 67701883591144400
+    identification: 
+      column-name: INDDESK
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Desk.
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TABEL_IND_J_N # 6143807023543259
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: IDGEBR ======================================
+    id: 67702276500144400
+    identification: 
+      column-name: IDGEBR
+      type: Hidden
+
+    layout: 
+      sequence: 210
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: OMSCHRIJVING ================================
+    id: 67703031166144400
+    identification: 
+      column-name: OMSCHRIJVING
+      type: Plain Text
+
+    heading: 
+      heading: Omschrijving
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NRBETR ======================================
+    id: 67703474731144400
+    identification: 
+      column-name: NRBETR
+      type: Hidden
+
+    layout: 
+      sequence: 60
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDACTIE =====================================
+    id: 67703840491144400
+    identification: 
+      column-name: CDACTIE
+      type: Plain Text
+
+    heading: 
+      heading: Actie
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTSTART =====================================
+    id: 67704200763144401
+    identification: 
+      column-name: DTSTART
+      type: Plain Text
+
+    heading: 
+      heading: Startdatum
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDBETR ======================================
+    id: 67705035566144401
+    identification: 
+      column-name: CDBETR
+      type: Hidden
+
+    layout: 
+      sequence: 110
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: TERMIJN =====================================
+    id: 67705494841144401
+    identification: 
+      column-name: TERMIJN
+      type: Plain Text
+
+    heading: 
+      heading: Termijn
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$01 ==================================
+    id: 67705801140144401
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1710:&SESSION.::&DEBUG.::P1710_REGION,P1710_VNRCASUS,P1710_VNRREG_RCS,P1710_VNRREG_OLD_RCS,P1710_INDDCT_RCS,P1710_NRBETR_RCS,P0_VNRCASUS:RCS,#VNRCASUS#,#VNRREG#,#VNRREG#,J,#NRBETR#,#VNRCASUS##PCE_ID#,#VNRREG#'
+        page: 1710 # Onderhoud casus
+        values: 
+          p1710_region: RCS
+          p1710_vnrcasus: '#VNRCASUS#'
+          p1710_vnrreg_rcs: '#VNRREG#'
+          p1710_vnrreg_old_rcs: '#VNRREG#'
+          p1710_inddct_rcs: J
+          p1710_nrbetr_rcs: '#NRBETR#'
+          p0_vnrcasus: '#VNRCASUS##PCE_ID#'
+
+      link-text: '&SS_LINK_BEWERKEN.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    security: 
+      authorization-scheme: Mag pagina schrijven # 88986082208467641
+      escape-special-characters: true
+
+  - # ====== Column: VNRREG ======================================
+    id: 67706226632144401
+    identification: 
+      column-name: VNRREG
+      type: Plain Text
+
+    heading: 
+      heading: Volgnr.
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Zittingsregister ============================
+  id: 75070230447946311
+  identification: 
+    name: Zittingsregister
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      with naam_desk as (
+          select  ltrim(vlet || ' ') || ltrim(vvoeg || ' ') || naam as naam,
+                  nrbetr
+          from    tdeskundige
+      ),
+          naam_get as (
+          select  ltrim(vlet || ' ') || ltrim(vvoeg || ' ') || naam as naam,
+                  nrbetr
+          from    toverbetr
+      ),
+          naam_vert as (
+          select  ltrim(vlet || ' ') || ltrim(vvoeg || ' ') || naam as naam,
+                  nrbetr
+          from    tvertegenw 
+      ),
+          naam_app as (
+          select  ltrim(vlet || ' ') || ltrim(vvoeg || ' ') || naam as naam,
+                  nrbetr
+          from    tappellant 
+      )
+      select 
+          rzs.ZTG_ID || rzs.vnrcasus || rzs.VNRREG as selectrow,
+          rzs.ZTG_ID,
+          rzs.vnrcasus,
+          ztg.cdpwet || '/' || ztg.nrzitt as zitting,   
+          ztg.dtzitt,   
+          rzs.vnrreg,
+          act.cdrol   as Rol,
+          rzs.cdactie,
+          rzs.cdactie || ' - ' || act.omschr as Actie,
+          rzs.nrbetr,
+          case when cdclas = 'U' 
+              then 
+                  NVL(app.naam, vert.naam)
+              when cdrol in ('OGT', 'MGT') 
+              then
+                  get.naam
+              when cdrol in ( 'ODK', 'MDK' )
+              then
+                  desk.naam
+              else
+                  null
+          end as naam,
+          rzs.dtstart as dtstart, 
+          rzs.cdprtn  as cdprtn, 
+          act.dtaanv  as dtingang_hidden,
+          act.dtoph,
+          act.cdclas  
+        from tregzitcasus rzs
+        join tzitting ztg on ztg.ztg_id = rzs.ztg_id
+        left join TACTIE act      on (act.cdactie = rzs.cdactie)
+        left join naam_desk desk  on (desk.nrbetr = rzs.nrbetr)
+        left join naam_get get    on (get.nrbetr = rzs.nrbetr)
+        left join naam_vert vert  on (vert.nrbetr = rzs.nrbetr)
+        left join naam_app app    on (app.nrbetr = rzs.nrbetr)
+        where act.cdsrt = 'ZC'
+        and   rzs.vnrreg > 0
+        and   rzs.indlogv is null
+        and   rzs.vnrcasus = :P1710_VNRCASUS
+        order by dtstart desc, vnrreg desc;
+    page-items-to-submit: 
+    - P1710_VNRCASUS
+
+  layout: 
+    sequence: 160
+    parent-region: Tabs container # 40635083116144835
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_VNRBSLT
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: Er zijn nog geen casus-zitting registeracties gevonden voor deze casus.
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: DERIVED$01 ==================================
+    id: 75070321367946312
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:3120:&SESSION.::&DEBUG.:3120:P3120_ZTG_ID,P3120_VNRCASUS,P0_ZTG_ID,P0_VNRCASUS:#ZTG_ID#,#VNRCASUS#,#ZTG_ID#,#VNRCASUS#'
+        page: 3120
+        clear-cache: 3120
+        values: 
+          p3120_ztg_id: '#ZTG_ID#'
+          p3120_vnrcasus: '#VNRCASUS#'
+          p0_ztg_id: '#ZTG_ID#'
+          p0_vnrcasus: '#VNRCASUS#'
+
+      link-text: '&SS_LINK_BEWERKEN.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    security: 
+      authorization-scheme: Mag pagina schrijven # 88986082208467641
+      escape-special-characters: true
+
+  - # ====== Column: ZTG_ID ======================================
+    id: 75070455030946313
+    identification: 
+      column-name: ZTG_ID
+      type: Hidden
+
+    layout: 
+      sequence: 50
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ZITTING =====================================
+    id: 75070502661946314
+    identification: 
+      column-name: ZITTING
+      type: Plain Text
+
+    heading: 
+      heading: Zitting
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTZITT ======================================
+    id: 75070679332946315
+    identification: 
+      column-name: DTZITT
+      type: Plain Text
+
+    heading: 
+      heading: Zittingsdatum
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VNRCASUS ====================================
+    id: 75070789277946316
+    identification: 
+      column-name: VNRCASUS
+      type: Hidden
+
+    layout: 
+      sequence: 80
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SELECTROW ===================================
+    id: 75679992036178104
+    identification: 
+      column-name: SELECTROW
+      type: Hidden
+
+    layout: 
+      sequence: 30
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VNRREG ======================================
+    id: 75680064179178105
+    identification: 
+      column-name: VNRREG
+      type: Plain Text
+
+    heading: 
+      heading: Volgnr.
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ROL =========================================
+    id: 75680161431178106
+    identification: 
+      column-name: ROL
+      type: Hidden
+
+    layout: 
+      sequence: 90
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDACTIE =====================================
+    id: 75680265767178107
+    identification: 
+      column-name: CDACTIE
+      type: Hidden
+
+    layout: 
+      sequence: 100
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ACTIE =======================================
+    id: 75680390058178108
+    identification: 
+      column-name: ACTIE
+      type: Plain Text
+
+    heading: 
+      heading: Actie
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NRBETR ======================================
+    id: 75680492231178109
+    identification: 
+      column-name: NRBETR
+      type: Hidden
+
+    layout: 
+      sequence: 120
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NAAM ========================================
+    id: 75680580945178110
+    identification: 
+      column-name: NAAM
+      type: Plain Text
+
+    heading: 
+      heading: Naam betrokkene
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTSTART =====================================
+    id: 75680696208178111
+    identification: 
+      column-name: DTSTART
+      type: Plain Text
+
+    heading: 
+      heading: Startdatum
+      alignment: start
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDPRTN ======================================
+    id: 75680739175178112
+    identification: 
+      column-name: CDPRTN
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Uitvoer naar
+      alignment: start
+
+    layout: 
+      sequence: 150
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TORGDOMEIN_UITVOER_DOCUMENT # 13525918059856078
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTINGANG_HIDDEN =============================
+    id: 75680876725178113
+    identification: 
+      column-name: DTINGANG_HIDDEN
+      type: Hidden
+
+    layout: 
+      sequence: 160
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTOPH =======================================
+    id: 75680945761178114
+    identification: 
+      column-name: DTOPH
+      type: Hidden
+
+    layout: 
+      sequence: 170
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDCLAS ======================================
+    id: 75681092663178115
+    identification: 
+      column-name: CDCLAS
+      type: Hidden
+
+    layout: 
+      sequence: 180
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$02 ==================================
+    id: 88457306662768415
+    identification: 
+      column-name: DERIVED$02
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:3120:&SESSION.::&DEBUG.::P3120_ZTG_ID,P3120_VNRCASUS,P0_ZTG_ID,P0_VNRCASUS:#ZTG_ID#,#VNRCASUS#,#ZTG_ID#,#VNRCASUS#'
+        page: 3120
+        values: 
+          p3120_ztg_id: '#ZTG_ID#'
+          p3120_vnrcasus: '#VNRCASUS#'
+          p0_ztg_id: '#ZTG_ID#'
+          p0_vnrcasus: '#VNRCASUS#'
+
+      link-text: '&SS_LINK_RAADPLEGEN.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    security: 
+      authorization-scheme: '{Not Mag pagina schrijven}' # 88986082208467641
+      escape-special-characters: true
+
+- # ====== Region: Zittingen ===================================
+  id: 107748910419343078
+  identification: 
+    name: Zittingen
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select  rze.ztg_id
+          ,   ztg.cdpwet || '/' || ztg.nrzitt as zitting
+          ,   ztg.dtzitt
+          ,   rze.nrrol
+          ,   pce.vnrcasus
+          ,   rze.pce_id
+          ,   pce.cdpwet
+          ,   pce.jaar
+          ,   pce.vnrproc
+          ,   pce.cdpwet || to_char(pce.jaar,'00') || '/' || pce.vnrproc as zaaknummer
+          ,   pce.cdarrond
+          ,   rbt.cdreggvng
+          ,   pce.nrbetrfpr
+          ,   pce.nrbetrgrf
+          ,   case when fts1.nrbetr is not null then
+                  '<b>V: </b>' || ltrim(fts1.cdbetr || ' - ','- ') || ltrim(ttl1.omschr || ' ') || ltrim(fts1.vlet || ' ') || ltrim(fts1.vvoeg || ' ') || fts1.naam || rtrim(' ' || ttl2.omschr)
+              end || '<br>' ||
+              case when fts2.nrbetr is not null then
+                  '<b>G: </b>' || ltrim(fts2.cdbetr || ' - ','- ') || ltrim(ttl3.omschr || ' ') || ltrim(fts2.vlet || ' ') || ltrim(fts2.vvoeg || ' ') || fts2.naam || rtrim(' ' || ttl4.omschr)
+              end as functionaris
+          ,   pce.cdcatproc
+          ,   to_char(to_date(rze.aanvzitpr,'sssss'),'hh24:mi') || rtrim(' (' || ltrim(rze.behandeltijd || ' min)',' min)'),' (') as aanvzitpr
+          ,   rze.behandeltijd
+          ,   cst1.omschr || case when rze.cdannulpoz is null then null when rze.cdannulpoz = 'ANDERS' then '<br>' || rze.redenanders else '<br>' || cst2.omschr end as cdvrdging
+          ,   pbe.nrbetr as nrcor
+          ,   ltrim(apt1.vlet || ' ') || ltrim(apt1.vvoeg || ' ') || apt1.naam as cor
+          ,   bbe.nrbetr as nrvwr
+          ,   ltrim(apt2.vlet || ' ') || ltrim(apt2.vvoeg || ' ') || apt2.naam as vwr
+          ,   '<b>COR:</b> ' || ltrim(apt1.vlet || ' ') || ltrim(apt1.vvoeg || ' ') || apt1.naam || '<br><b>VWR:</b> ' || ltrim(apt2.vlet || ' ') || ltrim(apt2.vvoeg || ' ') || apt2.naam as partijen
+          ,   rze.indopenb
+          ,   rze.indrdkmr
+          ,   rze.pce_id as delete_row
+      from    tregzitproc rze
+      join    tproc pce on pce.pce_id = rze.pce_id
+      join    tzitting ztg on ztg.ztg_id = rze.ztg_id
+      left join tregelbslt rbt on rbt.vnrbslt = pce.vnrbslt and rbt.vnrregbslt = 1
+      left join tfunctionaris fts1 on fts1.nrbetr = pce.nrbetrfpr
+      left join tfunctionaris fts2 on fts2.nrbetr = pce.nrbetrgrf
+      left join tprocbelang pbe on pbe.pce_id = pce.pce_id and pbe.cdsrt = 'COR' and pbe.regelnummer = 1
+      left join tbsltbetro bbe on bbe.vnrbslt = pce.vnrbslt and bbe.cdsrt = 'VWR'
+      left join tappellant apt1 on apt1.nrbetr = pbe.nrbetr
+      left join tappellant apt2 on apt2.nrbetr = bbe.nrbetr
+      left join ttit ttl1 on ttl1.cdtit = fts1.cdtit and ttl1.cdgesl = fts1.cdgesl
+      left join ttit ttl2 on ttl2.cdtit = fts1.cdatit and ttl2.cdgesl = fts1.cdgesl
+      left join ttit ttl3 on ttl3.cdtit = fts2.cdtit and ttl3.cdgesl = fts2.cdgesl
+      left join ttit ttl4 on ttl4.cdtit = fts2.cdatit and ttl4.cdgesl = fts2.cdgesl
+      left join tcatsrt cst1 on cst1.cdsrt = rze.cdvrdging and cst1.cdcat = 'CDZITT'
+      left join tcatsrt cst2 on cst2.cdsrt = rze.cdannulpoz and cst2.cdcat = 'ANNPOZ'
+      where   rze.vnrreg = 0
+      and     pce.vnrcasus = :P1710_VNRCASUS
+      order by ztg.dtzitt desc
+          ,   nrzitt desc
+          ,   rze.aanvzitpr
+          ,   to_number(rtrim(lower(nrrol),'abcdefghijklmnopqrstuvwxyz') default 9999 on conversion error)
+          ,   rze.nrrol
+    page-items-to-submit: 
+    - P1710_VNRCASUS
+
+  layout: 
+    sequence: 150
+    parent-region: Tabs container # 40635083116144835
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_VNRBSLT
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: Er zijn nog geen zittingen gevonden voor deze casus.
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: ZITTING =====================================
+    id: 75069816377946307
+    identification: 
+      column-name: ZITTING
+      type: Plain Text
+
+    heading: 
+      heading: Zitting
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTZITT ======================================
+    id: 75069907044946308
+    identification: 
+      column-name: DTZITT
+      type: Plain Text
+
+    heading: 
+      heading: Datum
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ZTG_ID ======================================
+    id: 75616894116812780
+    identification: 
+      column-name: ZTG_ID
+      type: Hidden
+
+    layout: 
+      sequence: 20
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NRROL =======================================
+    id: 75617297485812781
+    identification: 
+      column-name: NRROL
+      type: Plain Text
+
+    heading: 
+      heading: Rolnr.
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VNRCASUS ====================================
+    id: 75617676318812781
+    identification: 
+      column-name: VNRCASUS
+      type: Hidden
+
+    layout: 
+      sequence: 60
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDPWET ======================================
+    id: 75618097215812781
+    identification: 
+      column-name: CDPWET
+      type: Hidden
+
+    layout: 
+      sequence: 70
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: JAAR ========================================
+    id: 75618484146812782
+    identification: 
+      column-name: JAAR
+      type: Hidden
+
+    layout: 
+      sequence: 80
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VNRPROC =====================================
+    id: 75618834163812782
+    identification: 
+      column-name: VNRPROC
+      type: Hidden
+
+    layout: 
+      sequence: 90
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ZAAKNUMMER ==================================
+    id: 75619243316812782
+    identification: 
+      column-name: ZAAKNUMMER
+      type: Plain Text
+
+    heading: 
+      heading: Zaaknr.
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDARROND ====================================
+    id: 75619671406812782
+    identification: 
+      column-name: CDARROND
+      type: Hidden
+
+    layout: 
+      sequence: 110
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDREGGVNG ===================================
+    id: 75620009460812782
+    identification: 
+      column-name: CDREGGVNG
+      type: Plain Text
+
+    heading: 
+      heading: Regelg.
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NRBETRFPR ===================================
+    id: 75620469391812783
+    identification: 
+      column-name: NRBETRFPR
+      type: Hidden
+
+    layout: 
+      sequence: 170
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NRBETRGRF ===================================
+    id: 75620894670812783
+    identification: 
+      column-name: NRBETRGRF
+      type: Hidden
+
+    layout: 
+      sequence: 180
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDCATPROC ===================================
+    id: 75621200200812783
+    identification: 
+      column-name: CDCATPROC
+      type: Hidden
+
+    layout: 
+      sequence: 190
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: FUNCTIONARIS ================================
+    id: 75621607958812783
+    identification: 
+      column-name: FUNCTIONARIS
+      type: Plain Text
+
+    heading: 
+      heading: Functionarissen
+      alignment: start
+
+    layout: 
+      sequence: 160
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: INDOPENB ====================================
+    id: 75622046307812783
+    identification: 
+      column-name: INDOPENB
+      type: Hidden
+
+    layout: 
+      sequence: 270
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: INDRDKMR ====================================
+    id: 75622496236812784
+    identification: 
+      column-name: INDRDKMR
+      type: Hidden
+
+    layout: 
+      sequence: 280
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AANVZITPR ===================================
+    id: 75623230902812784
+    identification: 
+      column-name: AANVZITPR
+      type: Plain Text
+
+    heading: 
+      heading: Aanvang
+      alignment: start
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: BEHANDELTIJD ================================
+    id: 75623623100812784
+    identification: 
+      column-name: BEHANDELTIJD
+      type: Hidden
+
+    layout: 
+      sequence: 210
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDVRDGING ===================================
+    id: 75624079114812785
+    identification: 
+      column-name: CDVRDGING
+      type: Hidden
+
+    layout: 
+      sequence: 220
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: NRCOR =======================================
+    id: 75624433369812785
+    identification: 
+      column-name: NRCOR
+      type: Hidden
+
+    layout: 
+      sequence: 230
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COR =========================================
+    id: 75624836482812785
+    identification: 
+      column-name: COR
+      type: Hidden
+
+    layout: 
+      sequence: 240
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NRVWR =======================================
+    id: 75625243554812785
+    identification: 
+      column-name: NRVWR
+      type: Hidden
+
+    layout: 
+      sequence: 250
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VWR =========================================
+    id: 75625687320812785
+    identification: 
+      column-name: VWR
+      type: Hidden
+
+    layout: 
+      sequence: 260
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PARTIJEN ====================================
+    id: 75626096092812786
+    identification: 
+      column-name: PARTIJEN
+      type: Plain Text
+
+    heading: 
+      heading: Partijen
+      alignment: start
+
+    layout: 
+      sequence: 150
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: false
+
+  - # ====== Column: PCE_ID ======================================
+    id: 75626444189812786
+    identification: 
+      column-name: PCE_ID
+      type: Hidden
+
+    layout: 
+      sequence: 290
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DELETE_ROW ==================================
+    id: 75626859708812786
+    identification: 
+      column-name: DELETE_ROW
+      type: Hidden
+
+    layout: 
+      sequence: 300
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Zaken bij besluit ===========================
+  id: 137501763680625146
+  identification: 
+    name: Zaken bij besluit
+    type: Static Content
+
+  layout: 
+    sequence: 40
+    parent-region: Besluiten # 47205539934298507
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    - t-Form--stretchInputs
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_VNRBSLT
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Besluit gegevens ============================
+  id: 142189287377001014
+  identification: 
+    name: Besluit gegevens
+    type: Form
+
+  source: 
+    location: Local Database
+    type: Table / View
+    table-owner: Parsing Schema
+    table-name: TBESLUIT
+    include-rowid-column: false
+    where-clause: 'VNRBSLT = :P1710_VNRBSLT'
+
+  layout: 
+    sequence: 10
+    parent-region: Zaken bij besluit # 137501763680625146
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: false
+
+page-items: 
+- # ====== Page Item: P1710_CASUS_J ============================
+  id: 5976949694347907
+  identification: 
+    name: P1710_CASUS_J
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 110
+    region: Casus # 39520655610496604
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: N
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CLUSTER ============================
+  id: 5977000644347908
+  identification: 
+    name: P1710_CLUSTER
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 120
+    region: Casus # 39520655610496604
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: N
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CLUSTER_NAAM =======================
+  id: 5977146240347909
+  identification: 
+    name: P1710_CLUSTER_NAAM
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 130
+    region: Casus # 39520655610496604
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: N
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CLUSTER_OPM ========================
+  id: 5977253367347910
+  identification: 
+    name: P1710_CLUSTER_OPM
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 140
+    region: Casus # 39520655610496604
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: N
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_VNRCASUS ===========================
+  id: 39521057709496608
+  identification: 
+    name: P1710_VNRCASUS
+    type: Display Only
+
+  label: 
+    label: Nummer
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Casus # 40632841395144813
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Casus # 39520655610496604
+    column: VNRCASUS
+    data-type: NUMBER
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDAFD ==============================
+  id: 39521146021496609
+  identification: 
+    name: P1710_CDAFD
+    type: Popup LOV
+
+  label: 
+    label: Afdeling
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 50
+    region: Casus # 40632841395144813
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 8
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TAFDELING # 5388438731529641
+    display-extra-values: true
+    display-null-value: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          options.minWidth = 300;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.D.width = 280;
+          options.columns.D.noStretch = false;
+          options.columns.ACTIEF.hidden = true;
+          return options;
+      }
+
+  source: 
+    form-region: Casus # 39520655610496604
+    column: CDAFD
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_OMSCHRSHNG =========================
+  id: 39521296914496610
+  identification: 
+    name: P1710_OMSCHRSHNG
+    type: Textarea
+
+  label: 
+    label: Samenhang casussen
+    alignment: Left
+
+  settings: 
+    resizable: true
+    auto-height: false
+    character-counter: false
+    trim-spaces: Leading and Trailing
+
+  layout: 
+    sequence: 20
+    region: Casusdetails # 40632949162144814
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+    height: 3
+
+  validation: 
+    value-required: false
+    maximum-length: 250
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Casus # 39520655610496604
+    column: OMSCHRSHNG
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_NRBETRFPR ==========================
+  id: 39521385421496611
+  identification: 
+    name: P1710_NRBETRFPR
+    type: Popup LOV
+
+  label: 
+    label: FPR
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 20
+    region: Casus # 40632841395144813
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TFUNCTIONARIS_BEHEEND # 8053735174055093
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          let l_idorg = apex.items.P0_IDORG.getValue();
+          let l_heading;
+          if(['BK','CBB','CRVB'].includes(l_idorg)){
+              l_heading = 'Raadsheer'
+          } else {
+              l_heading = 'Rechter'
+          }
+          options.minWidth = 580;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.CDBETR.width = 80;
+          options.columns.CDBETR.noStretch = true;
+          options.columns.D.width = 400;
+          options.columns.D.noStretch = false;
+          options.columns.D.heading = l_heading;
+          options.columns.ACT.width = 80;
+          options.columns.ACT.noStretch = true;
+          return options;
+      }
+
+  source: 
+    form-region: Casus # 39520655610496604
+    column: NRBETRFPR
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_NRBETRRCH ==========================
+  id: 39521467617496612
+  identification: 
+    name: P1710_NRBETRRCH
+    type: Popup LOV
+
+  label: 
+    label: Rechter commissaris
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 40
+    region: Casus # 40632841395144813
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TFUNCTIONARIS_BEHEEND # 8053735174055093
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          let l_idorg = apex.items.P0_IDORG.getValue();
+          let l_heading;
+          if(['BK','CBB','CRVB'].includes(l_idorg)){
+              l_heading = 'Raadsheer'
+          } else {
+              l_heading = 'Rechter'
+          }
+          options.minWidth = 580;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.CDBETR.width = 80;
+          options.columns.CDBETR.noStretch = true;
+          options.columns.D.width = 400;
+          options.columns.D.noStretch = false;
+          options.columns.D.heading = l_heading;
+          options.columns.ACT.width = 80;
+          options.columns.ACT.noStretch = true;
+          return options;
+      }
+
+  source: 
+    form-region: Casus # 39520655610496604
+    column: NRBETRRCH
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_NRBETRGRF ==========================
+  id: 39521550603496613
+  identification: 
+    name: P1710_NRBETRGRF
+    type: Popup LOV
+
+  label: 
+    label: Griffier
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 30
+    region: Casus # 40632841395144813
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TFUNCTIONARIS_GRF # 8021821967001393
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          options.minWidth = 580;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.CDBETR.width = 80;
+          options.columns.CDBETR.noStretch = false;
+          options.columns.D.width = 400;
+          options.columns.D.noStretch = false;
+          options.columns.ACT.width = 80;
+          options.columns.ACT.noStretch = false;
+          return options;
+      }
+
+  source: 
+    form-region: Casus # 39520655610496604
+    column: NRBETRGRF
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_NRZITTPLTS =========================
+  id: 39521651431496614
+  identification: 
+    name: P1710_NRZITTPLTS
+    type: Popup LOV
+
+  label: 
+    label: Zittingsplaats
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 60
+    region: Casus # 40632841395144813
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TZITTPLAATS # 5398953932589866
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          options.minWidth = 300;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.D.width = 280;
+          options.columns.D.noStretch = false;
+          options.columns.ACTIEF.hidden = true;
+          return options;
+      }
+
+  source: 
+    form-region: Casus # 39520655610496604
+    column: NRZITTPLTS
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDARROND ===========================
+  id: 39521712887496615
+  identification: 
+    name: P1710_CDARROND
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 80
+    region: Casus # 40632841395144813
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Casus # 39520655610496604
+    column: CDARROND
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  default: 
+    type: Item
+    item: P0_CDARROND_USER
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_VNRBSLT ============================
+  id: 40632542463144810
+  identification: 
+    name: P1710_VNRBSLT
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Besluiten # 39520710521496605
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_VNRBSLT_KOPPEL =====================
+  id: 40633073240144815
+  identification: 
+    name: P1710_VNRBSLT_KOPPEL
+    type: Popup LOV
+
+  label: 
+    label: Te koppelen besluit
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 30
+    region: Besluiten # 39520710521496605
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TBESLUIT_DEP # 45706825840240649
+    display-extra-values: true
+    display-null-value: true
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P1710_CDPWET
+    - P1710_CDSRTREGGVNG
+    - P1710_CDREGGVNG
+    - P1710_VNRBSLT
+    - P1710_NRBETRVWR
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          options.minWidth = 1000;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.VNRBSLT.width = 80;
+          options.columns.VNRBSLT.noStretch = false;
+          options.columns.DTBSLT.width = 100;
+          options.columns.DTBSLT.noStretch = false;
+          options.columns.NAAM.width = 300;
+          options.columns.NAAM.noStretch = false;
+          options.columns.CDPWET.width = 90;
+          options.columns.CDPWET.noStretch = false;
+          options.columns.CDSRTREGGVNG.width = 120;
+          options.columns.CDSRTREGGVNG.noStretch = false;
+          options.columns.CDREGGVNG.width = 90;
+          options.columns.CDREGGVNG.noStretch = false;
+          options.columns.KENM.width = 200;
+          options.columns.KENM.noStretch = false;
+          return options;
+      }
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_NRBETRVWR ==========================
+  id: 40633298776144817
+  identification: 
+    name: P1710_NRBETRVWR
+    type: Display Only
+
+  label: 
+    label: Verweerder
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Casusdetails # 40632949162144814
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TAPPELLANT_MC # 9049588598575330
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDPWET =============================
+  id: 40633306018144818
+  identification: 
+    name: P1710_CDPWET
+    type: Display Only
+
+  label: 
+    label: Proceswet
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Casusdetails # 40632949162144814
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TPWET # 4713476255797722
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDSRTREGGVNG =======================
+  id: 40633468183144819
+  identification: 
+    name: P1710_CDSRTREGGVNG
+    type: Display Only
+
+  label: 
+    label: Soort regelgeving
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Casusdetails # 40632949162144814
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TSRTREGGVNG_DEP # 4713855580815598
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDREGGVNG ==========================
+  id: 40633597087144820
+  identification: 
+    name: P1710_CDREGGVNG
+    type: Display Only
+
+  label: 
+    label: Regelgeving
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Casusdetails # 40632949162144814
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 3
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TREGEL_DEP # 43716062896879036
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_NRBETRFPR_LABEL_WAARDE =============
+  id: 40634763482144832
+  identification: 
+    name: P1710_NRBETRFPR_LABEL_WAARDE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 90
+    region: Casus # 40632841395144813
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDCLUST ============================
+  id: 47205967160298511
+  identification: 
+    name: P1710_CDCLUST
+    type: Popup LOV
+
+  label: 
+    label: Cluster
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Clusters # 40635314174144838
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TCLUSTER # 9690954800101206
+    display-extra-values: true
+    display-null-value: true
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P1710_CDPWET
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          options.minWidth = 300;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.D.width = 280;
+          options.columns.D.noStretch = false;
+          return options;
+      }
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1710_REGION
+    value: CPS
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CASUS_TO_DELETE ====================
+  id: 47206741344298519
+  identification: 
+    name: P1710_CASUS_TO_DELETE
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 20
+    region: Clusters # 40635314174144838
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_REGION =============================
+  id: 47206830089298520
+  identification: 
+    name: P1710_REGION
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Tabs container # 40635083116144835
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_OMSCHR =============================
+  id: 47206921872298521
+  identification: 
+    name: P1710_OMSCHR
+    type: Text Field
+
+  label: 
+    label: Omschrijving
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Beschrijving # 47205067095298502
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 60
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1710_REGION
+    value: COG
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_VNRREG =============================
+  id: 47207177602298523
+  identification: 
+    name: P1710_VNRREG
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 30
+    region: Beschrijving # 47205067095298502
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_VNRREG_OLD =========================
+  id: 47207231019298524
+  identification: 
+    name: P1710_VNRREG_OLD
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 40
+    region: Beschrijving # 47205067095298502
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_OMSCHR_TO_DELETE ===================
+  id: 47208010961298532
+  identification: 
+    name: P1710_OMSCHR_TO_DELETE
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 20
+    region: Beschrijving # 47205067095298502
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_VNRREG_OLD_RCS =====================
+  id: 63435165120111331
+  identification: 
+    name: P1710_VNRREG_OLD_RCS
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 10
+    region: Links # 72763556567032504
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1710_REGION
+    value: RCS
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDSRT_RCS ==========================
+  id: 67709039337144408
+  identification: 
+    name: P1710_CDSRT_RCS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Links # 72763556567032504
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: CA
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_IDGEBR_RCS =========================
+  id: 67709484590144408
+  identification: 
+    name: P1710_IDGEBR_RCS
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Links # 72763556567032504
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ':APP_USER'
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_INDDCT_RCS =========================
+  id: 67709850551144408
+  identification: 
+    name: P1710_INDDCT_RCS
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 10
+    region: Links # 72763556567032504
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: N
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDDOC_RCS ==========================
+  id: 67710223886144408
+  identification: 
+    name: P1710_CDDOC_RCS
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 10
+    region: Links # 72763556567032504
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_VNRREG_RCS =========================
+  id: 67710671678144408
+  identification: 
+    name: P1710_VNRREG_RCS
+    type: Display Only
+
+  label: 
+    label: Volgnr.
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Links # 72763556567032504
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 1
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1710_REGION
+    value: RCS
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDACTIE_RCS ========================
+  id: 67711069055144408
+  identification: 
+    name: P1710_CDACTIE_RCS
+    type: Popup LOV
+
+  label: 
+    label: Actie
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Links # 72763556567032504
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 6
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TACTIE_CA # 68000240032633688
+    display-extra-values: false
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          options.minWidth = 300;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.D.width = 280;
+          options.columns.D.noStretch = false;
+          return options;
+      }
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1710_REGION
+    value: RCS
+
+  read-only: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ':P1710_VNRREG_RCS is not null'
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_DTSTART_RCS ========================
+  id: 67711434883144409
+  identification: 
+    name: P1710_DTSTART_RCS
+    type: Date Picker
+
+  label: 
+    label: Startdatum
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Native HTML
+    minimum-date: None
+    maximum-date: None
+
+  layout: 
+    sequence: 10
+    region: Links # 72763556567032504
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: YYYY-MM-DD
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: "case when :P1710_VNRREG_RCS is null then to_char(sysdate, 'yyyy-mm-dd') end"
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1710_REGION
+    value: RCS
+
+  read-only: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ':P1710_VNRREG_RCS is not null and :P1710_DTSTART_RCS is not null'
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_TERMVERL_RCS =======================
+  id: 67711893456144409
+  identification: 
+    name: P1710_TERMVERL_RCS
+    type: Text Field
+
+  label: 
+    label: Verlenging
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 10
+    region: Links # 72763556567032504
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 2
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 3
+
+  advanced: 
+    post-text-: '&nbsp;dagen'
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1710_REGION
+    value: RCS
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_DTCOMPL_RCS ========================
+  id: 67712243651144409
+  identification: 
+    name: P1710_DTCOMPL_RCS
+    type: Date Picker
+
+  label: 
+    label: Datum compleet
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Native HTML
+    minimum-date: None
+    maximum-date: None
+
+  layout: 
+    sequence: 20
+    region: Rechts # 72763604586032505
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: YYYY-MM-DD
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ":P1710_REGION = 'RCS' and :P1710_VNRREG_RCS is not null"
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_NRBETR_RCS =========================
+  id: 67712614344144410
+  identification: 
+    name: P1710_NRBETR_RCS
+    type: Popup LOV
+
+  label: 
+    label: Deskundige
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 10
+    region: Rechts # 72763604586032505
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TDESKUNDIGE # 28313715689219270
+    display-extra-values: true
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          options.minWidth = 800;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.NRBETR.width = 100;
+          options.columns.NRBETR.noStretch = false;
+          options.columns.CDBETR.width = 100;
+          options.columns.CDBETR.noStretch = false;
+          options.columns.NAAM.width = 500;
+          options.columns.NAAM.noStretch = false;
+          options.columns.INDACTF.width = 80;
+          options.columns.INDACTF.noStretch = false;
+          return options;
+      }
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ":P1710_REGION = 'RCS' /*and :P1710_VNRREG_RCS is null*/"
+
+  read-only: 
+    type: Item is NOT NULL
+    item: P1710_VNRREG_RCS
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDCOMPL_RCS ========================
+  id: 67713052319144411
+  identification: 
+    name: P1710_CDCOMPL_RCS
+    type: Select List
+
+  label: 
+    label: Code compleet
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 30
+    region: Rechts # 72763604586032505
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TABEL_CODE_COMPLEET # 9097153207177388
+    display-extra-values: false
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Request (Memory Only)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ":P1710_REGION = 'RCS' and :P1710_VNRREG_RCS is not null"
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_CDUITV_RCS =========================
+  id: 68100508932951092
+  identification: 
+    name: P1710_CDUITV_RCS
+    type: Select List
+
+  label: 
+    label: Uitvoer naar
+    alignment: Left
+
+  settings: 
+    page-action-on-selection: None
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 40
+    region: Rechts # 72763604586032505
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 4
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Above
+    template-options: 
+    - '#DEFAULT#'
+    height: 1
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TORGDOMEIN_UITVOER_DOCUMENT # 13525918059856078
+    display-extra-values: false
+    display-null-value: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: N
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: ":P1710_REGION = 'RCS' and :P1710_VNRREG_RCS is null"
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_BSLT_TO_DELETE =====================
+  id: 137498961798625118
+  identification: 
+    name: P1710_BSLT_TO_DELETE
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 20
+    region: Besluiten # 39520710521496605
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_VNRBSLT_1 ==========================
+  id: 142189422299001016
+  identification: 
+    name: P1710_VNRBSLT_1
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: Besluit gegevens # 142189287377001014
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Besluit gegevens # 142189287377001014
+    column: VNRBSLT
+    data-type: NUMBER
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Checksum Required - Session Level
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_JRAANSL ============================
+  id: 142190673887001028
+  identification: 
+    name: P1710_JRAANSL
+    type: Display Only
+
+  label: 
+    label: Jaar aanslag
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 130
+    region: Besluit gegevens # 142189287377001014
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Besluit gegevens # 142189287377001014
+    column: JRAANSL
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_JRAANSL
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_DTBEGINAANSL =======================
+  id: 142190787720001029
+  identification: 
+    name: P1710_DTBEGINAANSL
+    type: Display Only
+
+  label: 
+    label: Datum beginaanslag
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 140
+    region: Besluit gegevens # 142189287377001014
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Besluit gegevens # 142189287377001014
+    column: DTBEGINAANSL
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_DTBEGINAANSL
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_DTEINDAANSL ========================
+  id: 142190823605001030
+  identification: 
+    name: P1710_DTEINDAANSL
+    type: Display Only
+
+  label: 
+    label: Datum eindaanslag
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 150
+    region: Besluit gegevens # 142189287377001014
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Besluit gegevens # 142189287377001014
+    column: DTEINDAANSL
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_DTEINDAANSL
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1710_INDBOETE ===========================
+  id: 142191365444001035
+  identification: 
+    name: P1710_INDBOETE
+    type: Display Only
+
+  label: 
+    label: IND boete
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 200
+    region: Besluit gegevens # 142189287377001014
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: Besluit gegevens # 142189287377001014
+    column: INDBOETE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item = Value
+    item: P0_IDORG
+    value: REST or RSJ
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: SAVE ========================================
+  id: 40633968433144824
+  identification: 
+    button-name: SAVE
+    label: '&SS_BTN_SAVE.'
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 39507436053285271
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    css-classes: 
+    - BUTTON_SAVE
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_VNRCASUS
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+
+- # ====== Button: CREATE ======================================
+  id: 40634067064144825
+  identification: 
+    button-name: CREATE
+    label: '&SS_BTN_CREATE.'
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 39507436053285271
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    css-classes: 
+    - BUTTON_CREATE
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P1710_VNRCASUS
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+
+- # ====== Button: DELETE ======================================
+  id: 40634107897144826
+  identification: 
+    button-name: DELETE
+    label: '&SS_BTN_DELETE.'
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 39507436053285271
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  confirmation: 
+    message: '&SS_DELETE_CONFIRM_MESSAGE.'
+    style: Default
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1710_VNRCASUS
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+
+- # ====== Button: CANCEL ======================================
+  id: 40634250316144827
+  identification: 
+    button-name: CANCEL
+    label: '&SS_BTN_CANCEL.'
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 39507436053285271
+    slot: PREVIOUS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    css-classes: 
+    - BUTTON_CANCEL
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CREATE_NEW ==================================
+  id: 47205419781298506
+  identification: 
+    button-name: CREATE_NEW
+    label: '&SS_BTN_CREATE_NEW.'
+
+  layout: 
+    sequence: 10
+    region: Clusters # 40635314174144838
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - BUTTON_CREATE_NEW
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1710:&SESSION.::&DEBUG.::P1710_VNRCASUS,P1710_REGION:&P1710_VNRCASUS.,CPS'
+      page: 1710 # Onderhoud casus
+      values: 
+        p1710_vnrcasus: '&P1710_VNRCASUS.'
+        p1710_region: CPS
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item != Value
+    item: P1710_REGION
+    value: CPS
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+
+- # ====== Button: CREATE_NEW ==================================
+  id: 50805828303598268
+  identification: 
+    button-name: CREATE_NEW
+    label: '&SS_BTN_CREATE_NEW.'
+
+  layout: 
+    sequence: 10
+    region: Beschrijving # 47205067095298502
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - BUTTON_CREATE_NEW
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1710:&SESSION.::&DEBUG.::P1710_VNRCASUS,P1710_REGION:&P1710_VNRCASUS.,COG'
+      page: 1710 # Onderhoud casus
+      values: 
+        p1710_vnrcasus: '&P1710_VNRCASUS.'
+        p1710_region: COG
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item != Value
+    item: P1710_REGION
+    value: COG
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+
+- # ====== Button: CREATE_NEW_RCS ==============================
+  id: 67707006535144403
+  identification: 
+    button-name: CREATE_NEW_RCS
+    label: '&SS_BTN_CREATE_NEW. '
+
+  layout: 
+    sequence: 30
+    region: Register # 72763761669032506
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - BUTTON_CREATE_NEW
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1710:&SESSION.::&DEBUG.::P1710_VNRCASUS,P1710_REGION,P1710_INDDCT_RCS:&P1710_VNRCASUS.,RCS,N'
+      page: 1710 # Onderhoud casus
+      values: 
+        p1710_vnrcasus: '&P1710_VNRCASUS.'
+        p1710_region: RCS
+        p1710_inddct_rcs: N
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Item != Value
+    item: P1710_REGION
+    value: RCS
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+
+dynamic-actions: 
+- # ====== Dynamic Action: Change P1710_DTCOMPL_RCS (P1710_DTCOM
+  id: 7544175934173061
+  identification: 
+    name: Change P1710_DTCOMPL_RCS (P1710_DTCOMPL_RCS is not null & P1710_CDCOMPL_RCS is null) - Set P1710_CDCOMPL_RCS op voldaan
+
+  execution: 
+    sequence: 210
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1710_DTCOMPL_RCS
+
+  client-side-condition: 
+    type: Item is not null
+    item: P1710_DTCOMPL_RCS
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 7544582938173061
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: Static Assignment
+      value: V
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1710_CDCOMPL_RCS
+
+    execution: 
+      sequence: 10
+      event: Change P1710_DTCOMPL_RCS (P1710_DTCOMPL_RCS is not null & P1710_CDCOMPL_RCS is null) - Set P1710_CDCOMPL_RCS op voldaan # 7544175934173061
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+    client-side-condition: 
+      type: Item is null
+      item: P1710_CDCOMPL_RCS
+
+- # ====== Dynamic Action: Page load - Init Javascript functions
+  id: 40684869906347061
+  identification: 
+    name: Page load - Init Javascript functions
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  actions: 
+  - # ====== Action: Remove class col-6 (vnrcasus is leeg) =======
+    id: 11904642370622313
+    identification: 
+      name: Remove class col-6 (vnrcasus is leeg)
+      action: Execute JavaScript Code
+
+    settings: 
+      code: $('#casus_blok').parent().removeClass('col-6');
+
+    execution: 
+      sequence: 20
+      event: Page load - Init Javascript functions # 40684869906347061
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+    server-side-condition: 
+      type: Item is NULL
+      item: P1710_VNRCASUS
+
+  - # ====== Action: Set Value ===================================
+    id: 40634943764144834
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: PL/SQL Expression
+      pl/sql-expression: ':P1710_NRBETRFPR_LABEL_WAARDE'
+      items-to-submit: 
+      - P1710_NRBETRFPR_LABEL_WAARDE
+      escape-special-characters: true
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1710_NRBETRFPR_LABEL
+
+    execution: 
+      sequence: 40
+      event: Page load - Init Javascript functions # 40684869906347061
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 40685205613347066
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        region.focus();
+        item.focus_first();
+
+    execution: 
+      sequence: 10
+      event: Page load - Init Javascript functions # 40684869906347061
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Add Class ===================================
+    id: 47205600725298508
+    identification: 
+      action: Add Class
+
+    settings: 
+      class: container_small
+
+    affected-elements: 
+      selection-type: Region
+      region: Tabs container # 40635083116144835
+
+    execution: 
+      sequence: 50
+      event: Page load - Init Javascript functions # 40684869906347061
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    client-side-condition: 
+      type: Item is null
+      item: P1710_VNRBSLT
+
+  - # ====== Action: Set Focus ===================================
+    id: 63809992521636418
+    identification: 
+      action: Set Focus
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1710_VNRBSLT_KOPPEL
+
+    execution: 
+      sequence: 30
+      event: Page load - Init Javascript functions # 40684869906347061
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Key down (key_next or key_previous) -
+  id: 40685671867348768
+  identification: 
+    name: Key down (key_next or key_previous) - Switch item
+
+  execution: 
+    sequence: 30
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Key Down
+    selection-type: jQuery Selector
+    jquery-selector: body
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: this.browserEvent.which === region.key_previous || this.browserEvent.which === region.key_next
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 40686027493348768
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: region.switch(this.browserEvent);
+
+    execution: 
+      sequence: 10
+      event: Key down (key_next or key_previous) - Switch item # 40685671867348768
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: After Refresh - Clickable row =======
+  id: 40688556508374561
+  identification: 
+    name: After Refresh - Clickable row
+
+  execution: 
+    sequence: 20
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: After Refresh
+    selection-type: Region
+    region: Besluiten # 39520710521496605
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 40688903928374562
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        report.clickable_row('onderhoud-casus');
+        
+
+    execution: 
+      sequence: 10
+      event: After Refresh - Clickable row # 40688556508374561
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 75070140174946310
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        report.clickable_row('zittingdetail');
+        
+
+    execution: 
+      sequence: 10
+      event: After Refresh - Clickable row # 40688556508374561
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: After Refresh - Selected row ========
+  id: 40691148418463457
+  identification: 
+    name: After Refresh - Selected row
+
+  execution: 
+    sequence: 50
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: After Refresh
+    selection-type: Region
+    region: Besluiten # 39520710521496605
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 40691539312463457
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: report.selected_row('P1710_VNRBSLT');
+
+    execution: 
+      sequence: 20
+      event: After Refresh - Selected row # 40691148418463457
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    server-side-condition: 
+      type: Item != Value
+      item: P1710_REGION
+      value: RCS
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 63435493176111334
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: report.selected_row('P1710_VNRREG_RCS');
+
+    execution: 
+      sequence: 30
+      event: After Refresh - Selected row # 40691148418463457
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: ":P1710_REGION = 'RCS' AND :P1710_VNRREG_RCS IS NOT NULL"
+
+- # ====== Dynamic Action: Click .delete_row_cluster - Delete cl
+  id: 47206252346298514
+  identification: 
+    name: Click .delete_row_cluster - Delete cluster
+
+  execution: 
+    sequence: 70
+    event-scope: Dynamic
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: jQuery Selector
+    jquery-selector: .delete_row_cluster
+
+  actions: 
+  - # ====== Action: Confirm =====================================
+    id: 47206328359298515
+    identification: 
+      action: Confirm
+
+    settings: 
+      message: Weet u zeker dat u deze casus van het cluster wilt ontkoppelen?
+      style: Default
+
+    execution: 
+      sequence: 10
+      event: Click .delete_row_cluster - Delete cluster # 47206252346298514
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Set Value ===================================
+    id: 47206409695298516
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: JavaScript Expression
+      javascript-expression: $(this.triggeringElement).parent().data('id')
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1710_CASUS_TO_DELETE
+
+    execution: 
+      sequence: 20
+      event: Click .delete_row_cluster - Delete cluster # 47206252346298514
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 47206587957298517
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_process(
+            p_request => 'DELETE_ROW'
+        ,   p_page_item_name => 'P1710_CASUS_TO_DELETE'
+        ,   p_page_item_value => :P1710_CASUS_TO_DELETE
+        );
+      items-to-submit: 
+      - P1710_CASUS_TO_DELETE
+
+    execution: 
+      sequence: 30
+      event: Click .delete_row_cluster - Delete cluster # 47206252346298514
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Refresh =====================================
+    id: 47206692030298518
+    identification: 
+      action: Refresh
+
+    affected-elements: 
+      selection-type: Region
+      region: Clusters # 40635314174144838
+
+    execution: 
+      sequence: 40
+      event: Click .delete_row_cluster - Delete cluster # 47206252346298514
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 63810760384636426
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.success('&SS_SUCCESS_MESSAGE.');
+
+    execution: 
+      sequence: 50
+      event: Click .delete_row_cluster - Delete cluster # 47206252346298514
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Click .delete_row_omschrijving - Dele
+  id: 47207506391298527
+  identification: 
+    name: Click .delete_row_omschrijving - Delete omschrijving
+
+  execution: 
+    sequence: 120
+    event-scope: Dynamic
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: jQuery Selector
+    jquery-selector: .delete_row_omschrijving
+
+  actions: 
+  - # ====== Action: Confirm =====================================
+    id: 47207674633298528
+    identification: 
+      action: Confirm
+
+    settings: 
+      message: Weet u zeker dat u deze regel uit de beschrijving wilt verwijderen bij deze casus?
+      style: Default
+
+    execution: 
+      sequence: 10
+      event: Click .delete_row_omschrijving - Delete omschrijving # 47207506391298527
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Set Value ===================================
+    id: 47207792674298529
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: JavaScript Expression
+      javascript-expression: $(this.triggeringElement).parent().data('id')
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1710_OMSCHR_TO_DELETE
+
+    execution: 
+      sequence: 20
+      event: Click .delete_row_omschrijving - Delete omschrijving # 47207506391298527
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 47207825776298530
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_process(
+            p_request => 'DELETE_ROW'
+        ,   p_page_item_name => 'P1710_OMSCHR_TO_DELETE'
+        ,   p_page_item_value => :P1710_OMSCHR_TO_DELETE
+        );
+      items-to-submit: 
+      - P1710_OMSCHR_TO_DELETE
+
+    execution: 
+      sequence: 30
+      event: Click .delete_row_omschrijving - Delete omschrijving # 47207506391298527
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Refresh =====================================
+    id: 47207933011298531
+    identification: 
+      action: Refresh
+
+    affected-elements: 
+      selection-type: Region
+      region: Beschrijving # 47205067095298502
+
+    execution: 
+      sequence: 40
+      event: Click .delete_row_omschrijving - Delete omschrijving # 47207506391298527
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 63810622521636425
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.success('&SS_SUCCESS_MESSAGE.');
+
+    execution: 
+      sequence: 50
+      event: Click .delete_row_omschrijving - Delete omschrijving # 47207506391298527
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Lose focus P1710_CDCLUST - Validate i
+  id: 50008596320690586
+  identification: 
+    name: Lose focus P1710_CDCLUST - Validate item
+
+  execution: 
+    sequence: 130
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P1710_CDCLUST
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: '&SS_DA_LOSE_FOCUS_BUTTON_EXCEPTION.'
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 50008901063690591
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_validate(
+            p_page_item_name => 'P1710_CDCLUST'
+        ,   p_page_item_value => :P1710_CDCLUST
+        ,   p_page_item_error => :P0_VALIDATE_ITEM_ERROR
+        );
+      items-to-submit: 
+      - P1710_CDCLUST
+      - P0_VALIDATE_ITEM_ERROR
+      - P1710_VNRCASUS
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose focus P1710_CDCLUST - Validate item # 50008596320690586
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 50009490972690592
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: Lose focus P1710_CDCLUST - Validate item # 50008596320690586
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Change P1710_CDCLUST - Warning ======
+  id: 50603232867382175
+  identification: 
+    name: Change P1710_CDCLUST - Warning
+
+  execution: 
+    sequence: 190
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1710_CDCLUST
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 50603611976382181
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_warning(
+            p_page_item_name => 'P1710_CDCLUST'
+        ,   p_page_item_value => :P1710_CDCLUST
+        );
+      items-to-submit: 
+      - P1710_CDCLUST
+      - P1710_VNRCASUS
+      items-to-return: 
+      - P0_WARNING_MESSAGE
+      suppress-change-event: false
+
+    execution: 
+      sequence: 20
+      event: Change P1710_CDCLUST - Warning # 50603232867382175
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 50604171905382182
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.warning();
+
+    execution: 
+      sequence: 30
+      event: Change P1710_CDCLUST - Warning # 50603232867382175
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Lose focus P1710_CDACTIE_RCS - Valida
+  id: 63433611572111316
+  identification: 
+    name: Lose focus P1710_CDACTIE_RCS - Validate item
+
+  execution: 
+    sequence: 140
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P1710_CDACTIE_RCS
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: '&SS_DA_LOSE_FOCUS_BUTTON_EXCEPTION.'
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 63433730632111317
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_validate(
+            p_page_item_name => 'P1710_CDACTIE_RCS'
+        ,   p_page_item_value => :P1710_CDACTIE_RCS
+        ,   p_page_item_error => :P0_VALIDATE_ITEM_ERROR
+        );
+      items-to-submit: 
+      - P1710_CDCLUST
+      - P0_VALIDATE_ITEM_ERROR
+      - P1710_CDACTIE_RCS
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose focus P1710_CDACTIE_RCS - Validate item # 63433611572111316
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 63433831109111318
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: Lose focus P1710_CDACTIE_RCS - Validate item # 63433611572111316
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Lose focus P1710_TERMVERL_RCS - Valid
+  id: 63433988240111319
+  identification: 
+    name: Lose focus P1710_TERMVERL_RCS - Validate item
+
+  execution: 
+    sequence: 160
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P1710_TERMVERL_RCS
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: '&SS_DA_LOSE_FOCUS_BUTTON_EXCEPTION.'
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 63434007698111320
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_validate(
+            p_page_item_name => 'P1710_TERMVERL_RCS'
+        ,   p_page_item_value => :P1710_TERMVERL_RCS
+        ,   p_page_item_error => :P0_VALIDATE_ITEM_ERROR
+        );
+      items-to-submit: 
+      - P1710_CDCLUST
+      - P0_VALIDATE_ITEM_ERROR
+      - P1710_TERMVERL_RCS
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose focus P1710_TERMVERL_RCS - Validate item # 63433988240111319
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 63434100751111321
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: Lose focus P1710_TERMVERL_RCS - Validate item # 63433988240111319
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Lose focus P1710_DTCOMPL_RCS - Valida
+  id: 63434257664111322
+  identification: 
+    name: Lose focus P1710_DTCOMPL_RCS - Validate item
+
+  execution: 
+    sequence: 170
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P1710_DTCOMPL_RCS
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: '&SS_DA_LOSE_FOCUS_BUTTON_EXCEPTION.'
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 63434386783111323
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_validate(
+            p_page_item_name => 'P1710_DTCOMPL_RCS'
+        ,   p_page_item_value => :P1710_DTCOMPL_RCS
+        ,   p_page_item_error => :P0_VALIDATE_ITEM_ERROR
+        );
+      items-to-submit: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P1710_DTCOMPL_RCS
+      - P1710_DTSTART_RCS
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose focus P1710_DTCOMPL_RCS - Validate item # 63434257664111322
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 63434462802111324
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: Lose focus P1710_DTCOMPL_RCS - Validate item # 63434257664111322
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Lose focus P1710_DTSTART_RCS - Valida
+  id: 63434564860111325
+  identification: 
+    name: Lose focus P1710_DTSTART_RCS - Validate item
+
+  execution: 
+    sequence: 150
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P1710_DTSTART_RCS
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: '&SS_DA_LOSE_FOCUS_BUTTON_EXCEPTION.'
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 63434607839111326
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_validate(
+            p_page_item_name => 'P1710_DTSTART_RCS'
+        ,   p_page_item_value => :P1710_DTSTART_RCS
+        ,   p_page_item_error => :P0_VALIDATE_ITEM_ERROR
+        );
+      items-to-submit: 
+      - P1710_CDCLUST
+      - P0_VALIDATE_ITEM_ERROR
+      - P1710_DTSTART_RCS
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose focus P1710_DTSTART_RCS - Validate item # 63434564860111325
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 63434758374111327
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: Lose focus P1710_DTSTART_RCS - Validate item # 63434564860111325
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Key Release (enter) #delete_row_clust
+  id: 63810062957636419
+  identification: 
+    name: 'Key Release (enter) #delete_row_cluster_link - Delete cluster'
+
+  execution: 
+    sequence: 90
+    event-scope: Dynamic
+    type: Immediate
+
+  when: 
+    event: Key Release
+    selection-type: jQuery Selector
+    jquery-selector: '#delete_row_cluster_link'
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: this.browserEvent.which === page.key_enter
+
+  actions: 
+  - # ====== Action: Confirm =====================================
+    id: 63810197465636420
+    identification: 
+      action: Confirm
+
+    settings: 
+      message: '&SS_DELETE_CONFIRM_MESSAGE.'
+      style: Default
+      confirm-label: '&SS_BTN_DELETE.'
+
+    execution: 
+      sequence: 30
+      event: 'Key Release (enter) #delete_row_cluster_link - Delete cluster' # 63810062957636419
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Set Value ===================================
+    id: 63810200537636421
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: JavaScript Expression
+      javascript-expression: $(this.triggeringElement).data('id')
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1710_CASUS_TO_DELETE
+
+    execution: 
+      sequence: 10
+      event: 'Key Release (enter) #delete_row_cluster_link - Delete cluster' # 63810062957636419
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 63810306986636422
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_process(
+            p_request => 'DELETE_ROW'
+        ,   p_page_item_name => 'P1710_CASUS_TO_DELETE'
+        ,   p_page_item_value => :P1710_CASUS_TO_DELETE
+        );
+      items-to-submit: 
+      - P1710_CASUS_TO_DELETE
+
+    execution: 
+      sequence: 40
+      event: 'Key Release (enter) #delete_row_cluster_link - Delete cluster' # 63810062957636419
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Refresh =====================================
+    id: 63810400676636423
+    identification: 
+      action: Refresh
+
+    affected-elements: 
+      selection-type: Region
+      region: Clusters # 40635314174144838
+
+    execution: 
+      sequence: 50
+      event: 'Key Release (enter) #delete_row_cluster_link - Delete cluster' # 63810062957636419
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 63810595096636424
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.success('&SS_SUCCESS_MESSAGE.');
+
+    execution: 
+      sequence: 60
+      event: 'Key Release (enter) #delete_row_cluster_link - Delete cluster' # 63810062957636419
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Set Focus ===================================
+    id: 63811495179636433
+    identification: 
+      action: Set Focus
+
+    affected-elements: 
+      selection-type: Button
+      button: CREATE_NEW # 47205419781298506
+
+    execution: 
+      sequence: 20
+      event: 'Key Release (enter) #delete_row_cluster_link - Delete cluster' # 63810062957636419
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Key Release (enter) #delete_row_omsch
+  id: 63810889584636427
+  identification: 
+    name: 'Key Release (enter) #delete_row_omschrijving_link- Delete omschrijving'
+
+  execution: 
+    sequence: 110
+    event-scope: Dynamic
+    type: Immediate
+
+  when: 
+    event: Key Release
+    selection-type: jQuery Selector
+    jquery-selector: '#delete_row_omschrijving_link'
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: this.browserEvent.which === page.key_enter
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 63810945617636428
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: JavaScript Expression
+      javascript-expression: $(this.triggeringElement).data('id')
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1710_OMSCHR_TO_DELETE
+
+    execution: 
+      sequence: 10
+      event: 'Key Release (enter) #delete_row_omschrijving_link- Delete omschrijving' # 63810889584636427
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Confirm =====================================
+    id: 63811013771636429
+    identification: 
+      action: Confirm
+
+    settings: 
+      message: '&SS_DELETE_CONFIRM_MESSAGE.'
+      style: Default
+      confirm-label: '&SS_BTN_DELETE.'
+
+    execution: 
+      sequence: 30
+      event: 'Key Release (enter) #delete_row_omschrijving_link- Delete omschrijving' # 63810889584636427
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 63811160799636430
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_process(
+            p_request => 'DELETE_ROW'
+        ,   p_page_item_name => 'P1710_OMSCHR_TO_DELETE'
+        ,   p_page_item_value => :P1710_OMSCHR_TO_DELETE
+        );
+      items-to-submit: 
+      - P1710_OMSCHR_TO_DELETE
+
+    execution: 
+      sequence: 40
+      event: 'Key Release (enter) #delete_row_omschrijving_link- Delete omschrijving' # 63810889584636427
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Refresh =====================================
+    id: 63811236473636431
+    identification: 
+      action: Refresh
+
+    affected-elements: 
+      selection-type: Region
+      region: Beschrijving # 47205067095298502
+
+    execution: 
+      sequence: 50
+      event: 'Key Release (enter) #delete_row_omschrijving_link- Delete omschrijving' # 63810889584636427
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 63811378443636432
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.success('&SS_SUCCESS_MESSAGE.');
+
+    execution: 
+      sequence: 60
+      event: 'Key Release (enter) #delete_row_omschrijving_link- Delete omschrijving' # 63810889584636427
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Set Focus ===================================
+    id: 63811524624636434
+    identification: 
+      action: Set Focus
+
+    affected-elements: 
+      selection-type: Button
+      button: CREATE_NEW # 50805828303598268
+
+    execution: 
+      sequence: 20
+      event: 'Key Release (enter) #delete_row_omschrijving_link- Delete omschrijving' # 63810889584636427
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Change P1710_CDACTIE_RCS - live rende
+  id: 68200173622112777
+  identification: 
+    name: Change P1710_CDACTIE_RCS - live render termijn
+
+  execution: 
+    sequence: 200
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Change
+    selection-type: Item(s)
+    item(s): 
+    - P1710_CDACTIE_RCS
+
+  client-side-condition: 
+    type: Item is not null
+    item: P1710_CDACTIE_RCS
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 68201072253112790
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_render(
+            p_page_item_name => 'P1710_CDACTIE_RCS'
+        ,   p_page_item_value => :P1710_CDACTIE_RCS
+        );
+      items-to-submit: 
+      - P1710_CDACTIE_RCS
+      - P1710_DTSTART_RCS
+      items-to-return: 
+      - P1710_CDUITV_RCS
+      suppress-change-event: false
+
+    execution: 
+      sequence: 20
+      event: Change P1710_CDACTIE_RCS - live render termijn # 68200173622112777
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+- # ====== Dynamic Action: Lose focus P1710_CDUITV_RCS - Validat
+  id: 72767934932032548
+  identification: 
+    name: Lose focus P1710_CDUITV_RCS - Validate item
+
+  execution: 
+    sequence: 180
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P1710_CDUITV_RCS
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: '&SS_DA_LOSE_FOCUS_BUTTON_EXCEPTION.'
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 72768098724032549
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_validate(
+            p_page_item_name => 'P1710_CDUITV_RCS'
+        ,   p_page_item_value => :P1710_CDUITV_RCS
+        ,   p_page_item_error => :P0_VALIDATE_ITEM_ERROR
+        );
+      items-to-submit: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P1710_CDUITV_RCS
+      - P1710_DTSTART_RCS
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose focus P1710_CDUITV_RCS - Validate item # 72767934932032548
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 72768139330032550
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: Lose focus P1710_CDUITV_RCS - Validate item # 72767934932032548
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Click .delete_row_besluit - Delete be
+  id: 137499040031625119
+  identification: 
+    name: Click .delete_row_besluit - Delete besluit
+
+  execution: 
+    sequence: 80
+    event-scope: Dynamic
+    type: Immediate
+
+  when: 
+    event: Click
+    selection-type: jQuery Selector
+    jquery-selector: .delete_row_besluit
+
+  actions: 
+  - # ====== Action: Confirm =====================================
+    id: 137499132315625120
+    identification: 
+      action: Confirm
+
+    settings: 
+      message: Weet u zeker dat u dit besluit van de casus wilt ontkoppelen?
+      style: Default
+      confirm-label: '&SS_BTN_DELETE.'
+
+    execution: 
+      sequence: 10
+      event: Click .delete_row_besluit - Delete besluit # 137499040031625119
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Set Value ===================================
+    id: 137499271093625121
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: JavaScript Expression
+      javascript-expression: $(this.triggeringElement).parent().data('id')
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1710_BSLT_TO_DELETE
+
+    execution: 
+      sequence: 20
+      event: Click .delete_row_besluit - Delete besluit # 137499040031625119
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 137499370288625122
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_process(
+            p_request => 'DELETE_ROW'
+        ,   p_page_item_name => 'P1710_BSLT_TO_DELETE'
+        ,   p_page_item_value => :P1710_BSLT_TO_DELETE
+        );
+      items-to-submit: 
+      - P1710_BSLT_TO_DELETE
+
+    execution: 
+      sequence: 30
+      event: Click .delete_row_besluit - Delete besluit # 137499040031625119
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 137499586460625124
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.success('&SS_SUCCESS_MESSAGE.');
+
+    execution: 
+      sequence: 80
+      event: Click .delete_row_besluit - Delete besluit # 137499040031625119
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Refresh =====================================
+    id: 137501814369625147
+    identification: 
+      action: Refresh
+
+    affected-elements: 
+      selection-type: Region
+      region: Besluiten # 39520710521496605
+
+    execution: 
+      sequence: 60
+      event: Click .delete_row_besluit - Delete besluit # 137499040031625119
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Key Release (enter) #delete_row_beslu
+  id: 137499665941625125
+  identification: 
+    name: 'Key Release (enter) #delete_row_besluit_link - Delete besluit'
+
+  execution: 
+    sequence: 100
+    event-scope: Dynamic
+    type: Immediate
+
+  when: 
+    event: Key Release
+    selection-type: jQuery Selector
+    jquery-selector: '#delete_row_besluit_link'
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: this.browserEvent.which === page.key_enter
+
+  actions: 
+  - # ====== Action: Set Value ===================================
+    id: 137499778585625126
+    identification: 
+      action: Set Value
+
+    settings: 
+      set-type: JavaScript Expression
+      javascript-expression: $(this.triggeringElement).data('id')
+      suppress-change-event: false
+
+    affected-elements: 
+      selection-type: Item(s)
+      item(s): 
+      - P1710_BSLT_TO_DELETE
+
+    execution: 
+      sequence: 10
+      event: 'Key Release (enter) #delete_row_besluit_link - Delete besluit' # 137499665941625125
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Set Focus ===================================
+    id: 137499814759625127
+    identification: 
+      action: Set Focus
+
+    affected-elements: 
+      selection-type: Button
+      button: CREATE_NEW # 47205419781298506
+
+    execution: 
+      sequence: 20
+      event: 'Key Release (enter) #delete_row_besluit_link - Delete besluit' # 137499665941625125
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Confirm =====================================
+    id: 137499948108625128
+    identification: 
+      action: Confirm
+
+    settings: 
+      message: '&SS_DELETE_CONFIRM_MESSAGE.'
+      style: Default
+      confirm-label: '&SS_BTN_DELETE.'
+
+    execution: 
+      sequence: 30
+      event: 'Key Release (enter) #delete_row_besluit_link - Delete besluit' # 137499665941625125
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute Server-side Code ====================
+    id: 137500026702625129
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        berber_p1710.live_process(
+            p_request => 'DELETE_ROW'
+        ,   p_page_item_name => 'P1710_BSLT_TO_DELETE'
+        ,   p_page_item_value => :P1710_BSLT_TO_DELETE
+        );
+      items-to-submit: 
+      - P1710_BSLT_TO_DELETE
+
+    execution: 
+      sequence: 40
+      event: 'Key Release (enter) #delete_row_besluit_link - Delete besluit' # 137499665941625125
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Refresh =====================================
+    id: 137500185879625130
+    identification: 
+      action: Refresh
+
+    affected-elements: 
+      selection-type: Region
+      region: Besluiten # 39520710521496605
+
+    execution: 
+      sequence: 50
+      event: 'Key Release (enter) #delete_row_besluit_link - Delete besluit' # 137499665941625125
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 137500257704625131
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.success('&SS_SUCCESS_MESSAGE.');
+
+    execution: 
+      sequence: 60
+      event: 'Key Release (enter) #delete_row_besluit_link - Delete besluit' # 137499665941625125
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: Validate ================================
+  id: 40634526678144830
+  identification: 
+    name: Validate
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Function Body (returning Error Text)
+    language: PL/SQL
+    pl/sql-function-body-returning-error-text: |
+      berber_p1710.validate(
+          p_request            => :REQUEST
+      ,   p_user               => :APP_USER
+      ,   p_region             => :P1710_REGION     
+      ,   p_vnrbslt_koppel     => :P1710_VNRBSLT_KOPPEL
+      ,   p_cdclust            => :P1710_CDCLUST
+      ,   p_cdarrond           => :P0_CDARROND_USER
+      ,   p_cdactie_rcs        => :P1710_CDACTIE_RCS
+      ,   p_dtstart_rcs        => :P1710_DTSTART_RCS
+      ,   p_termverl_rcs       => :P1710_TERMVERL_RCS
+      ,   p_dtcompl_rcs        => :P1710_DTCOMPL_RCS
+      ,   p_cdcompl_rcs        => :P1710_CDCOMPL_RCS
+      ,   p_cduitv_rcs         => :P1710_CDUITV_RCS
+      );
+    always-execute: true
+
+  error: 
+    display-location: Inline with Field and in Notification
+
+processes: 
+- # ====== Process: Initialize form Onderhoud casus ============
+  id: 39520905061496607
+  identification: 
+    name: Initialize form Onderhoud casus
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Casus # 39520655610496604
+
+  execution: 
+    sequence: 20
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Render =====================================
+  id: 40633887524144823
+  identification: 
+    name: Render
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      berber_p1710.render(
+          p_region     => :P1710_REGION
+      ,   p_vnrbslt    => :P1710_VNRBSLT
+      ,   p_vnrcasus   => :P1710_VNRCASUS
+      ,   p_vnrreg     => :P1710_VNRREG
+      ,   p_vnrreg_rcs => :P1710_VNRREG_RCS
+      );
+
+  execution: 
+    sequence: 40
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Process form Onderhoud casussen ============
+  id: 40634350504144828
+  identification: 
+    name: Process form Onderhoud casussen
+    type: Form - Automatic Row Processing (DML)
+    execution-chain: None
+    form-region: Casus # 39520655610496604
+
+  settings: 
+    target-type: Region Source
+    prevent-lost-updates: true
+    lock-row: Yes
+    return-primary-key(s)-after-insert: true
+
+  execution: 
+    sequence: 20
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: '&SS_SUCCESS_MESSAGE.'
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: After submit ===============================
+  id: 40634481993144829
+  identification: 
+    name: After submit
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      berber_p1710.after_submit(
+          p_request => :REQUEST
+      ,   p_region => :P1710_REGION
+      ,   p_vnrbslt_koppel => :P1710_VNRBSLT_KOPPEL
+      ,   p_vnrcasus => :P1710_VNRCASUS
+      ,   p_vnrbslt => :P1710_VNRBSLT
+      ,   p_vnrreg => :P1710_VNRREG
+      ,   p_vnrreg_rcs => :P1710_VNRREG_RCS
+      ,   p_dtstart_rcs => :P1710_DTSTART_RCS
+      );
+
+  execution: 
+    sequence: 10
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Postprocess ================================
+  id: 40634632759144831
+  identification: 
+    name: Postprocess
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      berber_p1710.postprocess(
+          p_request            => :REQUEST
+      ,   p_user               => :APP_USER
+      ,   p_region             => :P1710_REGION
+      ,   p_vnrcasus           => :P1710_VNRCASUS
+      ,   p_vnrbslt_koppel     => :P1710_VNRBSLT_KOPPEL
+      ,   p_cdpwet             => :P1710_CDPWET
+      ,   p_cdclust            => :P1710_CDCLUST
+      ,   p_cdarrond           => :P1710_CDARROND
+      ,   p_vnrreg             => :P1710_VNRREG
+      ,   p_vnrreg_old         => :P1710_VNRREG_OLD
+      ,   p_omschr             => :P1710_OMSCHR
+      ,   p_vnrreg_rcs         => :P1710_VNRREG_RCS
+      ,   p_vnrreg_old_rcs     => :P1710_VNRREG_OLD_RCS
+      ,   p_cdactie_rcs        => :P1710_CDACTIE_RCS
+      ,   p_dtstart_rcs        => :P1710_DTSTART_RCS
+      ,   p_termverl_rcs       => :P1710_TERMVERL_RCS
+      ,   p_nrbetr_rcs         => :P1710_NRBETR_RCS
+      ,   p_dtcompl_rcs        => :P1710_DTCOMPL_RCS
+      ,   p_cdcompl_rcs        => :P1710_CDCOMPL_RCS
+      ,   p_cduitv_rcs         => :P1710_CDUITV_RCS
+      );
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: '&SS_SUCCESS_MESSAGE.'
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Clear items ================================
+  id: 47206153811298513
+  identification: 
+    name: Clear items
+    type: Clear Session State
+    execution-chain: None
+
+  settings: 
+    type: Clear Items
+    item(s): 
+    - P1710_CDCLUST
+    - P1710_VNRBSLT_KOPPEL
+    - P1710_VNRREG
+    - P1710_VNRREG_OLD
+
+  execution: 
+    sequence: 40
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Preprocess =================================
+  id: 57801693177501804
+  identification: 
+    name: Preprocess
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      berber_p1710.preprocess(
+          p_request => :REQUEST
+      ,   p_vnrcasus => :P1710_VNRCASUS
+      );
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Reset Pagination (CREATE) - Page 1700 ======
+  id: 63809849355636417
+  identification: 
+    name: Reset Pagination (CREATE) - Page 1700
+    type: Reset Pagination
+    execution-chain: None
+
+  settings: 
+    target: Page(s)
+    page(s): 
+    - 1700
+
+  execution: 
+    sequence: 50
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 40634067064144825
+
+- # ====== Process: Postpostprocess RCS ========================
+  id: 68587512319579320
+  identification: 
+    name: Postpostprocess RCS
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      berber_p1710.postpostprocess
+      ( p_request         => :REQUEST
+      , p_user             => :APP_USER
+      , p_session          => :APP_SESSION
+      , p_vnrcasus         => :P1710_VNRCASUS
+      , p_vnrreg           => :P1710_VNRREG_RCS
+      , p_vnrreg_old       => :P1710_VNRREG_OLD_RCS
+      , p_cdarrond         => :P0_CDARROND_USER
+      , p_cdsrt            => 'CA'
+      , p_cdactie          => :P1710_CDACTIE_RCS
+      , p_cdcompl          => :P1710_CDCOMPL_RCS
+      , p_cduitv           => :P1710_CDUITV_RCS
+      );
+
+  execution: 
+    sequence: 60
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1710_REGION
+    value: RCS
+
+- # ====== Process: Prerender ==================================
+  id: 75681340619178118
+  identification: 
+    name: Prerender
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: ':P1710_VNRCASUS := NVL(:P0_VNRCASUS, :P1710_VNRCASUS)'
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Initialize form Onderhoud besluit ==========
+  id: 142189320009001015
+  identification: 
+    name: Initialize form Onderhoud besluit
+    type: Form - Initialization
+    execution-chain: None
+    form-region: Besluit gegevens # 142189287377001014
+
+  execution: 
+    sequence: 50
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+branches: 
+- # ====== Branch: Go To Page &P0_CALLING_PAGE. ================
+  id: 16009528226272222
+  identification: 
+    name: Go To Page &P0_CALLING_PAGE.
+
+  execution: 
+    sequence: 10
+    point: After Submit
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:&P0_CALLING_PAGE.:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: '&P0_CALLING_PAGE.'
+
+  server-side-condition: 
+    when-button-pressed: CANCEL # 40634250316144827
+
+- # ====== Branch: Go To Page 1700 =============================
+  id: 47209647879298548
+  identification: 
+    name: Go To Page 1700
+
+  execution: 
+    sequence: 10
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:1700:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: 1700
+
+  server-side-condition: 
+    when-button-pressed: DELETE # 40634107897144826
+
+- # ====== Branch: Go To Page 1710 =============================
+  id: 75681532585178120
+  identification: 
+    name: Go To Page 1710
+
+  execution: 
+    sequence: 20
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:1710:&SESSION.::&DEBUG.::P0_VNRCASUS:&P1710_VNRCASUS.&success_msg=#SUCCESS_MSG#'
+      page: 1710 # Onderhoud casus
+      values: 
+        p0_vnrcasus: '&P1710_VNRCASUS.'
+
+  server-side-condition: 
+    when-button-pressed: CREATE # 40634067064144825
+

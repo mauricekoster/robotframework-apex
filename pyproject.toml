@@ -33,4 +33,4 @@ classifiers = [
 ]
 
 [project.scripts]
-rfapex = "BrowserApex.cli.main:main"
+apexcli = "BrowserApex.cli.main:main"

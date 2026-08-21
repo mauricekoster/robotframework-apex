@@ -1,0 +1,5371 @@
+---
+# ====== Page: Besluitdetail =================================
+id: 1250
+identification: 
+  name: Besluitdetail
+  alias: BESLUITDETAIL
+  title: '&AI_SECTOR_CODE.&AI_OMGEVING. Besluitdetail'
+
+appearance: 
+  page-mode: Normal
+  page-template: Theme Default
+  template-options: 
+  - '#DEFAULT#'
+
+navigation-menu: 
+  override-user-interface-level: false
+
+navigation: 
+  cursor-focus: Do not focus cursor
+  warn-on-unsaved-changes: true
+
+javascript: 
+  function-and-global-variable-declaration: var htmldb_delete_message='"DELETE_CONFIRM_MSG"';
+
+security: 
+  authorization-scheme: Mag pagina lezen # 88982822417386354
+  authentication: Page Requires Authentication
+  deep-linking: Application Default
+  page-access-protection: Arguments Must Have Checksum
+  form-auto-complete: Off
+  browser-cache: Application Default
+
+session-management: 
+  rejoin-sessions: Application Default
+
+advanced: 
+  enable-duplicate-page-submissions: Yes - Enable page to be re-posted
+  reload-on-submit: Only for Success
+
+server-cache: 
+  caching: Disabled
+
+regions: 
+- # ====== Region: Extra regelgeving ===========================
+  id: 40480539597232330
+  identification: 
+    name: Extra regelgeving
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select * 
+      from   tregelbslt rbt
+      where  rbt.cdpwet = 'AWB' 
+      and    rbt.vnrbslt = :P1250_VNRBSLT
+      order by vnrregbslt;
+    page-items-to-submit: 
+    - P1250_VNRBSLT
+
+  layout: 
+    sequence: 52
+    parent-region: Tabs Container # 51374004873006966
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: Geen regelgeving gevonden
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: DERIVED$01 ==================================
+    id: 40480733599232332
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1250:&SESSION.::&DEBUG.:1250:P1250_VNRBSLT,P1250_REGION,P1250_VNRREGBSLT_RBT,P1250_VNRREGBSLT_RBT_OLD,P1250_CDREGGVNG_RBT,P1250_CDPWET:#VNRBSLT#,RBT,#VNRREGBSLT#,#VNRREGBSLT#,#CDREGGVNG#,#CDPWET##PCE_ID#,#NRBETR#,#REGELNUMMER#,#NRBETR#,#SOORT_PARTIJ#'
+        page: 1250 # Besluitdetail
+        clear-cache: 1250
+        values: 
+          p1250_vnrbslt: '#VNRBSLT#'
+          p1250_region: RBT
+          p1250_vnrregbslt_rbt: '#VNRREGBSLT#'
+          p1250_vnrregbslt_rbt_old: '#VNRREGBSLT#'
+          p1250_cdreggvng_rbt: '#CDREGGVNG#'
+          p1250_cdpwet: '#CDPWET##PCE_ID#'
+
+      link-text: '&SS_LINK_BEWERKEN.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: |2
+            berber_besluit.is_gebruikt_bij_zaak_rechtbank(
+                p_vnrbslt => :P1250_VNRBSLT
+            ,   p_cdarrond => :P0_CDARROND_USER
+            )
+        or
+            not berber_besluit.is_gebruikt_bij_zaak(
+                p_vnrbslt => :P1250_VNRBSLT
+            )
+
+    security: 
+      authorization-scheme: Mag pagina schrijven # 88986082208467641
+      escape-special-characters: true
+
+  - # ====== Column: VNRBSLT =====================================
+    id: 40481447805232339
+    identification: 
+      column-name: VNRBSLT
+      type: Hidden
+
+    layout: 
+      sequence: 30
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDPWET ======================================
+    id: 40481537654232340
+    identification: 
+      column-name: CDPWET
+      type: Hidden
+
+    layout: 
+      sequence: 40
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDSRTREGGVNG ================================
+    id: 40481646249232341
+    identification: 
+      column-name: CDSRTREGGVNG
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Soort regelgeving
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TSRTREGGVNG_DEP # 4713855580815598
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDREGGVNG ===================================
+    id: 40481735434232342
+    identification: 
+      column-name: CDREGGVNG
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Regelgeving
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TREGEL_DEP # 43716062896879036
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VNRREGBSLT ==================================
+    id: 40481810521232343
+    identification: 
+      column-name: VNRREGBSLT
+      type: Plain Text
+
+    heading: 
+      heading: Volgnummer
+      alignment: start
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DATUM_AANMAAK ===============================
+    id: 40481902161232344
+    identification: 
+      column-name: DATUM_AANMAAK
+      type: Hidden
+
+    layout: 
+      sequence: 80
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AANGEMAAKT_DOOR =============================
+    id: 40482029588232345
+    identification: 
+      column-name: AANGEMAAKT_DOOR
+      type: Hidden
+
+    layout: 
+      sequence: 90
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DATUM_WIJZIGING =============================
+    id: 40482155934232346
+    identification: 
+      column-name: DATUM_WIJZIGING
+      type: Hidden
+
+    layout: 
+      sequence: 100
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: GEWIJZIGD_DOOR ==============================
+    id: 40482200454232347
+    identification: 
+      column-name: GEWIJZIGD_DOOR
+      type: Hidden
+
+    layout: 
+      sequence: 110
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Besluitpartijen =============================
+  id: 46278956172830534
+  identification: 
+    name: Besluitpartijen
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select  bst.vnrbslt 
+            , bbe.nrbetr
+          ,   ltrim(apt.vlet || ' ') || ltrim(apt.vvoeg || ' ') || coalesce(apt.lnnaam,apt.naam) as naam
+          ,   null as regelnummer
+          ,   bbe.cdsrt
+          ,   bbe.nrbetrgem
+          ,   case bbe.cdsrt
+                  when 'VWR' then 2
+                  when 'VGH' then 4
+                  when 'BES' then 6
+              end as volgorde
+          ,   'BBE' as soort_partij
+      from   tbesluit bst
+      join   tbsltbetro bbe on bst.vnrbslt = bbe.vnrbslt
+      join    tappellant apt on apt.nrbetr = bbe.nrbetr
+      where  bst.vnrbslt = :P1250_VNRBSLT
+      order by volgorde, nrbetr, regelnummer;
+    page-items-to-submit: 
+    - P1250_VNRBSLT
+
+  layout: 
+    sequence: 42
+    parent-region: Tabs Container # 51374004873006966
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: Geen betrokkenen gevonden
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: VNRBSLT =====================================
+    id: 40480468512232329
+    identification: 
+      column-name: VNRBSLT
+      type: Hidden
+
+    layout: 
+      sequence: 130
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: SOORT_PARTIJ ================================
+    id: 41356397492754076
+    identification: 
+      column-name: SOORT_PARTIJ
+      type: Hidden
+
+    layout: 
+      sequence: 120
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VOLGORDE ====================================
+    id: 41357134599754076
+    identification: 
+      column-name: VOLGORDE
+      type: Hidden
+
+    layout: 
+      sequence: 110
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NRBETR ======================================
+    id: 41358762026754076
+    identification: 
+      column-name: NRBETR
+      type: Hidden
+
+    layout: 
+      sequence: 80
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: REGELNUMMER =================================
+    id: 41359116419754076
+    identification: 
+      column-name: REGELNUMMER
+      type: Hidden
+
+    layout: 
+      sequence: 60
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDSRT =======================================
+    id: 41359514708754076
+    identification: 
+      column-name: CDSRT
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Soort
+      alignment: start
+
+    layout: 
+      sequence: 70
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TORGDOMEIN_CODE_ROL_PERSOON # 13900370966460944
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NRBETRGEM ===================================
+    id: 41360301337754077
+    identification: 
+      column-name: NRBETRGEM
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Gemachtigde
+      alignment: start
+
+    layout: 
+      sequence: 100
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TVERTEGENWGEM # 6126267887189334
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: NAAM ========================================
+    id: 59301766275302315
+    identification: 
+      column-name: NAAM
+      type: Plain Text
+
+    heading: 
+      heading: Partij
+      alignment: start
+
+    layout: 
+      sequence: 90
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Besluit =====================================
+  id: 47374332591006222
+  identification: 
+    name: Besluit
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: '&P1250_REGION_NAME.' # 51299443222994210
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Breadcrumb ==================================
+  id: 51298843243994209
+  identification: 
+    name: Breadcrumb
+    type: Breadcrumb
+
+  source: 
+    breadcrumb: Breadcrumb # 4442603438704883
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: REGION_POSITION_01
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Title Bar
+    template-options: 
+    - '#DEFAULT#'
+    - t-BreadcrumbRegion--useBreadcrumbTitle
+    css-classes: 
+    - focusable_region
+    - breadcrumb_large
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    appearance: 
+      breadcrumb-template: Breadcrumb
+      template-options: 
+      - '#DEFAULT#'
+
+- # ====== Region: &P1250_REGION_NAME. =========================
+  id: 51299443222994210
+  identification: 
+    name: '&P1250_REGION_NAME.'
+    type: Form
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      with bbe as
+          (  select bbe.nrbetr
+             ,      bbe.vnrbslt
+             from   tbsltbetro bbe
+             where  bbe.cdsrt   = 'VWR'
+          )
+      , rbt as 
+          ( select 
+                   rbt.vnrbslt
+            ,      rbt.cdsrtreggvng
+            ,      rbt.cdsrtreggvng||' - '||srg.omschr as omssrtreggvng
+            ,      rbt.cdpwet    
+            from   tregelbslt rbt
+            ,      tsrtreggvng srg
+            where  srg.cdpwet       = rbt.cdpwet
+            and    srg.cdsrtreggvng = rbt.cdsrtreggvng
+            and  rbt.vnrregbslt     = 1
+          )  
+      , rgg as 
+          ( select rbt.vnrbslt
+            ,      rgg.cdpwet
+            ,      rgg.cdsrtreggvng
+            ,      rbt.cdreggvng
+            ,      rbt.cdreggvng||' - '||rgg.omschr as omsreggvng
+            from   tregelbslt rbt
+            ,      tregel     rgg
+            where  rgg.cdreggvng    = rbt.cdreggvng
+            and    rbt.vnrregbslt   = 1
+            and    rbt.cdsrtreggvng = rgg.cdsrtreggvng
+           )
+      select bst.vnrbslt
+      ,      rbt.cdsrtreggvng
+      ,      rbt.omssrtreggvng
+      ,      rgg.cdreggvng
+      ,      rgg.omsreggvng 
+      ,      NVL(bst.kenm, '<geen kenmerk>') AS kenm
+      ,      bst.vnrcasus as vnrcasus_bslt
+      ,      bst.cdsrt as cdsrt_bst
+      ,      decode ( bst.cdsrt, 'AU', ' Rechtbank', 'AU_OUD', ' Rechtbank', 'Verweerder' ) as vwr_rea
+      ,      bst.dtbslt
+      ,      bst.dtverzuitr
+      ,      bst.dtpbslt
+      ,      bst.dtasiel
+      ,      bst.jraansl
+      ,      bst.dtbeginaansl
+      ,      bst.dteindaansl
+      ,      bst.nraansl
+      ,      bst.cdsrtaansl
+      ,      bst.indboete
+      ,      bst.dtredtermijn
+      ,      bst.objbslt
+      ,      bst.loc
+      ,      bst.ondbslt
+      ,      bst.strekbslt 
+      ,      bbe.nrbetr
+      ,     (select count(*)
+             from   tvolgbesluit vbt
+             where  vbt.vnrbslt = :P1250_VNRBSLT     
+            )  as aantal_vbt
+      from   tbesluit bst 
+      left join bbe on bst.vnrbslt = bbe.vnrbslt
+      left join rbt on bst.vnrbslt = rbt.vnrbslt
+      left join rgg on ('AWB'= rgg.cdpwet and bst.vnrbslt = rgg.vnrbslt and rgg.cdsrtreggvng = rbt.cdsrtreggvng)
+      
+    page-items-to-submit: 
+    - P1250_VNRBSLT
+
+  layout: 
+    sequence: 49
+    parent-region: Container # 51373962285006965
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    - t-Form--noPadding
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    edit: 
+      enabled: true
+      allowed-operations: 
+      - Add Row
+      - Update Row
+      - Delete Row
+      lost-update-type: Row Values
+
+- # ====== Region: Container ===================================
+  id: 51373962285006965
+  identification: 
+    name: Container
+    type: Static Content
+
+  layout: 
+    sequence: 10
+    parent-region: No Parent
+    slot: BODY
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Blank with Attributes
+    template-options: 
+    - '#DEFAULT#'
+    - t-Form--stretchInputs
+    - t-Form--leftLabels
+    css-classes: 
+    - container_large
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: true
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Tabs Container ==============================
+  id: 51374004873006966
+  identification: 
+    name: Tabs Container
+    type: Static Content
+
+  layout: 
+    sequence: 59
+    parent-region: Container # 51373962285006965
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Tabs Container
+    template-options: 
+    - '#DEFAULT#'
+    - js-useLocalStorage
+    - t-TabsRegion-mod--simple
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Vervolgbesluit ==============================
+  id: 59302657548302324
+  identification: 
+    name: Vervolgbesluit
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select * 
+      from   tvolgbesluit vbt
+      where  vbt.vnrbslt = :P1250_VNRBSLT
+      order by vnrvolgbslt;
+    page-items-to-submit: 
+    - P1250_VNRBSLT
+
+  layout: 
+    sequence: 62
+    parent-region: Tabs Container # 51374004873006966
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1250_CDSRT_BST
+    value: BB
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: Geen vervolgbesluiten gevonden
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: DERIVED$01 ==================================
+    id: 59303283954302330
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1250:&SESSION.::&DEBUG.:1250:P1250_VNRBSLT,P1250_REGION,P1250_VNRVOLGBSLT_VBT,P1250_VNRVOLGBSLT_VBT_OLD,P1250_DTVOLGBSLT_VBT,P1250_KENMVOLGBSLT_VBT:#VNRBSLT#,VBT,#VNRVOLGBSLT#,#VNRVOLGBSLT#,#DTVOLGBSLT#,#KENMVOLGBSLT##VNRREGBSLT#,#VNRREGBSLT#,#CDREGGVNG#,#CDPWET##PCE_ID#,#NRBETR#,#REGELNUMMER#,#NRBETR#,#SOORT_PARTIJ#'
+        page: 1250 # Besluitdetail
+        clear-cache: 1250
+        values: 
+          p1250_vnrbslt: '#VNRBSLT#'
+          p1250_region: VBT
+          p1250_vnrvolgbslt_vbt: '#VNRVOLGBSLT#'
+          p1250_vnrvolgbslt_vbt_old: '#VNRVOLGBSLT#'
+          p1250_dtvolgbslt_vbt: '#DTVOLGBSLT#'
+          p1250_kenmvolgbslt_vbt: '#KENMVOLGBSLT##VNRREGBSLT#'
+
+      link-text: '&SS_LINK_BEWERKEN.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: |2
+            berber_besluit.is_gebruikt_bij_zaak_rechtbank(
+                p_vnrbslt => :P1250_VNRBSLT
+            ,   p_cdarrond => :P0_CDARROND_USER
+            )
+        or
+            not berber_besluit.is_gebruikt_bij_zaak(
+                p_vnrbslt => :P1250_VNRBSLT
+            )
+
+    security: 
+      authorization-scheme: Mag pagina schrijven # 88986082208467641
+      escape-special-characters: true
+
+  - # ====== Column: VNRBSLT =====================================
+    id: 59303468279302332
+    identification: 
+      column-name: VNRBSLT
+      type: Hidden
+
+    layout: 
+      sequence: 30
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DATUM_AANMAAK ===============================
+    id: 59303821791302336
+    identification: 
+      column-name: DATUM_AANMAAK
+      type: Hidden
+
+    layout: 
+      sequence: 70
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: AANGEMAAKT_DOOR =============================
+    id: 59303951943302337
+    identification: 
+      column-name: AANGEMAAKT_DOOR
+      type: Hidden
+
+    layout: 
+      sequence: 80
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DATUM_WIJZIGING =============================
+    id: 59304035862302338
+    identification: 
+      column-name: DATUM_WIJZIGING
+      type: Hidden
+
+    layout: 
+      sequence: 90
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: GEWIJZIGD_DOOR ==============================
+    id: 59304196310302339
+    identification: 
+      column-name: GEWIJZIGD_DOOR
+      type: Hidden
+
+    layout: 
+      sequence: 100
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: VNRVOLGBSLT =================================
+    id: 59304213631302340
+    identification: 
+      column-name: VNRVOLGBSLT
+      type: Plain Text
+
+    heading: 
+      heading: Volgnummer
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTVOLGBSLT ==================================
+    id: 59304315467302341
+    identification: 
+      column-name: DTVOLGBSLT
+      type: Plain Text
+
+    heading: 
+      heading: Datum vervolgbesluit
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: KENMVOLGBSLT ================================
+    id: 59304491593302342
+    identification: 
+      column-name: KENMVOLGBSLT
+      type: Plain Text
+
+    heading: 
+      heading: Kenmerk vervolgbesluit
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+- # ====== Region: Waarschuwingen ==============================
+  id: 75616670865040719
+  identification: 
+    name: Waarschuwingen
+    type: Static Content
+
+  source: 
+    html-code: '&P1250_WARNING_3.'
+
+  layout: 
+    sequence: 29
+    parent-region: Container # 51373962285006965
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Alert
+    template-options: 
+    - '#DEFAULT#'
+    - t-Alert--horizontal
+    - t-Alert--defaultIcons
+    - t-Alert--warning
+    - t-Alert--removeHeading js-removeLandmark
+    - margin-bottom-sm
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1250_WARNING_3
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Waarschuwingen ==============================
+  id: 75618673606040739
+  identification: 
+    name: Waarschuwingen
+    type: Static Content
+
+  source: 
+    html-code: '&P1250_WARNING_4.'
+
+  layout: 
+    sequence: 39
+    parent-region: Container # 51373962285006965
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Alert
+    template-options: 
+    - '#DEFAULT#'
+    - t-Alert--horizontal
+    - t-Alert--defaultIcons
+    - t-Alert--warning
+    - t-Alert--removeHeading js-removeLandmark
+    - margin-bottom-sm
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1250_WARNING_4
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Waarschuwingen ==============================
+  id: 75642288099302020
+  identification: 
+    name: Waarschuwingen
+    type: Static Content
+
+  source: 
+    html-code: '&P1250_WARNING_1.'
+
+  layout: 
+    sequence: 9
+    parent-region: Container # 51373962285006965
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Alert
+    template-options: 
+    - '#DEFAULT#'
+    - t-Alert--horizontal
+    - t-Alert--defaultIcons
+    - t-Alert--warning
+    - t-Alert--removeHeading js-removeLandmark
+    - margin-bottom-sm
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1250_WARNING_1
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Waarschuwingen ==============================
+  id: 75642370926302021
+  identification: 
+    name: Waarschuwingen
+    type: Static Content
+
+  source: 
+    html-code: '&P1250_WARNING_2.'
+
+  layout: 
+    sequence: 19
+    parent-region: Container # 51373962285006965
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Alert
+    template-options: 
+    - '#DEFAULT#'
+    - t-Alert--horizontal
+    - t-Alert--defaultIcons
+    - t-Alert--warning
+    - t-Alert--removeHeading js-removeLandmark
+    - margin-bottom-sm
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-side-condition: 
+    type: Item is NOT NULL
+    item: P1250_WARNING_2
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    settings: 
+      output-as: HTML
+      expand-shortcuts: false
+
+- # ====== Region: Zaken =======================================
+  id: 119956386949252333
+  identification: 
+    name: Zaken
+    type: Classic Report
+
+  source: 
+    location: Local Database
+    type: SQL Query
+    sql-query: |
+      select  pce.pce_id
+          ,   pce.cdpwet  || to_char(pce.jaar,'00') || '/' || pce.vnrproc as zaaknummer
+          ,   pce.cdarrond
+          ,   pce.cdsrtproc
+          ,   pce.dtontvbrp
+          ,   pce.cdafd
+          ,   bst.dtbslt
+          ,   pss.cdstat
+          ,   pss.indafgedaan
+          ,   pbe.nrbetr as cor
+          ,   rbt.cdreggvng
+          ,   pde.cddoslokatie
+          ,   case 
+                  when pce.cdarrond != :P0_CDARROND_USER then
+                      'glasses'
+                  else
+                      'pencil'
+              end as html_icon
+          ,   case 
+                  when pce.cdarrond != :P0_CDARROND_USER then
+                      'Raadplegen'
+                  else
+                      'Bewerken'
+              end as html_title
+      from    tproc pce
+      left join tbesluit bst on bst.vnrbslt = pce.vnrbslt
+      left join tregelbslt rbt on rbt.vnrbslt = pce.vnrbslt and rbt.vnrregbslt = 1
+      left join tbsltbetro bbe on pce.vnrbslt = bbe.vnrbslt and bbe.cdsrt = 'VWR'
+      left join tprocbelang pbe on pbe.pce_id = pce.pce_id and pbe.cdsrt = 'COR' and pbe.regelnummer = 1
+      left join (   select  ps.pce_id
+                        ,   ps.cdstat
+                        ,   case when sre.cdsrt in ('b','n','u5','v','vb','x') then 'N' else 'J' end as indafgedaan
+                    from    vwprocstat ps
+                    join    tstatproc sre on (ps.cdpwet = sre.cdpwet and ps.cdstat = sre.cdstat)
+                    where ps.vnrstat = (SELECT max(ps2.vnrstat) vnrstat
+                                        from tprocstat ps2
+                                        where ps2.pce_id = ps.pce_id
+                                       )
+                  ) pss on pss.pce_id = pce.pce_id
+      left join ( select  pd.pce_id,
+                          pd.cddoslokatie
+                  from tprocdos pd
+                  where pd.vnruitleen = (select max(pd2.vnruitleen)
+                                         from tprocdos pd2
+                                         where pd2.pce_id = pd.pce_id
+                                        )
+                ) pde on pde.pce_id = pce.pce_id
+      where   bst.vnrbslt = :P1250_VNRBSLT
+      order by to_date(pce.jaar, 'RR') desc, vnrproc desc;
+    page-items-to-submit: 
+    - P1250_VNRBSLT
+
+  layout: 
+    sequence: 72
+    parent-region: Tabs Container # 51374004873006966
+    slot: SUB_REGIONS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    template: Standard
+    template-options: 
+    - '#DEFAULT#'
+    - t-Region--scrollBody
+    css-classes: 
+    - focusable_region
+    render-components: Above Content
+
+  accessibility: 
+    use-landmark: true
+    landmark-type: Template Default
+
+  advanced: 
+    region-display-selector: false
+    exclude-title-from-translation: false
+
+  server-cache: 
+    caching: Disabled
+
+  customization: 
+    customizable: Not Customizable By End Users
+
+  attributes: 
+    layout: 
+      number-of-rows-type: Static Value
+      number-of-rows: 15
+
+    appearance: 
+      template-type: Theme
+      template: Standard
+      template-options: 
+      - '#DEFAULT#'
+      - t-Report--stretch
+      - t-Report--altRowsDefault
+      - t-Report--rowHighlight
+      - t-Report--horizontalBorders
+      - t-Report--hideNoPagination
+
+    pagination: 
+      type: Row Ranges X to Y (with next and previous links)
+      display-position: Bottom - Right
+      partial-page-refresh: true
+
+    performance: 
+      lazy-loading: false
+
+    messages: 
+      when-no-data-found: Geen zaken gevonden
+
+    break-formatting: 
+      break-columns: No Break
+
+    advanced: 
+      strip-html: false
+      sort-nulls: Last
+
+    heading: 
+      type: Custom Headings
+
+    download: 
+      csv-export-enabled: false
+
+    printing: 
+      enabled: false
+
+  columns: 
+  - # ====== Column: DERIVED$01 ==================================
+    id: 6671673803320532
+    identification: 
+      column-name: DERIVED$01
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 10
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1100:&SESSION.::&DEBUG.:1100:P1100_PCE_ID:#PCE_ID#'
+        page: 1100
+        clear-cache: 1100
+        values: 
+          p1100_pce_id: '#PCE_ID#'
+
+      link-text: <span class="fa fa-#HTML_ICON#" aria-hidden="true" title="#HTML_TITLE#"></span>
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      cell-width: 10
+      compute-sum: false
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: HTML_ICON ===================================
+    id: 6671713044320533
+    identification: 
+      column-name: HTML_ICON
+      type: Hidden
+
+    layout: 
+      sequence: 150
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: HTML_TITLE ==================================
+    id: 6671851762320534
+    identification: 
+      column-name: HTML_TITLE
+      type: Hidden
+
+    layout: 
+      sequence: 160
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DERIVED$02 ==================================
+    id: 7341247977213304
+    identification: 
+      column-name: DERIVED$02
+      type: Link
+
+    heading: 
+      heading: '&nbsp;'
+      alignment: center
+
+    layout: 
+      sequence: 20
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    link: 
+      target: 
+        url: 'f?p=&APP_ID.:1100:&SESSION.::&DEBUG.::P1100_PCE_ID:#PCE_ID#'
+        page: 1100
+        values: 
+          p1100_pce_id: '#PCE_ID#'
+
+      link-text: '&SS_LINK_RAADPLEGEN.'
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    security: 
+      authorization-scheme: '{Not Mag pagina schrijven}' # 88986082208467641
+      escape-special-characters: true
+
+  - # ====== Column: CDARROND ====================================
+    id: 119956792492252337
+    identification: 
+      column-name: CDARROND
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Rechtbank
+      alignment: start
+
+    layout: 
+      sequence: 140
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TARROND # 5283192660663784
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    server-side-condition: 
+      type: Item = Value
+      item: P0_AUTORNIVO
+      value: 1
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDSRTPROC ===================================
+    id: 119956919431252339
+    identification: 
+      column-name: CDSRTPROC
+      type: Plain Text
+
+    heading: 
+      heading: Soort
+      alignment: start
+
+    layout: 
+      sequence: 50
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTONTVBRP ===================================
+    id: 119957023194252340
+    identification: 
+      column-name: DTONTVBRP
+      type: Plain Text
+
+    heading: 
+      heading: Ontvangst
+      alignment: start
+
+    layout: 
+      sequence: 60
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDAFD =======================================
+    id: 119957174815252341
+    identification: 
+      column-name: CDAFD
+      type: Plain Text
+
+    heading: 
+      heading: Afdeling
+      alignment: start
+
+    layout: 
+      sequence: 80
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: PCE_ID ======================================
+    id: 122711897611179546
+    identification: 
+      column-name: PCE_ID
+      type: Hidden
+
+    layout: 
+      sequence: 90
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: ZAAKNUMMER ==================================
+    id: 122711968308179547
+    identification: 
+      column-name: ZAAKNUMMER
+      type: Plain Text
+
+    heading: 
+      heading: Zaaknummer
+      alignment: start
+
+    layout: 
+      sequence: 30
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: DTBSLT ======================================
+    id: 122712088967179548
+    identification: 
+      column-name: DTBSLT
+      type: Hidden
+
+    layout: 
+      sequence: 100
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDSTAT ======================================
+    id: 122712198178179549
+    identification: 
+      column-name: CDSTAT
+      type: Plain Text
+
+    heading: 
+      heading: Status code
+      alignment: start
+
+    layout: 
+      sequence: 110
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: INDAFGEDAAN =================================
+    id: 122712202628179550
+    identification: 
+      column-name: INDAFGEDAAN
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Afgedaan
+      alignment: start
+
+    layout: 
+      sequence: 130
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TABEL_IND_J_N # 6143807023543259
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: COR =========================================
+    id: 122754229226366901
+    identification: 
+      column-name: COR
+      type: Plain Text (based on List of Values)
+
+    heading: 
+      heading: Correspondent
+      alignment: start
+
+    layout: 
+      sequence: 40
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    list-of-values: 
+      type: Shared Component
+      list-of-values: LOV_TAPPELLANT # 5573193979628032
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDREGGVNG ===================================
+    id: 122754351396366902
+    identification: 
+      column-name: CDREGGVNG
+      type: Hidden
+
+    layout: 
+      sequence: 70
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+  - # ====== Column: CDDOSLOKATIE ================================
+    id: 122754460548366903
+    identification: 
+      column-name: CDDOSLOKATIE
+      type: Plain Text
+
+    heading: 
+      heading: Locatie
+      alignment: start
+
+    layout: 
+      sequence: 120
+      column-alignment: start
+
+    accessibility: 
+      value-identifies-row: false
+
+    sorting: 
+      sortable: false
+
+    export-/-printing: 
+      include-in-export-/-print: true
+
+    advanced: 
+      compute-sum: false
+
+    ui-defaults-reference: 
+      table-owner: Parsing Schema
+
+    security: 
+      escape-special-characters: true
+
+page-items: 
+- # ====== Page Item: P1250_DTVERZUITR =========================
+  id: 7937985852219334
+  identification: 
+    name: P1250_DTVERZUITR
+    type: Display Only
+
+  label: 
+    label: Datum verzending
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 140
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 2
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: DTVERZUITR
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_DTPBSLT ============================
+  id: 23193037975876822
+  identification: 
+    name: P1250_DTPBSLT
+    type: Display Only
+
+  label: 
+    label: Datum primair besluit
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 310
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: DTPBSLT
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_OBJBSLT ============================
+  id: 30986902654133435
+  identification: 
+    name: P1250_OBJBSLT
+    type: Display Only
+
+  label: 
+    label: Object
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 290
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: OBJBSLT
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_LOC ================================
+  id: 30987015982133436
+  identification: 
+    name: P1250_LOC
+    type: Display Only
+
+  label: 
+    label: Locatie
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 330
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: LOC
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_ONDBSLT ============================
+  id: 30987118150133437
+  identification: 
+    name: P1250_ONDBSLT
+    type: Display Only
+
+  label: 
+    label: Onderwerp
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 300
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: ONDBSLT
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_STREKBSLT ==========================
+  id: 30987219402133438
+  identification: 
+    name: P1250_STREKBSLT
+    type: Display Only
+
+  label: 
+    label: Strekking
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 340
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: STREKBSLT
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_VNRBSLT ============================
+  id: 40480339330232328
+  identification: 
+    name: P1250_VNRBSLT
+    type: Display Only
+
+  label: 
+    label: Nummer / Kenmerk
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 10
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    post-text-: '&SS_LINK_KOPIEER_VELD.'
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: VNRBSLT
+    data-type: NUMBER
+    query-only: false
+    primary-key: true
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_CDSRTREGGVNG =======================
+  id: 41246462179754035
+  identification: 
+    name: P1250_CDSRTREGGVNG
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 40
+    region: '&P1250_REGION_NAME.' # 51299443222994210
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: CDSRTREGGVNG
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_CDREGGVNG ==========================
+  id: 41246806737754035
+  identification: 
+    name: P1250_CDREGGVNG
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 50
+    region: '&P1250_REGION_NAME.' # 51299443222994210
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: CDREGGVNG
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_VNRCASUS_BSLT ======================
+  id: 41262862761754039
+  identification: 
+    name: P1250_VNRCASUS_BSLT
+    type: Display Only
+
+  label: 
+    label: Casus
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 190
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: VNRCASUS_BSLT
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_DTASIEL ============================
+  id: 41263271287754039
+  identification: 
+    name: P1250_DTASIEL
+    type: Display Only
+
+  label: 
+    label: Datum eerste aanvraag
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 350
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: false
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: DTASIEL
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_JRAANSL ============================
+  id: 41263661019754039
+  identification: 
+    name: P1250_JRAANSL
+    type: Display Only
+
+  label: 
+    label: Belastingjaar
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 230
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 6
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: JRAANSL
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item != Value
+    item: P0_IDORG
+    value: VK
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_DTBEGINAANSL =======================
+  id: 41264001274754039
+  identification: 
+    name: P1250_DTBEGINAANSL
+    type: Display Only
+
+  label: 
+    label: Tijdvak van
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 240
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: DTBEGINAANSL
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item != Value
+    item: P0_IDORG
+    value: VK
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_DTEINDAANSL ========================
+  id: 41264433415754040
+  identification: 
+    name: P1250_DTEINDAANSL
+    type: Display Only
+
+  label: 
+    label: tot
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 250
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 1
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: DTEINDAANSL
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item != Value
+    item: P0_IDORG
+    value: VK
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_NRAANSL ============================
+  id: 41264865713754040
+  identification: 
+    name: P1250_NRAANSL
+    type: Display Only
+
+  label: 
+    label: Aanslagnummer
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 270
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: NRAANSL
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item != Value
+    item: P0_IDORG
+    value: VK
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_CDSRTAANSL =========================
+  id: 41265291039754040
+  identification: 
+    name: P1250_CDSRTAANSL
+    type: Display Only
+
+  label: 
+    label: Aard aanslag
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 260
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TCATSRT_AANSLG # 13024619291702744
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: CDSRTAANSL
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item != Value
+    item: P0_IDORG
+    value: VK
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_INDBOETE ===========================
+  id: 41265660293754040
+  identification: 
+    name: P1250_INDBOETE
+    type: Display Only
+
+  label: 
+    label: Boetebesluit
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 280
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TORGDOMEIN_INDBOETE # 12913325175167254
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: INDBOETE
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_DTREDTERMIJN =======================
+  id: 41266053071754040
+  identification: 
+    name: P1250_DTREDTERMIJN
+    type: Display Only
+
+  label: 
+    label: Ingang redelijke termijn
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 320
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: DTREDTERMIJN
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_REGION =============================
+  id: 41266473922754040
+  identification: 
+    name: P1250_REGION
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 70
+    region: '&P1250_REGION_NAME.' # 51299443222994210
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  default: 
+    type: Static
+    static-value: BST
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_CDSRT_BST ==========================
+  id: 41284851185754046
+  identification: 
+    name: P1250_CDSRT_BST
+    type: Display Only
+
+  label: 
+    label: Soort besluit
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 60
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TCATSRT_BSLT # 12817637152790808
+    display-extra-values: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: CDSRT_BST
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_KENM ===============================
+  id: 41291660396754049
+  identification: 
+    name: P1250_KENM
+    type: Display Only
+
+  label: 
+    label: Kenmerk besluit
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 50
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: 0
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    post-text-: '&SS_LINK_KOPIEER_VELD.'
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: KENM
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_DTBSLT =============================
+  id: 41292048167754049
+  identification: 
+    name: P1250_DTBSLT
+    type: Display Only
+
+  label: 
+    label: Datum besluit
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 70
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: 2
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: DTBSLT
+    data-type: DATE
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_NRBETR_LABEL_WAARDE ================
+  id: 41292411056754049
+  identification: 
+    name: P1250_NRBETR_LABEL_WAARDE
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 150
+    region: Besluit # 47374332591006222
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_NRBETR =============================
+  id: 41292843063754049
+  identification: 
+    name: P1250_NRBETR
+    type: Display Only
+
+  label: 
+    label: Verweerder
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Display Value of List of Values
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 160
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TAPPELLANT_MC_R # 71307718047401409
+    display-extra-values: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: NRBETR
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_OMSSRTREGGVNG ======================
+  id: 41293269454754049
+  identification: 
+    name: P1250_OMSSRTREGGVNG
+    type: Display Only
+
+  label: 
+    label: Soort regelgeving
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 170
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: OMSSRTREGGVNG
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_OMSREGGVNG =========================
+  id: 41293645114754049
+  identification: 
+    name: P1250_OMSREGGVNG
+    type: Display Only
+
+  label: 
+    label: Regelgeving
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 180
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: OMSREGGVNG
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_VWR_REA ============================
+  id: 41295644333754050
+  identification: 
+    name: P1250_VWR_REA
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 360
+    region: Besluit # 47374332591006222
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: VWR_REA
+    data-type: VARCHAR2
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_CDSRT_BST_LABEL ====================
+  id: 41296015219754050
+  identification: 
+    name: P1250_CDSRT_BST_LABEL
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 370
+    region: Besluit # 47374332591006222
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_WARNING_1 ==========================
+  id: 41302860256754052
+  identification: 
+    name: P1250_WARNING_1
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 380
+    region: Besluit # 47374332591006222
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_WARNING_2 ==========================
+  id: 41303212839754052
+  identification: 
+    name: P1250_WARNING_2
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 390
+    region: Besluit # 47374332591006222
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_WARNING_3 ==========================
+  id: 41303693398754052
+  identification: 
+    name: P1250_WARNING_3
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 400
+    region: Besluit # 47374332591006222
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_WARNING_4 ==========================
+  id: 41304070192754052
+  identification: 
+    name: P1250_WARNING_4
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 410
+    region: Besluit # 47374332591006222
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_CDSRTREGGVNG_RBT ===================
+  id: 59301807271302316
+  identification: 
+    name: P1250_CDSRTREGGVNG_RBT
+    type: Popup LOV
+
+  label: 
+    label: Soort regelgeving
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 50
+    region: Extra regelgeving # 40480539597232330
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TSRTREGGVNG_DEP # 4713855580815598
+    display-extra-values: true
+    display-null-value: true
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P1250_CDPWET
+    items-to-submit: 
+    - P1250_CDPWET
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          options.minWidth = 300;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.D.width = 280;
+          options.columns.D.noStretch = false;
+          return options;
+      }
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Item
+    item: P1250_CDSRTREGGVNG
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1250_REGION
+    value: RBT
+
+  read-only: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P1210_VNRBSLT is not null
+      and not
+      berber_autorisatie.mag_functionaliteit_schrijven(
+      p_gebruiker => :APP_USER
+      , p_fcn_code => 'BH_WIJZ_BESLUIT'
+      ,   p_cdarrond  => :P0_CDARROND_USER
+      )
+      or (:P1250_VNRREGBSLT_RBT_OLD <> 1 or :P1250_VNRREGBSLT_RBT_OLD is null)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_CDREGGVNG_RBT ======================
+  id: 59301972666302317
+  identification: 
+    name: P1250_CDREGGVNG_RBT
+    type: Popup LOV
+
+  label: 
+    label: Regelgeving
+    alignment: Left
+
+  settings: 
+    display-as: Inline Popup
+    initial-fetch: Automatic
+    manual-entry: false
+    search-as-you-type: true
+    minimum-characters: No minimum (0)
+
+  multiple-values: 
+    type: No
+
+  layout: 
+    sequence: 70
+    region: Extra regelgeving # 40480539597232330
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+
+  list-of-values: 
+    type: Shared Component
+    list-of-values: LOV_TREGEL_CDREGGVNG_DEP # 11913334492742540
+    display-extra-values: false
+    display-null-value: false
+
+  cascading-list-of-values: 
+    parent-item(s): 
+    - P1250_CDPWET
+    - P1250_CDSRTREGGVNG_RBT
+    items-to-submit: 
+    - P1250_CDPWET
+    - P1250_CDSRTREGGVNG_RBT
+    - P1250_DTBSLT
+    - P1250_CDSRT_BST
+    - P1250_CDREGGVNG_RBT
+    parent-required: true
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+    initialization-javascript-function: |
+      function(options) {
+          options.minWidth = 300;
+          options.defaultGridOptions = {
+              resizeColumns: false
+          ,   columnSort: false
+          };
+          options.columns.D.width = 280;
+          options.columns.D.noStretch = false;
+          return options;
+      }
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1250_REGION
+    value: RBT
+
+  read-only: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P1210_VNRBSLT is not null
+      and not
+      berber_autorisatie.mag_functionaliteit_schrijven(
+      p_gebruiker => :APP_USER
+      , p_fcn_code => 'BH_WIJZ_BESLUIT'
+      ,   p_cdarrond  => :P0_CDARROND_USER
+      )
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_VNRREGBSLT_RBT =====================
+  id: 59302043163302318
+  identification: 
+    name: P1250_VNRREGBSLT_RBT
+    type: Display Only
+
+  label: 
+    label: Volgnummer
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 40
+    region: Extra regelgeving # 40480539597232330
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Above
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1250_REGION
+    value: RBT
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_CDPWET =============================
+  id: 59302138139302319
+  identification: 
+    name: P1250_CDPWET
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 60
+    region: '&P1250_REGION_NAME.' # 51299443222994210
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Static
+    static-value: AWB
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: false
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_VNRREGBSLT_RBT_OLD =================
+  id: 59302230772302320
+  identification: 
+    name: P1250_VNRREGBSLT_RBT_OLD
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 30
+    region: Extra regelgeving # 40480539597232330
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_VNRBSLT_VBT ========================
+  id: 59302709472302325
+  identification: 
+    name: P1250_VNRBSLT_VBT
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 10
+    region: Vervolgbesluit # 59302657548302324
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_VNRVOLGBSLT_VBT_OLD ================
+  id: 59302878872302326
+  identification: 
+    name: P1250_VNRVOLGBSLT_VBT_OLD
+    type: Hidden
+
+  settings: 
+    value-protected: false
+
+  layout: 
+    sequence: 20
+    region: Vervolgbesluit # 59302657548302324
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_VNRVOLGBSLT_VBT ====================
+  id: 59302985005302327
+  identification: 
+    name: P1250_VNRVOLGBSLT_VBT
+    type: Display Only
+
+  label: 
+    label: Volgnummer
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 30
+    region: Vervolgbesluit # 59302657548302324
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Required - Above
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Always, replacing any existing value in session state
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1250_REGION
+    value: VBT
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_DTVOLGBSLT_VBT =====================
+  id: 59303018953302328
+  identification: 
+    name: P1250_DTVOLGBSLT_VBT
+    type: Date Picker
+
+  label: 
+    label: Datum vervolgbesluit
+    alignment: Left
+
+  settings: 
+    show-time: false
+    display-as: Native HTML
+    minimum-date: None
+    maximum-date: None
+
+  layout: 
+    sequence: 40
+    region: Vervolgbesluit # 59302657548302324
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: 3
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    format-mask: YYYY-MM-DD
+    width: 30
+
+  validation: 
+    value-required: false
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1250_REGION
+    value: VBT
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_KENMVOLGBSLT_VBT ===================
+  id: 59304533047302343
+  identification: 
+    name: P1250_KENMVOLGBSLT_VBT
+    type: Text Field
+
+  label: 
+    label: Kenmerk vervolgbesluit
+    alignment: Left
+
+  settings: 
+    subtype: Text
+    trim-spaces: Leading and Trailing
+    text-case: NO CHANGE
+    submit-when-enter-pressed: false
+    disabled: false
+
+  layout: 
+    sequence: 50
+    region: Vervolgbesluit # 59302657548302324
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional - Above
+    template-options: 
+    - '#DEFAULT#'
+    width: 30
+
+  validation: 
+    value-required: false
+    maximum-length: 120
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    storage: Per Session (Persistent)
+
+  quick-picks: 
+    show-quick-picks: false
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1250_REGION
+    value: VBT
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_CALLING_PAGE =======================
+  id: 59304998963302347
+  identification: 
+    name: P1250_CALLING_PAGE
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 10
+    region: '&P1250_REGION_NAME.' # 51299443222994210
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_REGION_NAME ========================
+  id: 59305026337302348
+  identification: 
+    name: P1250_REGION_NAME
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 20
+    region: '&P1250_REGION_NAME.' # 51299443222994210
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_AANTAL_VBT =========================
+  id: 77785879762849543
+  identification: 
+    name: P1250_AANTAL_VBT
+    type: Display Only
+
+  label: 
+    label: Aantal vervolgbesluiten
+    alignment: Left
+
+  settings: 
+    format: Plain Text
+    based-on: Item Value
+    show-line-breaks: true
+    send-on-page-submit: true
+
+  layout: 
+    sequence: 200
+    region: Besluit # 47374332591006222
+    slot: BODY
+    alignment: Left
+    start-new-layout: false
+    start-new-row: false
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+    label-column-span: Page Template Default
+
+  appearance: 
+    template: Optional
+    template-options: 
+    - '#DEFAULT#'
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+    column: AANTAL_VBT
+    data-type: NUMBER
+    query-only: false
+    primary-key: false
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Request (Memory Only)
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1250_CDSRT_BST
+    value: BB
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+- # ====== Page Item: P1250_CDSRTREGGVNG_RBT_OLD ===============
+  id: 132398467475629030
+  identification: 
+    name: P1250_CDSRTREGGVNG_RBT_OLD
+    type: Hidden
+
+  settings: 
+    value-protected: true
+
+  layout: 
+    sequence: 60
+    region: Extra regelgeving # 40480539597232330
+    slot: BODY
+
+  advanced: 
+    warn-on-unsaved-changes: Page Default
+
+  source: 
+    type: Null
+    used: Only when current value in session state is null
+
+  default: 
+    type: Item
+    item: P1250_CDSRTREGGVNG
+
+  session-state: 
+    data-type: VARCHAR2
+    storage: Per Session (Persistent)
+
+  server-side-condition: 
+    type: Item = Value
+    item: P1250_REGION
+    value: RBT
+
+  security: 
+    session-state-protection: Unrestricted
+    store-value-encrypted-in-session-state: true
+    restricted-characters: All characters can be saved.
+
+buttons: 
+- # ====== Button: CREATE_NEW_RBT ==============================
+  id: 40480645004232331
+  identification: 
+    button-name: CREATE_NEW_RBT
+    label: '&SS_BTN_CREATE_NEW.'
+
+  layout: 
+    sequence: 10
+    region: Extra regelgeving # 40480539597232330
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - BUTTON_CREATE_NEW
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1250:&SESSION.::&DEBUG.:1250:P1250_VNRBSLT,P1250_REGION:&P1250_VNRBSLT.,RBT'
+      page: 1250 # Besluitdetail
+      clear-cache: 1250
+      values: 
+        p1250_vnrbslt: '&P1250_VNRBSLT.'
+        p1250_region: RBT
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      (
+          berber_besluit.is_gebruikt_bij_zaak_rechtbank(
+              p_vnrbslt => :P1250_VNRBSLT
+          ,   p_cdarrond => :P0_CDARROND_USER
+          )
+      or
+          not berber_besluit.is_gebruikt_bij_zaak(
+              p_vnrbslt => :P1250_VNRBSLT
+          )
+      ) and (
+          :P1250_REGION != 'RBT'
+      or 
+          :P1250_VNRREGBSLT_RBT_OLD is not null
+      )
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+
+- # ====== Button: CANCEL ======================================
+  id: 41241840040754027
+  identification: 
+    button-name: CANCEL
+    label: '&SS_BTN_CANCEL.'
+
+  layout: 
+    sequence: 30
+    region: Breadcrumb # 51298843243994209
+    slot: PREVIOUS
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    css-classes: 
+    - BUTTON_CANCEL
+
+  behavior: 
+    action: Submit Page
+    execute-validations: false
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+- # ====== Button: CREATE ======================================
+  id: 41242204984754027
+  identification: 
+    button-name: CREATE
+    label: '&SS_BTN_CREATE.'
+
+  layout: 
+    sequence: 120
+    region: Breadcrumb # 51298843243994209
+    slot: CREATE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    css-classes: 
+    - BUTTON_CREATE
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |2
+          (   
+              :P1250_REGION = 'RBT'
+          and
+              :P1250_VNRREGBSLT_RBT is null
+          )
+      or   (   
+              :P1250_REGION = 'VBT'
+          and
+              :P1250_VNRVOLGBSLT_VBT is null
+          )
+
+- # ====== Button: SAVE ========================================
+  id: 41242657112754028
+  identification: 
+    button-name: SAVE
+    label: '&SS_BTN_SAVE.'
+
+  layout: 
+    sequence: 20
+    region: Breadcrumb # 51298843243994209
+    slot: CHANGE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+    css-classes: 
+    - BUTTON_SAVE
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |2
+          (   
+              :P1250_REGION = 'RBT'
+          and
+              :P1250_VNRREGBSLT_RBT is not null
+          )
+      or   (   
+              :P1250_REGION = 'VBT'
+          and
+              :P1250_VNRVOLGBSLT_VBT is not null
+          )
+
+- # ====== Button: DELETE ======================================
+  id: 41243007491754028
+  identification: 
+    button-name: DELETE
+    label: '&SS_BTN_DELETE.'
+
+  layout: 
+    sequence: 10
+    region: Breadcrumb # 51298843243994209
+    slot: DELETE
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+    - t-Button--large
+
+  behavior: 
+    action: Submit Page
+    execute-validations: true
+    show-processing: false
+    warn-on-unsaved-changes: Do Not Check
+
+  confirmation: 
+    message: '&SS_DELETE_CONFIRM_MESSAGE.'
+    style: Default
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |2
+          (   
+              :P1250_REGION = 'RBT'
+          and
+              :P1250_VNRREGBSLT_RBT is not null
+          and  berber_besluit.record_mag_verwijderd_worden ( p_cdpwet       => :P1250_CDPWET
+                                                           , p_cdsrtreggvng => :P1250_CDSRTREGGVNG
+                                                           , p_vnrbslt      => :P1250_VNRBSLT
+                                                           , p_vnrregbslt   => :P1250_VNRREGBSLT_RBT
+                                                           )
+          )
+      or   (   
+              :P1250_REGION = 'VBT'
+          and
+              :P1250_VNRVOLGBSLT_VBT is not null
+          )
+
+- # ====== Button: EDIT_BB =====================================
+  id: 41245248343754033
+  identification: 
+    button-name: EDIT_BB
+    label: '&SS_BTN_EDIT.'
+
+  layout: 
+    sequence: 10
+    region: '&P1250_REGION_NAME.' # 51299443222994210
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1210:&SESSION.::&DEBUG.:1210:P1210_VNRBSLT:&P1250_VNRBSLT.'
+      page: 1210
+      clear-cache: 1210
+      values: 
+        p1210_vnrbslt: '&P1250_VNRBSLT.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P1250_CDSRT_BST = 'BB'
+      and 
+      (
+          berber_besluit.is_gebruikt_bij_zaak_rechtbank(
+              p_vnrbslt => :P1250_VNRBSLT
+          ,   p_cdarrond => :P0_CDARROND_USER
+          )
+      or
+          not berber_besluit.is_gebruikt_bij_zaak(
+              p_vnrbslt => :P1250_VNRBSLT
+          )
+      )
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+
+- # ====== Button: EDIT_AU =====================================
+  id: 59302323382302321
+  identification: 
+    button-name: EDIT_AU
+    label: '&SS_BTN_EDIT.'
+
+  layout: 
+    sequence: 20
+    region: '&P1250_REGION_NAME.' # 51299443222994210
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: false
+    template-options: 
+    - '#DEFAULT#'
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1230:&SESSION.::&DEBUG.:1230:P1230_VNRBSLT:&P1250_VNRBSLT.'
+      page: 1230
+      clear-cache: 1230
+      values: 
+        p1230_vnrbslt: '&P1250_VNRBSLT.'
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      :P1250_CDSRT_BST = 'AU'
+      and 
+      (
+          berber_besluit.is_gebruikt_bij_zaak_rechtbank(
+              p_vnrbslt => :P1250_VNRBSLT
+          ,   p_cdarrond => :P0_CDARROND_USER
+          )
+      or
+          not berber_besluit.is_gebruikt_bij_zaak(
+              p_vnrbslt => :P1250_VNRBSLT
+          )
+      )
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+
+- # ====== Button: CREATE_NEW_VBT ==============================
+  id: 59303196514302329
+  identification: 
+    button-name: CREATE_NEW_VBT
+    label: '&SS_BTN_CREATE_NEW.'
+
+  layout: 
+    sequence: 10
+    region: Vervolgbesluit # 59302657548302324
+    slot: EDIT
+    start-new-layout: false
+    start-new-row: true
+    column: Automatic
+    new-column: true
+    column-span: Automatic
+
+  appearance: 
+    button-template: Text
+    hot: true
+    template-options: 
+    - '#DEFAULT#'
+    css-classes: 
+    - BUTTON_CREATE_NEW
+
+  behavior: 
+    action: Redirect to Page in this Application
+    target: 
+      url: 'f?p=&APP_ID.:1250:&SESSION.::&DEBUG.:1250:P1250_VNRBSLT,P1250_REGION:&P1250_VNRBSLT.,VBT'
+      page: 1250 # Besluitdetail
+      clear-cache: 1250
+      values: 
+        p1250_vnrbslt: '&P1250_VNRBSLT.'
+        p1250_region: VBT
+
+    warn-on-unsaved-changes: Do Not Check
+
+  server-side-condition: 
+    type: Expression
+    language: PL/SQL
+    pl/sql-expression: |
+      (
+          berber_besluit.is_gebruikt_bij_zaak_rechtbank(
+              p_vnrbslt => :P1250_VNRBSLT
+          ,   p_cdarrond => :P0_CDARROND_USER
+          )
+      or
+          not berber_besluit.is_gebruikt_bij_zaak(
+              p_vnrbslt => :P1250_VNRBSLT
+          )
+      ) and (
+          :P1250_REGION != 'VBT'
+      or 
+          :P1250_VNRVOLGBSLT_VBT_OLD is not null
+      )
+
+  security: 
+    authorization-scheme: Mag pagina schrijven # 88986082208467641
+
+dynamic-actions: 
+- # ====== Dynamic Action: After Refresh - Clickable row =======
+  id: 7271334055001755
+  identification: 
+    name: After Refresh - Clickable row
+
+  execution: 
+    sequence: 180
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: After Refresh
+    selection-type: Region
+    region: Besluit # 47374332591006222
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 7271789133001761
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        report.clickable_row('zaakdetail');
+        
+
+    execution: 
+      sequence: 10
+      event: After Refresh - Clickable row # 7271334055001755
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: Page load - Init Javascript functions
+  id: 41398379657754093
+  identification: 
+    name: Page load - Init Javascript functions
+
+  execution: 
+    sequence: 10
+    event-scope: Static
+
+  when: 
+    event: Page Load
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 41398802257754094
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        region.focus();
+        item.focus_first();
+        setTimeout(function() {
+           region.focus();
+           item.focus_first();
+        }, 400);
+        
+        
+        
+
+    execution: 
+      sequence: 10
+      event: Page load - Init Javascript functions # 41398379657754093
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Lose focus  - P1250_CDREGGVNG_RBT Val
+  id: 41402474646754095
+  identification: 
+    name: 'Lose focus  - P1250_CDREGGVNG_RBT Validate '
+
+  execution: 
+    sequence: 100
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P1250_CDREGGVNG_RBT
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: '&SS_DA_LOSE_FOCUS_BUTTON_EXCEPTION.'
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 41402998594754096
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        BERBER_P1250.live_validate
+            (   p_page_item_name => 'P1250_CDREGGVNG_RBT'
+            ,   p_page_item_value => :P1250_CDREGGVNG_RBT
+            ,   p_page_item_error =>:P0_VALIDATE_ITEM_ERROR);
+      items-to-submit: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P1250_CDREGGVNG_RBT
+      - P1250_VNRBSLT
+      - P1250_CDPWET
+      - P1250_CDSRTREGGVNG
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: 'Lose focus  - P1250_CDREGGVNG_RBT Validate ' # 41402474646754095
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 41403411669754096
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: 'Lose focus  - P1250_CDREGGVNG_RBT Validate ' # 41402474646754095
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Key down (key_next or key_previous) -
+  id: 41424583308754101
+  identification: 
+    name: Key down (key_next or key_previous) - Switch item
+
+  execution: 
+    sequence: 130
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Key Down
+    selection-type: jQuery Selector
+    jquery-selector: body
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: this.browserEvent.which === region.key_previous || this.browserEvent.which === region.key_next
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 41425091338754101
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: region.switch(this.browserEvent);
+
+    execution: 
+      sequence: 10
+      event: Key down (key_next or key_previous) - Switch item # 41424583308754101
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: Lose focus  - P1250_DTVOLGBSLT_VBT Va
+  id: 59304600172302344
+  identification: 
+    name: 'Lose focus  - P1250_DTVOLGBSLT_VBT Validate '
+
+  execution: 
+    sequence: 120
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P1250_DTVOLGBSLT_VBT
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: '&SS_DA_LOSE_FOCUS_BUTTON_EXCEPTION.'
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 59304716988302345
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        BERBER_P1250.live_validate
+            (   p_page_item_name          => 'P1250_DTVOLGBSLT_VBT'
+            ,   p_page_item_value        => :P1250_DTVOLGBSLT_VBT
+            ,   p_page_item_error        =>:P0_VALIDATE_ITEM_ERROR);
+      items-to-submit: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P1250_VNRBSLT
+      - P1250_DTBSLT
+      - P1250_DTVOLGBSLT_VBT
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: 'Lose focus  - P1250_DTVOLGBSLT_VBT Validate ' # 59304600172302344
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 59304887170302346
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: 'Lose focus  - P1250_DTVOLGBSLT_VBT Validate ' # 59304600172302344
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+- # ====== Dynamic Action: After Refresh - Clickable row =======
+  id: 60004680819764130
+  identification: 
+    name: After Refresh - Clickable row
+
+  execution: 
+    sequence: 160
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: After Refresh
+    selection-type: Region
+    region: Extra regelgeving # 40480539597232330
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 60005072247764135
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        report.clickable_row('besluitdetail');
+        
+
+    execution: 
+      sequence: 10
+      event: After Refresh - Clickable row # 60004680819764130
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+- # ====== Dynamic Action: After Refresh - Highlited row =======
+  id: 60005450046765808
+  identification: 
+    name: After Refresh - Highlited row
+
+  execution: 
+    sequence: 170
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: After Refresh
+    selection-type: Region
+    region: Extra regelgeving # 40480539597232330
+
+  actions: 
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 59305190554302349
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        report.selected_row('P1250_VNRVOLGBSLT_VBT');
+        
+
+    execution: 
+      sequence: 60
+      event: After Refresh - Highlited row # 60005450046765808
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: |
+        (   
+                :P1250_REGION = 'VBT'
+            and
+                :P1250_VNRVOLGBSLT_VBT is not null
+            )
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 60005840423765808
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: |
+        report.selected_row('P1250_VNRREGBSLT_RBT');
+        
+
+    execution: 
+      sequence: 50
+      event: After Refresh - Highlited row # 60005450046765808
+      fire-when-event-result-is: True
+      fire-on-initialization: true
+
+    server-side-condition: 
+      type: Expression
+      language: PL/SQL
+      pl/sql-expression: |2
+            (   
+                :P1250_REGION = 'RBT'
+            and
+                :P1250_VNRREGBSLT_RBT is not null
+            )
+
+- # ====== Dynamic Action: Lose focus  - P1250_CDSRTREGGVNG_RBT 
+  id: 132398178614629027
+  identification: 
+    name: Lose focus  - P1250_CDSRTREGGVNG_RBT
+
+  execution: 
+    sequence: 110
+    event-scope: Static
+    type: Immediate
+
+  when: 
+    event: Lose Focus
+    selection-type: Item(s)
+    item(s): 
+    - P1250_CDSRTREGGVNG_RBT
+
+  client-side-condition: 
+    type: JavaScript expression
+    javascript-expression: '&SS_DA_LOSE_FOCUS_BUTTON_EXCEPTION.'
+
+  actions: 
+  - # ====== Action: Execute Server-side Code ====================
+    id: 132398288882629028
+    identification: 
+      action: Execute Server-side Code
+
+    settings: 
+      language: PE.PROPERTY.SOURCE_SNIPPET_LANG.LOV.PLSQL.D
+      pl/sql-code: |
+        BERBER_P1250.live_validate
+            (   p_page_item_name          => 'P1250_CDSRTREGGVNG_RBT'
+            ,   p_page_item_value        => :P1250_CDSRTREGGVNG_RBT
+            ,   p_page_item_error        =>:P0_VALIDATE_ITEM_ERROR);
+      items-to-submit: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P1250_CDREGGVNG_RBT
+      - P1250_VNRBSLT
+      - P1250_CDPWET
+      - P1250_CDSRTREGGVNG_RBT
+      items-to-return: 
+      - P0_VALIDATE_ITEM_ERROR
+      - P0_VALIDATE_MESSAGE
+      - P0_VALIDATE_ITEM
+      suppress-change-event: false
+
+    execution: 
+      sequence: 10
+      event: Lose focus  - P1250_CDSRTREGGVNG_RBT # 132398178614629027
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+      stop-execution-on-error: true
+      wait-for-result: true
+
+  - # ====== Action: Execute JavaScript Code =====================
+    id: 132398315664629029
+    identification: 
+      action: Execute JavaScript Code
+
+    settings: 
+      code: message.validate();
+
+    execution: 
+      sequence: 20
+      event: Lose focus  - P1250_CDSRTREGGVNG_RBT # 132398178614629027
+      fire-when-event-result-is: True
+      fire-on-initialization: false
+
+validations: 
+- # ====== Validation: Validate ================================
+  id: 41394409625754092
+  identification: 
+    name: Validate
+
+  execution: 
+    sequence: 10
+
+  validation: 
+    type: Function Body (returning Error Text)
+    language: PL/SQL
+    pl/sql-function-body-returning-error-text: |
+      BERBER_P1250.validate
+          (   p_user            => :APP_USER
+          ,   p_request         => :REQUEST
+          ,   p_region          => :P1250_REGION
+          ,   p_vnrbslt         => :P1250_VNRBSLT
+          ,   p_cdreggvng_rbt   => :P1250_CDREGGVNG_RBT
+          ,   p_cdsrtreggvng_rbt   => :P1250_CDSRTREGGVNG_RBT
+          ,   p_dtvolgbslt_vbt  => :P1250_DTVOLGBSLT_VBT
+      );
+    always-execute: true
+
+  error: 
+    display-location: Inline with Field and in Notification
+
+computations: 
+- # ====== Computation: P1250_VNRBSLT ==========================
+  id: 16565101531749057
+  identification: 
+    item-name: P1250_VNRBSLT
+
+  execution: 
+    sequence: 30
+    point: Before Header
+
+  computation: 
+    type: SQL Query (return single value)
+    sql-query: |
+      select  col.n003 as vnrbslt
+      from    apex_collections col
+      where   collection_name = 'PAGE_CALLING'
+      and     col.c001 = :P0_WINDOW_NAME
+
+  server-side-condition: 
+    type: Item is NULL
+    item: P1250_VNRBSLT
+
+processes: 
+- # ====== Process: Render warning =============================
+  id: 20464181970143738
+  identification: 
+    name: Render warning
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      berber_p1250.render_warning(
+          p_vnrbslt => :P1250_VNRBSLT
+      ,   p_cdsrt => :P1250_CDSRT_BST
+      ,   p_autornivo => :P0_AUTORNIVO
+      ,   p_cdarrond => :P0_CDARROND_USER
+      ,   p_warning_1 => :P1250_WARNING_1
+      ,   p_warning_2 => :P1250_WARNING_2
+      );
+
+  execution: 
+    sequence: 50
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Initialize form Besluitgegevens ============
+  id: 41282156385754044
+  identification: 
+    name: Initialize form Besluitgegevens
+    type: Form - Initialization
+    execution-chain: None
+    form-region: '&P1250_REGION_NAME.' # 51299443222994210
+
+  execution: 
+    sequence: 40
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Clear items ================================
+  id: 41394799041754092
+  identification: 
+    name: Clear items
+    type: Clear Session State
+    execution-chain: None
+
+  settings: 
+    type: Clear Items
+    item(s): 
+    - P1250_WARNING_1
+    - P1250_WARNING_2
+    - P1250_WARNING_3
+
+  execution: 
+    sequence: 10
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: Reset Pagination ===========================
+  id: 41395503772754092
+  identification: 
+    name: Reset Pagination
+    type: Reset Pagination
+    execution-chain: None
+
+  settings: 
+    target: This Page
+
+  execution: 
+    sequence: 30
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Render =====================================
+  id: 41396776090754093
+  identification: 
+    name: Render
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      berber_p1250.render(
+          p_user       => :APP_USER
+      ,   p_vnrbslt    => :P1250_VNRBSLT
+      ,   p_region     => :P1250_REGION
+      ,   p_vnrregbslt => :P1250_VNRREGBSLT_RBT
+      ,   p_window_name => :P0_WINDOW_NAME
+      );
+
+  execution: 
+    sequence: 20
+    point: Before Header
+    run-process: Once Per Page Visit (default)
+
+- # ====== Process: After_submit ===============================
+  id: 59945659330295499
+  identification: 
+    name: After_submit
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      berber_p1250.after_submit(
+              p_request      => :REQUEST
+          ,   p_region       => :P1250_REGION
+          ,   p_cdpwet       => :P1250_CDPWET 
+          ,   p_cdsrtreggvng => :P1250_CDSRTREGGVNG       
+          ,   p_vnrbslt      => :P1250_VNRBSLT
+          ,   p_vnrregbslt   => :P1250_VNRREGBSLT_RBT
+          ,   p_vnrvolgbslt  => :P1250_VNRVOLGBSLT_VBT
+          );
+
+  execution: 
+    sequence: 90
+    point: After Submit
+    run-process: Once Per Page Visit (default)
+
+  error: 
+    display-location: Inline in Notification
+
+- # ====== Process: Process ====================================
+  id: 59950542569349580
+  identification: 
+    name: Process
+    type: Execute Code
+    execution-chain: None
+
+  source: 
+    location: Local Database
+    language: PL/SQL
+    pl/sql-code: |
+      berber_p1250.process(
+              p_request      => :REQUEST   
+          ,   p_session      => :APP_SESSION
+          ,   p_region       => :P1250_REGION        
+          ,   p_user         => :APP_USER
+          ,   p_vnrbslt      => :P1250_VNRBSLT
+          ,   p_cdpwet       => :P1250_CDPWET
+          ,   p_cdsrtreggvng => :P1250_CDSRTREGGVNG 
+          ,   p_cdsrtreggvng_rbt => :P1250_CDSRTREGGVNG_RBT
+          ,   p_vnrregbslt_rbt  => :P1250_VNRREGBSLT_RBT
+          ,   p_vnrregbslt_rbt_old  => :P1250_VNRREGBSLT_RBT_OLD
+          ,   p_cdreggvng_rbt   => :P1250_CDREGGVNG_RBT
+          ,   p_vnrvolgbslt_vbt    => :P1250_VNRVOLGBSLT_VBT
+          ,   p_dtvolgbslt_vbt     => :P1250_DTVOLGBSLT_VBT
+          ,   p_kenmvolgbslt_vbt   =>:P1250_KENMVOLGBSLT_VBT
+      
+      );
+
+  execution: 
+    sequence: 10
+    point: Processing
+    run-process: Once Per Page Visit (default)
+
+  success-message: 
+    success-message: '&SS_SUCCESS_MESSAGE.'
+
+  error: 
+    display-location: Inline in Notification
+
+branches: 
+- # ====== Branch: Go To Page &P0_CALLING_PAGE. ================
+  id: 22593671968600426
+  identification: 
+    name: Go To Page &P0_CALLING_PAGE.
+
+  execution: 
+    sequence: 20
+    point: After Submit
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:&P0_CALLING_PAGE.:&SESSION.::&DEBUG.:::&success_msg=#SUCCESS_MSG#'
+      page: '&P0_CALLING_PAGE.'
+
+  server-side-condition: 
+    when-button-pressed: CANCEL # 41241840040754027
+
+- # ====== Branch: Go To Page 1250 =============================
+  id: 41428854365754103
+  identification: 
+    name: Go To Page 1250
+
+  execution: 
+    sequence: 40
+    point: After Processing
+
+  behavior: 
+    type: Page or URL (Redirect)
+    target: 
+      url: 'f?p=&APP_ID.:1250:&SESSION.::&DEBUG.:1250:P1250_VNRBSLT,P1250_REGION:&P1250_VNRBSLT.,BST&success_msg=#SUCCESS_MSG#'
+      page: 1250 # Besluitdetail
+      clear-cache: 1250
+      values: 
+        p1250_vnrbslt: '&P1250_VNRBSLT.'
+        p1250_region: BST
+
