@@ -1,0 +1,120 @@
+page_object                     = "page" (required_ws component_id)? ws "(" blank_lines page_body_line* indent ")" blank_lines
+page_body_line                  = page_direct_property_line
+                                / page_group_block
+                                / page_child_component
+
+page_direct_property_line       = indent page_direct_property line_end
+page_direct_property            = "page" ":" ws number
+                                / "name" ":" ws string_like_value
+                                / "alias" ":" ws string_like_value
+                                / "title" ":" ws string_like_value
+
+page_group_block                = page_appearance
+                                / page_navigation
+                                / page_css
+                                / page_security
+                                / page_advanced
+
+page_appearance                 = indent "appearance" ws "{" line_end page_appearance_property_line* indent "}" line_end
+page_appearance_property_line   = indent page_appearance_property line_end
+page_appearance_property        = "pageMode" ":" ws ( "normal" / "modalDialog" / "nonModalDialog" )
+                                / "pageTemplate" ":" ws reference
+                                / "dialogTemplate" ":" ws reference
+                                / "templateOptions" ":" ws ( array_of_string_like_value / string_like_value )
+                                / "cssClasses" ":" ws array_of_string_like_value
+                                / "mediaType" ":" ws string_like_value
+
+page_navigation                 = indent "navigation" ws "{" line_end page_navigation_property_line* indent "}" line_end
+page_navigation_property_line   = indent page_navigation_property line_end
+page_navigation_property        = "cursorFocus" ":" ws ( "firstItemOnPage" / "doNotFocusCursor" )
+                                / "warnOnUnsavedChanges" ":" ws boolean
+
+page_css                        = indent "css" ws "{" line_end page_css_property_line* indent "}" line_end
+page_css_property_line          = indent page_css_property line_end
+page_css_property               = "fileUrls" ":" ws array_of_string_like_value
+                                / "inline" ":" ws multiline_string
+                                / "inline" ":" nl indent multiline_string
+
+page_security                   = indent "security" ws "{" line_end page_security_property_line* indent "}" line_end
+page_security_property_line     = indent page_security_property line_end
+page_security_property          = "authorizationScheme" ":" ws reference
+                                / "authentication" ":" ws ( "required" / "public" ) 
+                                / "deepLinking" ":" ws boolean
+                                / "pageAccessProtection" ":" ws ( "unrestricted" / "argumentsMustHaveChecksum" / "noArgumentsSupported" / "noUrlAccess" )
+                                / "formAutoComplete" ":" ws boolean
+                                / "browserCache" ":" ws boolean
+
+page_advanced                   = indent "advanced" ws "{" line_end page_advanced_property_line* indent "}" line_end
+page_advanced_property_line     = indent page_advanced_property line_end
+page_advanced_property          = "enableMetaTags" ":" ws boolean
+                                / "enableDuplicatePageSubmissions" ":" ws boolean
+                                / "reloadOnSubmit" ":" ws ( "always" / "onlyForSuccess" )
+                                / "duplicateSubmissionUrl" ":" ws string_like_value
+
+
+page_child_component            = region
+
+region                          = indent "region" (required_ws component_id)? ws "(" line_end region_body_line* indent ")" line_end
+region_body_line                = region_direct_property_line
+                                / region_group_block
+                                
+region_direct_property_line     = indent region_direct_property line_end                               
+region_direct_property          = "name" ":" ws string_like_value
+                                / "title" ":" ws string_like_value
+                                / "type" ":" ws string_like_value
+
+region_group_block              = region_layout
+                                / region_appearance
+                                / region_image
+
+region_layout                   = indent "layout" ws "{" line_end region_layout_property_line* indent "}" line_end
+region_layout_property_line     = indent region_layout_property line_end
+region_layout_property          = "sequence" ":" ws number
+                                / "parentRegion" ":" ws reference
+                                / "slot" ":" ws string_like_value
+                                / "startNewLayout" ":" ws boolean
+                                / "startNewRow" ":" ws boolean
+                                / "rowCssClasses" ":" ws array_of_string_like_value
+                                / "column" ":" ws string_like_value
+                                / "newColumn" ":" ws boolean
+                                / "columnSpan" ":" ws string_like_value
+                                / "columnCssClasses" ":" ws array_of_string_like_value
+                                / "columnAttributes" ":" ws array_of_string_like_value
+
+region_appearance               = indent "appearance" ws "{" line_end region_appearance_property_line* indent "}" line_end
+region_appearance_property_line = indent region_appearance_property line_end
+region_appearance_property      = "template" ":" ws reference
+                                / "templateOptions" ":" ws (array_of_string_like_value / string_like_value)
+                                / "cssClasses" ":" ws array_of_string_like_value
+                                / "icon" ":" ws string_like_value
+                                / "renderComponents" ":" ws ( "aboveContent" / "belowContent" ) 
+
+region_image                    = indent "image" ws "{" line_end region_image_property_line* indent "}" line_end
+region_image_property_line      = indent region_image_property line_end
+region_image_property           = "fileUrl" ":" ws string_like_value
+                                / "accessibleDescription" ":" ws string_like_value
+                                / "customAttributes" ":" ws string_like_value
+
+
+
+reference                       = "@" reference_character*
+component_id                    = string / identifier / number
+multiline_string                = "```" ( any_character / nl )* "```"
+ws                              = ~r"[ \t]*"
+required_ws                     = ~r"[ \t]+"
+blank_lines                     = ws* nl*
+nl                              = "\n" / "\r\n"
+line_end                        = nl
+indent                          = ~r"[ \t]*"
+array_of_string_like_value      = "[" (line_end indent string_like_value)+ line_end indent "]"
+array_separator                 = required_ws / line_end indent
+string_like_value               = ~r"[^\[\]\n\r]+"
+reference_character             = ~r"[A-Za-z0-9_/#]*"
+string                          = ~r"\"[^\"]+\""
+any_character                   = ~r"[^`\n\r]"
+number                          = "-"? digit+  ( "." digit+ )?
+digit                           = ~r"[0-9]"
+identifier                      = identifier_start identifier_rest*
+identifier_start                = ~r"[A-Za-z0-9_]"
+identifier_rest                 = identifier_start / "." / "-"
+boolean                         = "true" / "false"

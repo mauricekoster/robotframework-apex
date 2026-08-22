@@ -1,0 +1,61 @@
+page 110 (
+    name: Login
+    alias: LOGIN
+    title: Sign In | &APP_NAME.
+    appearance {
+        pageTemplate: @/login
+        templateOptions: #DEFAULT#
+    }
+    navigation {
+        cursorFocus: doNotFocusCursor
+        warnOnUnsavedChanges: false
+    }
+    css {
+        inline:
+            ```css
+            .appIcon.brookstrut {
+            background-position: -320px -384px;
+            }
+            
+            .appIcon {
+            display: inline-block;
+            width: 64px;
+            height: 64px;
+            background-image: url(#IMAGE_PREFIX#eba/img/eba_launchpad.png);
+            background-repeat: no-repeat;
+            border: none;
+            -webkit-border-radius: 4px;
+            -moz-border-radius: 4px;
+            border-radius: 4px;
+            -webkit-box-shadow: 0 0 1px rgba(0,0,0,0.75) inset;
+            -moz-box-shadow: 0 0 1px rgba(0,0,0,0.75) inset;
+            box-shadow: 0 0 1px rgba(0,0,0,0.75) inset;
+            margin-right: 8px;
+            vertical-align: middle;
+            }
+            ```
+    }
+    security {
+        authentication: public
+        pageAccessProtection: argumentsMustHaveChecksum
+        formAutoComplete: false
+    }
+    advanced {
+        reloadOnSubmit: always
+    }
+    region app-name (
+        name: &APP_NAME.
+        type: staticContent
+        layout {
+            sequence: 10
+            slot: contentBody
+        }
+        appearance {
+            template: @/login
+            templateOptions: #DEFAULT#
+        }
+        image {
+            fileUrl: "#APP_FILES#icons/app-icon-192.png	"
+        }
+    )
+)

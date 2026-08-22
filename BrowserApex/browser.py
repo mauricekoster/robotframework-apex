@@ -4,7 +4,7 @@ Oracle APEX support
 
 from robot.libraries.BuiltIn import BuiltIn
 from robot.api.deco import keyword, not_keyword, library
-from Browser import AssertionOperator, SelectAttribute, ElementState
+from Browser import AssertionOperator, SelectAttribute, ElementState, Browser
 from Browser.utils import PageLoadStates
 
 selector_prefix = {
@@ -14,8 +14,12 @@ selector_prefix = {
     }
 
 @library(scope='GLOBAL', auto_keywords=True)
-class BrowserApex():
-    def __init__(self):
+class BrowserApex(Browser):
+    def __init__(self, **kwargs):
+        Browser.__init__(self, **kwargs)
+        
+        # self.add_library_components()
+        
         self.browser = None
         self.container = None
         self.classic_report_row = None

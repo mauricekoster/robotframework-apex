@@ -8,6 +8,8 @@ import sys
 
 from BrowserApex.cli.main import app
 from BrowserApex.cli.utils import get_config_path, get_config, get_template
+from BrowserApex.cli.apex import Page
+
 
 @app.command(name='generate')
 def page_generate(
@@ -22,6 +24,9 @@ def page_generate(
 
     """
     data = None
+    p = Page()
+    p.load(pagefile)
+
     with open(pagefile, 'r') as f:
         data = yaml.safe_load(f)
     # print(data)
