@@ -1,12 +1,11 @@
 import typer
 from rich import print
 from typing import Annotated
-import yaml
-from rich import print
 from rich.table import Table
+from pathlib import Path
 
-#from BrowserApex.cli.utils import get_template
 from BrowserApex.cli.main import app
+from BrowserApex.cli.apex import parse_yaml_file, parse_apex_file
 
 @app.command(name='show')
 def project_show(
@@ -17,14 +16,19 @@ def project_show(
 
     """
     data = None
-    with open(pagefile, 'r') as f:
-        data = yaml.safe_load(f)
-    # print(data)
+    fn = Path(pagefile)
+    match fn.suffix:
+        case '.apx':
+            page = parse_apex_file(fn)
+        case '.yaml' | '.yml':
+            page = parse_yaml_file(fn)
+        case _:
+            raise RuntimeWarning("Unsupported file")
 
     print("Page:")
-    print(f"id: {data['id']}")
-    print(f"name: {data['identification']['name']}")
-    print(f"alias: {data['identification']['alias']}")
+    print(f"id: {page.component_id}")
+    print(f"name: {page.name}")
+    print(f"alias: {page.alias}")
 
 
     table = Table(title='Regions')
@@ -33,29 +37,22 @@ def project_show(
     table.add_column("Template")
     table.add_column("Parent")
 
-    for region in data['regions']:
-        ident = region['identification']
-        layout = region['layout']
-        appearance = region.get('appearance', dict(template='-'))
-        table.add_row(ident['name'], ident['type'], appearance['template'],layout['parent-region'])
+    for region in page.regions:
+        table.add_row(region.name, region.type, region.appearance['template'],region.layout['parentRegion'])
 
     print(table)
-
+    
     table = Table(title='Page items')
     table.add_column("Seq.")
     table.add_column("Name")
     table.add_column("Type")
-    table.add_column("Label")
-    table.add_column("Parent")
-    for pageitem in data['page-items']:
-        ident = pageitem['identification']
-        label = pageitem.get('label', dict(label='-'))
-        
-        layout = pageitem['layout']
-
-        table.add_row(str(layout['sequence']), ident['name'], ident['type'], label.get('label','[red]?[/red]'), layout['region'])
+    #table.add_column("Label")
+    #table.add_column("Parent")
+    for pageitem in page.page_items:
+        table.add_row(str(pageitem.layout['sequence']), pageitem.name, pageitem.type) # , label.get('label','[red]?[/red]'), layout['region'])
     print(table)
 
+    return
     table = Table(title='Buttons')
     table.add_column("Seq.")
     table.add_column("Name")

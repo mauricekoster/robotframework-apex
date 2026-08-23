@@ -2,10 +2,11 @@ import typer
 from typing import Annotated
 import yaml
 from rich import print
+from pathlib import Path
 
 #from BrowserApex.cli.utils import get_template
 from BrowserApex.cli.main import app
-from BrowserApex.cli.apex.grammar import grammar, ApxNodeVisitor
+from BrowserApex.cli.apex.grammar import parse_apex_file
 
 @app.command(name='parse')
 def project_parse(
@@ -15,14 +16,10 @@ def project_parse(
     Parse file and dump ast.
 
     """
-    data = None
-    with open(pagefile, 'r') as f:
-        data = f.read()
-    # print(data)
+    page = None
 
-    nodes = grammar.parse(data)
-    print(nodes)
+    fn = Path(pagefile)
+    if fn.suffix == '.apx':
+        page = parse_apex_file(fn)
 
-    visitor = ApxNodeVisitor()
-    output = visitor.visit(nodes)
-    print(output)
+    print(page)

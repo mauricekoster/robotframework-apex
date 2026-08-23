@@ -1,5 +1,5 @@
 from parsimonious import Grammar, NodeVisitor
-from BrowserApex.cli.apex import Page, Region
+from BrowserApex.cli.apex import Page, Region, RegionLayout, RegionAppearance, PageItem
 from importlib import resources as impresources
 from BrowserApex.cli import apex
 from pathlib import Path
@@ -12,7 +12,8 @@ class RuleNotImplemented(BaseException):
 class ApxNodeVisitor(NodeVisitor):
     def visit_page_object(self, node, visited_children):
         """ Gets the section name. """
-        _, component_id, _, _, _, body_parts, _, _, _ = visited_children
+        component_id = visited_children[1]
+        body_parts = visited_children[4]
         if type(component_id) is list:
             component_id = component_id[0][1]
         else:
@@ -21,9 +22,16 @@ class ApxNodeVisitor(NodeVisitor):
         page = Page(component_id)
         for item in body_parts:
             if type(item) is tuple:
-                page[item[0]] = item[1]
+                if type(item[1]) is dict:
+                    page.add_group(item[0], item[1])
+                else:
+                    page.add_property(item[0], item[1])
             elif type(item) is Region:
                 page.add_region(item)
+            elif type(item) is PageItem:
+                page.add_page_item(item)
+            elif item is None:
+                continue
             else:
                 raise RuleNotImplemented(f"unprocessed: {item}")
         return page
@@ -162,7 +170,8 @@ class ApxNodeVisitor(NodeVisitor):
 
 
     def visit_region(self, node, visited_children):
-        _, _, component_id, _, _, _, body_parts, _, _, _ = visited_children
+        component_id = visited_children[2]
+        body_parts = visited_children[6]
         if type(component_id) is list:
             component_id = component_id[0][1]
         else:
@@ -171,7 +180,10 @@ class ApxNodeVisitor(NodeVisitor):
         region = Region(component_id)
         for item in body_parts:
             if type(item) is tuple:
-                region[item[0]] = item[1]
+                if type(item[1]) is dict:
+                    region.add_group(item[0], item[1])
+                else:
+                    region.add_property(item[0], item[1])
             else:
                 raise RuleNotImplemented(f"unprocessed: {item}")
         return region
@@ -198,7 +210,7 @@ class ApxNodeVisitor(NodeVisitor):
                 d[item[0]] = item[1]
             else:
                 raise RuleNotImplemented()
-        return ('layout', d)
+        return ('layout', RegionLayout(d) )
     
     def visit_region_layout_property_line(self, node, visited_children):
         return visited_children[1]
@@ -263,6 +275,113 @@ class ApxNodeVisitor(NodeVisitor):
             case _:
                 raise RuleNotImplemented()
 
+    def visit_region_advanced(self, node, visited_children):
+        parts = visited_children[5]
+        d = {}
+        for item in parts:
+            if type(item) is tuple:
+                d[item[0]] = item[1]
+            else:
+                raise RuleNotImplemented()
+        return ('advanced', d)
+    
+    def visit_region_advanced_property_line(self, node, visited_children):
+        return visited_children[1]
+
+    def visit_region_advanced_property(self, node, visited_children):
+        v = visited_children[0]
+        match v[0].text:
+            case 'htmlDomId':
+                return (v[0].text, v[3])
+            case _:
+                raise RuleNotImplemented()
+
+
+    def visit_page_item(self, node, visited_children):
+        component_id = visited_children[2]
+        body_parts = visited_children[6]
+        if type(component_id) is list:
+            component_id = component_id[0][1]
+        else:
+            component_id = None
+
+        page_item = PageItem(component_id)
+        for item in body_parts:
+            if type(item) is tuple:
+                if type(item[1]) is dict:
+                    page_item.add_group(item[0], item[1])
+                else:
+                    page_item.add_property(item[0], item[1])
+            else:
+                raise RuleNotImplemented(f"unprocessed: {item}")
+        return page_item
+
+    def visit_page_item_body_line(self, node, visited_children):
+        return visited_children[0]
+
+    def visit_page_item_direct_property_line(self, node, visited_children):
+        return visited_children[1]
+
+    def visit_page_item_direct_property(self, node, visited_children):
+        v = visited_children[0]
+        title, _, _, value = v
+        return (title.text, value)
+
+    def visit_page_item_group_block(self, node, visited_children):
+        return visited_children[0]
+
+
+    def visit_page_item_label(self, node, visited_children):
+        parts = visited_children[5]
+        d = {}
+        for item in parts:
+            if type(item) is tuple:
+                d[item[0]] = item[1]
+            else:
+                raise RuleNotImplemented()
+        return ('label', d )
+    
+    def visit_page_item_label_property_line(self, node, visited_children):
+        return visited_children[1]
+
+    def visit_page_item_label_property(self, node, visited_children):
+        v = visited_children[0]
+        match v[0].text:
+            case 'sequence' | 'label':
+                return (v[0].text, v[3])
+            case 'alignment' | 'duplicateSubmissionUrl':
+                return (v[0].text, v[3][0].text)
+            case _:
+                raise RuleNotImplemented()
+
+
+    def visit_page_item_layout(self, node, visited_children):
+        parts = visited_children[5]
+        d = {}
+        for item in parts:
+            if type(item) is tuple:
+                d[item[0]] = item[1]
+            else:
+                raise RuleNotImplemented()
+        return ('layout', d )
+    
+    def visit_page_item_layout_property_line(self, node, visited_children):
+        return visited_children[1]
+
+    def visit_page_item_layout_property(self, node, visited_children):
+        v = visited_children[0]
+        match v[0].text:
+            case 'sequence' | 'slot' | 'region':
+                return (v[0].text, v[3])
+            case 'alignment':
+                return (v[0].text, v[3][0].text)
+            case 'enableMetaTags' | 'enableDuplicatePageSubmissions':
+                return (v[0].text, v[3])
+            case _:
+                raise RuleNotImplemented()
+
+
+
 
     def visit_reference(self, node, visited_children):
         return node.text
@@ -306,6 +425,10 @@ class ApxNodeVisitor(NodeVisitor):
 
     def visit_ws(self, node, visited_children):
         return None
+
+    def visit_blank_lines(self, node, visited_children):
+            return None
+    
     
     def generic_visit(self, node, visited_children):
         """ The generic visit method. """
@@ -313,8 +436,8 @@ class ApxNodeVisitor(NodeVisitor):
 
 
 
-def parse_file(fn: Path) -> Page:
-    inp_file = impresources.files(apex) / 'apexlang-26.1.peg'
+def parse_apex_file(fn: Path, apex_version : str = "26.1") -> Page:
+    inp_file = impresources.files(apex) / f'apexlang-{apex_version}.peg'
     with inp_file.open("rt") as f:
         template = f.read()
 
@@ -331,9 +454,14 @@ def parse_file(fn: Path) -> Page:
 
 if __name__ == '__main__':    # pragma: no cover
 
-    page = parse_file("examples/test.apx")
+    page = Page('A')
+
+    page_item = PageItem('B')
+
+    page = parse_apex_file("examples/test.apx")
+
 
     
-    print(page['title'])
+    print(page)
 
     print(page.appearance)

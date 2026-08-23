@@ -1,7 +1,8 @@
-page_object                     = "page" (required_ws component_id)? ws "(" blank_lines page_body_line* indent ")" blank_lines
+page_object                     = "page" (required_ws component_id)? ws "(" page_body_line* indent ")" line_end
 page_body_line                  = page_direct_property_line
                                 / page_group_block
                                 / page_child_component
+                                / blank_lines
 
 page_direct_property_line       = indent page_direct_property line_end
 page_direct_property            = "page" ":" ws number
@@ -53,6 +54,7 @@ page_advanced_property          = "enableMetaTags" ":" ws boolean
 
 
 page_child_component            = region
+                                / page_item
 
 region                          = indent "region" (required_ws component_id)? ws "(" line_end region_body_line* indent ")" line_end
 region_body_line                = region_direct_property_line
@@ -66,6 +68,7 @@ region_direct_property          = "name" ":" ws string_like_value
 region_group_block              = region_layout
                                 / region_appearance
                                 / region_image
+                                / region_advanced
 
 region_layout                   = indent "layout" ws "{" line_end region_layout_property_line* indent "}" line_end
 region_layout_property_line     = indent region_layout_property line_end
@@ -95,21 +98,67 @@ region_image_property           = "fileUrl" ":" ws string_like_value
                                 / "accessibleDescription" ":" ws string_like_value
                                 / "customAttributes" ":" ws string_like_value
 
+region_advanced                 = indent "advanced" ws "{" line_end region_advanced_property_line* indent "}" line_end
+region_advanced_property_line   = indent region_advanced_property line_end
+region_advanced_property        = "savedReportMappingIdentifier" ":" ws string_like_value
+                                / "htmlDomId" ":" ws string_like_value
+                                / "customAttributes" ":" ws string_like_value
+                                / "regionImage" ":" ws string_like_value
+                                / "imageTagAttributes" ":" ws string_like_value
+                                / "staticId" ":" ws string_like_value
+                                / "regionDisplaySelector" ":" ws boolean
+                                / "excludeTitleFromTranslation" ":" ws boolean
+                                / "schemaOverrideItem" ":" ws string_like_value
+
+
+page_item                       = indent "pageItem" (required_ws component_id)? ws "(" line_end page_item_body_line* indent ")" line_end
+page_item_body_line             = page_item_direct_property_line
+                                / page_item_group_block
+
+page_item_direct_property_line  = indent page_item_direct_property line_end
+page_item_direct_property       = "name" ":" ws string_like_value
+                                / "type" ":" ws string_like_value
+
+page_item_group_block           = page_item_label
+                                / page_item_layout
+
+page_item_label                 = indent "label" ws "{" line_end page_item_label_property_line* indent "}" line_end
+page_item_label_property_line   = indent page_item_label_property line_end
+page_item_label_property        = "label" ":" ws string_like_value
+                                / "alignment" ":" ws ( "above" / "below" / "center" / "centerBottom" / "centerCenter" / "centerTop" / "left" / "leftBottom" / "leftCenter" / "leftTop" / "right" / "rightBottom" / "rightCenter" / "rightTop" )
+                                / "tableCellAttributes" ":" ws array_of_string_like_value
+
+page_item_layout                = indent "layout" ws "{" line_end page_item_layout_property_line* indent "}" line_end
+page_item_layout_property_line  = indent page_item_layout_property line_end
+page_item_layout_property       = "sequence" ":" ws number
+                                / "region" ":" ws reference
+                                / "slot" ":" ws string_like_value
+                                / "alignment" ":" ws ( "center" / "centerBottom" / "centerCenter" / "centerTop" / "left" / "leftBottom" / "leftCenter" / "leftTop" / "right" / "rightBottom" / "rightCenter" / "rightTop" )
+                                / "startNewLayout" ":" ws boolean
+                                / "startNewRow" ":" ws boolean
+                                / "rowCssClasses" ":" ws array_of_string_like_value
+                                / "column" ":" ws string_like_value
+                                / "newColumn" ":" ws boolean
+                                / "columnSpan" ":" ws string_like_value
+                                / "rowSpan" ":" ws number
+                                / "labelColumnSpan" ":" ws string_like_value
+                                / "columnCssClasses" ":" ws array_of_string_like_value
+                                / "columnAttributes" ":" ws array_of_string_like_value
 
 
 reference                       = "@" reference_character*
 component_id                    = string / identifier / number
 multiline_string                = "```" ( any_character / nl )* "```"
+blank_lines                     = (ws nl)*
 ws                              = ~r"[ \t]*"
 required_ws                     = ~r"[ \t]+"
-blank_lines                     = ws* nl*
-nl                              = "\n" / "\r\n"
 line_end                        = nl
+nl                              = "\n" / "\r\n"
 indent                          = ~r"[ \t]*"
 array_of_string_like_value      = "[" (line_end indent string_like_value)+ line_end indent "]"
 array_separator                 = required_ws / line_end indent
 string_like_value               = ~r"[^\[\]\n\r]+"
-reference_character             = ~r"[A-Za-z0-9_/#]*"
+reference_character             = ~r"[A-Za-z0-9_/#-]*"
 string                          = ~r"\"[^\"]+\""
 any_character                   = ~r"[^`\n\r]"
 number                          = "-"? digit+  ( "." digit+ )?

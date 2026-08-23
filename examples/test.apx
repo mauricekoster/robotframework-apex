@@ -43,6 +43,7 @@ page 110 (
     advanced {
         reloadOnSubmit: always
     }
+
     region app-name (
         name: &APP_NAME.
         type: staticContent
@@ -57,5 +58,37 @@ page 110 (
         image {
             fileUrl: "#APP_FILES#icons/app-icon-192.png	"
         }
+        advanced {
+            htmlDomId: brookstrut
+        }
     )
+
+    pageItem P101_PASSWORD (
+        type: password
+        label {
+            label: Password
+            alignment: left
+        }
+        layout {
+            sequence: 20
+            region: @app-name
+            slot: regionBody
+            alignment: left
+        }
+    )
+
+    pageItem P101_USERNAME (
+        type: textField
+        label {
+            label: Username
+            alignment: left
+        }
+        layout {
+            sequence: 10
+            region: @app-name
+            slot: regionBody
+            alignment: left
+        }
+    )
+
 )
