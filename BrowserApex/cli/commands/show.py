@@ -32,13 +32,14 @@ def project_show(
 
 
     table = Table(title='Regions')
+    table.add_column("Component ID")
     table.add_column("Name")
     table.add_column("Type")
     table.add_column("Template")
     table.add_column("Parent")
 
     for region in page.regions:
-        table.add_row(region.name, region.type, region.appearance['template'],region.layout['parentRegion'])
+        table.add_row(str(region.component_id), region.name, region.type, region.appearance['template'],region.layout['parentRegion'])
 
     print(table)
     
@@ -46,20 +47,17 @@ def project_show(
     table.add_column("Seq.")
     table.add_column("Name")
     table.add_column("Type")
-    #table.add_column("Label")
-    #table.add_column("Parent")
+    table.add_column("Label")
+    table.add_column("Region")
     for pageitem in page.page_items:
-        table.add_row(str(pageitem.layout['sequence']), pageitem.name, pageitem.type) # , label.get('label','[red]?[/red]'), layout['region'])
+        table.add_row( str(pageitem.layout['sequence']), pageitem.name, pageitem.type, pageitem.label.get('label', '[red]?[/red]'), pageitem.layout['region'] ) 
     print(table)
 
-    return
     table = Table(title='Buttons')
     table.add_column("Seq.")
     table.add_column("Name")
     table.add_column("Label")
     table.add_column("Region")
-    for button in data["buttons"]:
-        ident = button['identification']
-        layout = button['layout']
-        table.add_row(str(layout['sequence']), ident['button-name'], ident['label'], layout['region'])
+    for button in page.buttons:
+        table.add_row(str(button.layout['sequence']), button['buttonName'], button['label'], button.layout['region'])
     print(table)

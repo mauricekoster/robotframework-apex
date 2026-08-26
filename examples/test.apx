@@ -75,6 +75,27 @@ page 110 (
             slot: regionBody
             alignment: left
         }
+        appearance {
+            template: @/hidden
+            templateOptions: #DEFAULT#
+            cssClasses: icon-login-password
+            width: 64
+            valuePlaceholder: password
+        }
+        validation {
+            valueRequired: true
+            maxLength: 100
+        }
+        advanced {
+            postText: <span class="t-Login-iconValidation a-Icon icon-check"></span>
+        }
+        sessionState {
+            storage: request
+        }
+        security {
+            encryptSessionState: false
+            restrictedChars: webSafe
+        }
     )
 
     pageItem P101_USERNAME (
@@ -83,12 +104,93 @@ page 110 (
             label: Username
             alignment: left
         }
+        settings {
+            trimSpaces: none
+        }
         layout {
             sequence: 10
             region: @app-name
             slot: regionBody
             alignment: left
         }
+        appearance {
+            template: @/hidden
+            templateOptions: #DEFAULT#
+            cssClasses: icon-login-username
+            width: 64
+            valuePlaceholder: username
+        }
+        validation {
+            valueRequired: true
+            maxLength: 100
+        }
+        advanced {
+            postText: <span class="t-Login-iconValidation a-Icon icon-check"></span>
+        }
+        security {
+            restrictedChars: webSafe
+        }
+    )
+
+    button login (
+        buttonName: LOGIN
+        label: Sign In
+        layout {
+            sequence: 10
+            region: @app-name
+            slot: next
+        }
+        appearance {
+            buttonTemplate: @/text
+            hot: true
+            templateOptions: #DEFAULT#
+        }
+        behavior {
+            warnOnUnsavedChanges: doNotCheck
+        }
+    )
+
+    dynamicAction set-focus (
+        name: Set Focus
+        execution {
+            sequence: 10
+        }
+        when {
+            event: ready
+        }
+        clientSideCondition {
+            type: jsExpression
+            javaScriptExpression: ( $v( "P101_USERNAME" ) === "" )
+        }
+
+        action native-set-focus (
+            action: setFocus
+            affectedElements {
+                selectionType: items
+                items: P101_USERNAME
+            }
+            execution {
+                sequence: 10
+            }
+        )
+
+        action native-set-focus-2 (
+            action: setFocus
+            affectedElements {
+                selectionType: items
+                items: P101_PASSWORD
+            }
+            execution {
+                sequence: 20
+                fireWhenEventResultIs: false
+            }
+        )
+        
+    )
+
+    process clear-page-s-cache (
+        name: Clear Page(s) Cache
+        type: clearSessionState
     )
 
 )

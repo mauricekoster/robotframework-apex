@@ -1,153 +1,362 @@
-page_object                     = "page" (required_ws component_id)? ws "(" page_body_line* indent ")" line_end
-page_body_line                  = page_direct_property_line
-                                / page_group_block
-                                / page_child_component
-                                / blank_lines
+page_object                         = "page" (required_ws component_id)? ws "(" page_body_line* indent ")" line_end
+page_body_line                      = page_direct_property_line
+                                    / page_group_block
+                                    / page_child_component
+                                    / blank_lines
 
-page_direct_property_line       = indent page_direct_property line_end
-page_direct_property            = "page" ":" ws number
-                                / "name" ":" ws string_like_value
-                                / "alias" ":" ws string_like_value
-                                / "title" ":" ws string_like_value
+page_direct_property_line           = indent page_direct_property line_end
+page_direct_property                = "page" ":" ws number
+                                    / "name" ":" ws string_like_value
+                                    / "alias" ":" ws string_like_value
+                                    / "title" ":" ws string_like_value
 
-page_group_block                = page_appearance
-                                / page_navigation
-                                / page_css
-                                / page_security
-                                / page_advanced
+page_group_block                    = page_appearance
+                                    / page_navigation
+                                    / page_css
+                                    / page_security
+                                    / page_advanced
 
-page_appearance                 = indent "appearance" ws "{" line_end page_appearance_property_line* indent "}" line_end
-page_appearance_property_line   = indent page_appearance_property line_end
-page_appearance_property        = "pageMode" ":" ws ( "normal" / "modalDialog" / "nonModalDialog" )
-                                / "pageTemplate" ":" ws reference
-                                / "dialogTemplate" ":" ws reference
-                                / "templateOptions" ":" ws ( array_of_string_like_value / string_like_value )
-                                / "cssClasses" ":" ws array_of_string_like_value
-                                / "mediaType" ":" ws string_like_value
+page_appearance                     = indent "appearance" ws "{" line_end page_appearance_property_line* indent "}" line_end
+page_appearance_property_line       = indent page_appearance_property line_end
+page_appearance_property            = "pageMode" ":" ws ( "normal" / "modalDialog" / "nonModalDialog" )
+                                    / "pageTemplate" ":" ws reference
+                                    / "dialogTemplate" ":" ws reference
+                                    / "templateOptions" ":" ws ( array_of_string_like_value / string_like_value )
+                                    / "cssClasses" ":" ws array_of_string_like_value
+                                    / "mediaType" ":" ws string_like_value
 
-page_navigation                 = indent "navigation" ws "{" line_end page_navigation_property_line* indent "}" line_end
-page_navigation_property_line   = indent page_navigation_property line_end
-page_navigation_property        = "cursorFocus" ":" ws ( "firstItemOnPage" / "doNotFocusCursor" )
-                                / "warnOnUnsavedChanges" ":" ws boolean
+page_navigation                     = indent "navigation" ws "{" line_end page_navigation_property_line* indent "}" line_end
+page_navigation_property_line       = indent page_navigation_property line_end
+page_navigation_property            = "cursorFocus" ":" ws ( "firstItemOnPage" / "doNotFocusCursor" )
+                                    / "warnOnUnsavedChanges" ":" ws boolean
 
-page_css                        = indent "css" ws "{" line_end page_css_property_line* indent "}" line_end
-page_css_property_line          = indent page_css_property line_end
-page_css_property               = "fileUrls" ":" ws array_of_string_like_value
-                                / "inline" ":" ws multiline_string
-                                / "inline" ":" nl indent multiline_string
+page_css                            = indent "css" ws "{" line_end page_css_property_line* indent "}" line_end
+page_css_property_line              = indent page_css_property line_end
+page_css_property                   = "fileUrls" ":" ws array_of_string_like_value
+                                    / "inline" ":" ws multiline_string
+                                    / "inline" ":" nl indent multiline_string
 
-page_security                   = indent "security" ws "{" line_end page_security_property_line* indent "}" line_end
-page_security_property_line     = indent page_security_property line_end
-page_security_property          = "authorizationScheme" ":" ws reference
-                                / "authentication" ":" ws ( "required" / "public" ) 
-                                / "deepLinking" ":" ws boolean
-                                / "pageAccessProtection" ":" ws ( "unrestricted" / "argumentsMustHaveChecksum" / "noArgumentsSupported" / "noUrlAccess" )
-                                / "formAutoComplete" ":" ws boolean
-                                / "browserCache" ":" ws boolean
+page_security                       = indent "security" ws "{" line_end page_security_property_line* indent "}" line_end
+page_security_property_line         = indent page_security_property line_end
+page_security_property              = "authorizationScheme" ":" ws reference
+                                    / "authentication" ":" ws ( "required" / "public" ) 
+                                    / "deepLinking" ":" ws boolean
+                                    / "pageAccessProtection" ":" ws ( "unrestricted" / "argumentsMustHaveChecksum" / "noArgumentsSupported" / "noUrlAccess" )
+                                    / "formAutoComplete" ":" ws boolean
+                                    / "browserCache" ":" ws boolean
 
-page_advanced                   = indent "advanced" ws "{" line_end page_advanced_property_line* indent "}" line_end
-page_advanced_property_line     = indent page_advanced_property line_end
-page_advanced_property          = "enableMetaTags" ":" ws boolean
-                                / "enableDuplicatePageSubmissions" ":" ws boolean
-                                / "reloadOnSubmit" ":" ws ( "always" / "onlyForSuccess" )
-                                / "duplicateSubmissionUrl" ":" ws string_like_value
-
-
-page_child_component            = region
-                                / page_item
-
-region                          = indent "region" (required_ws component_id)? ws "(" line_end region_body_line* indent ")" line_end
-region_body_line                = region_direct_property_line
-                                / region_group_block
-                                
-region_direct_property_line     = indent region_direct_property line_end                               
-region_direct_property          = "name" ":" ws string_like_value
-                                / "title" ":" ws string_like_value
-                                / "type" ":" ws string_like_value
-
-region_group_block              = region_layout
-                                / region_appearance
-                                / region_image
-                                / region_advanced
-
-region_layout                   = indent "layout" ws "{" line_end region_layout_property_line* indent "}" line_end
-region_layout_property_line     = indent region_layout_property line_end
-region_layout_property          = "sequence" ":" ws number
-                                / "parentRegion" ":" ws reference
-                                / "slot" ":" ws string_like_value
-                                / "startNewLayout" ":" ws boolean
-                                / "startNewRow" ":" ws boolean
-                                / "rowCssClasses" ":" ws array_of_string_like_value
-                                / "column" ":" ws string_like_value
-                                / "newColumn" ":" ws boolean
-                                / "columnSpan" ":" ws string_like_value
-                                / "columnCssClasses" ":" ws array_of_string_like_value
-                                / "columnAttributes" ":" ws array_of_string_like_value
-
-region_appearance               = indent "appearance" ws "{" line_end region_appearance_property_line* indent "}" line_end
-region_appearance_property_line = indent region_appearance_property line_end
-region_appearance_property      = "template" ":" ws reference
-                                / "templateOptions" ":" ws (array_of_string_like_value / string_like_value)
-                                / "cssClasses" ":" ws array_of_string_like_value
-                                / "icon" ":" ws string_like_value
-                                / "renderComponents" ":" ws ( "aboveContent" / "belowContent" ) 
-
-region_image                    = indent "image" ws "{" line_end region_image_property_line* indent "}" line_end
-region_image_property_line      = indent region_image_property line_end
-region_image_property           = "fileUrl" ":" ws string_like_value
-                                / "accessibleDescription" ":" ws string_like_value
-                                / "customAttributes" ":" ws string_like_value
-
-region_advanced                 = indent "advanced" ws "{" line_end region_advanced_property_line* indent "}" line_end
-region_advanced_property_line   = indent region_advanced_property line_end
-region_advanced_property        = "savedReportMappingIdentifier" ":" ws string_like_value
-                                / "htmlDomId" ":" ws string_like_value
-                                / "customAttributes" ":" ws string_like_value
-                                / "regionImage" ":" ws string_like_value
-                                / "imageTagAttributes" ":" ws string_like_value
-                                / "staticId" ":" ws string_like_value
-                                / "regionDisplaySelector" ":" ws boolean
-                                / "excludeTitleFromTranslation" ":" ws boolean
-                                / "schemaOverrideItem" ":" ws string_like_value
+page_advanced                       = indent "advanced" ws "{" line_end page_advanced_property_line* indent "}" line_end
+page_advanced_property_line         = indent page_advanced_property line_end
+page_advanced_property              = "enableMetaTags" ":" ws boolean
+                                    / "enableDuplicatePageSubmissions" ":" ws boolean
+                                    / "reloadOnSubmit" ":" ws ( "always" / "onlyForSuccess" )
+                                    / "duplicateSubmissionUrl" ":" ws string_like_value
 
 
-page_item                       = indent "pageItem" (required_ws component_id)? ws "(" line_end page_item_body_line* indent ")" line_end
-page_item_body_line             = page_item_direct_property_line
-                                / page_item_group_block
+page_child_component                = region
+                                    / page_item
+                                    / button
+                                    / dynamic_action
+                                    / process
 
-page_item_direct_property_line  = indent page_item_direct_property line_end
-page_item_direct_property       = "name" ":" ws string_like_value
-                                / "type" ":" ws string_like_value
+region                              = indent "region" (required_ws component_id)? ws "(" line_end region_body_line* indent ")" line_end
+region_body_line                    = region_direct_property_line
+                                    / region_group_block
 
-page_item_group_block           = page_item_label
-                                / page_item_layout
+region_direct_property_line         = indent region_direct_property line_end                               
+region_direct_property              = "name" ":" ws string_like_value
+                                    / "title" ":" ws string_like_value
+                                    / "type" ":" ws string_like_value
 
-page_item_label                 = indent "label" ws "{" line_end page_item_label_property_line* indent "}" line_end
-page_item_label_property_line   = indent page_item_label_property line_end
-page_item_label_property        = "label" ":" ws string_like_value
-                                / "alignment" ":" ws ( "above" / "below" / "center" / "centerBottom" / "centerCenter" / "centerTop" / "left" / "leftBottom" / "leftCenter" / "leftTop" / "right" / "rightBottom" / "rightCenter" / "rightTop" )
-                                / "tableCellAttributes" ":" ws array_of_string_like_value
+region_group_block                  = region_layout
+                                    / region_appearance
+                                    / region_image
+                                    / region_advanced
 
-page_item_layout                = indent "layout" ws "{" line_end page_item_layout_property_line* indent "}" line_end
-page_item_layout_property_line  = indent page_item_layout_property line_end
-page_item_layout_property       = "sequence" ":" ws number
-                                / "region" ":" ws reference
-                                / "slot" ":" ws string_like_value
-                                / "alignment" ":" ws ( "center" / "centerBottom" / "centerCenter" / "centerTop" / "left" / "leftBottom" / "leftCenter" / "leftTop" / "right" / "rightBottom" / "rightCenter" / "rightTop" )
-                                / "startNewLayout" ":" ws boolean
-                                / "startNewRow" ":" ws boolean
-                                / "rowCssClasses" ":" ws array_of_string_like_value
-                                / "column" ":" ws string_like_value
-                                / "newColumn" ":" ws boolean
-                                / "columnSpan" ":" ws string_like_value
-                                / "rowSpan" ":" ws number
-                                / "labelColumnSpan" ":" ws string_like_value
-                                / "columnCssClasses" ":" ws array_of_string_like_value
-                                / "columnAttributes" ":" ws array_of_string_like_value
+region_layout                       = indent "layout" ws "{" line_end region_layout_property_line* indent "}" line_end
+region_layout_property_line         = indent region_layout_property line_end
+region_layout_property              = "sequence" ":" ws number
+                                    / "parentRegion" ":" ws reference
+                                    / "slot" ":" ws string_like_value
+                                    / "startNewLayout" ":" ws boolean
+                                    / "startNewRow" ":" ws boolean
+                                    / "rowCssClasses" ":" ws array_of_string_like_value
+                                    / "column" ":" ws string_like_value
+                                    / "newColumn" ":" ws boolean
+                                    / "columnSpan" ":" ws string_like_value
+                                    / "columnCssClasses" ":" ws array_of_string_like_value
+                                    / "columnAttributes" ":" ws array_of_string_like_value
+
+region_appearance                   = indent "appearance" ws "{" line_end region_appearance_property_line* indent "}" line_end
+region_appearance_property_line     = indent region_appearance_property line_end
+region_appearance_property          = "template" ":" ws reference
+                                    / "templateOptions" ":" ws (array_of_string_like_value / string_like_value)
+                                    / "cssClasses" ":" ws array_of_string_like_value
+                                    / "icon" ":" ws string_like_value
+                                    / "renderComponents" ":" ws ( "aboveContent" / "belowContent" ) 
+
+region_image                        = indent "image" ws "{" line_end region_image_property_line* indent "}" line_end
+region_image_property_line          = indent region_image_property line_end
+region_image_property               = "fileUrl" ":" ws string_like_value
+                                    / "accessibleDescription" ":" ws string_like_value
+                                    / "customAttributes" ":" ws string_like_value
+
+region_advanced                     = indent "advanced" ws "{" line_end region_advanced_property_line* indent "}" line_end
+region_advanced_property_line       = indent region_advanced_property line_end
+region_advanced_property            = "savedReportMappingIdentifier" ":" ws string_like_value
+                                    / "htmlDomId" ":" ws string_like_value
+                                    / "customAttributes" ":" ws string_like_value
+                                    / "regionImage" ":" ws string_like_value
+                                    / "imageTagAttributes" ":" ws string_like_value
+                                    / "staticId" ":" ws string_like_value
+                                    / "regionDisplaySelector" ":" ws boolean
+                                    / "excludeTitleFromTranslation" ":" ws boolean
+                                    / "schemaOverrideItem" ":" ws string_like_value
+
+
+page_item                           = indent "pageItem" (required_ws component_id)? ws "(" line_end page_item_body_line* indent ")" line_end
+page_item_body_line                 = page_item_direct_property_line
+                                    / page_item_group_block
+
+page_item_direct_property_line      = indent page_item_direct_property line_end
+page_item_direct_property           = "name" ":" ws string_like_value
+                                    / "type" ":" ws string_like_value
+
+page_item_group_block               = page_item_label
+                                    / page_item_settings
+                                    / page_item_layout
+                                    / page_item_appearance
+                                    / page_item_validation
+                                    / page_item_advanced
+                                    / page_item_security
+                                    / page_item_session_state
+
+page_item_label                     = indent "label" ws "{" line_end page_item_label_property_line* indent "}" line_end
+page_item_label_property_line       = indent page_item_label_property line_end
+page_item_label_property            = "label" ":" ws string_like_value
+                                    / "alignment" ":" ws ( "above" / "below" / "center" / "centerBottom" / "centerCenter" / "centerTop" / "left" / "leftBottom" / "leftCenter" / "leftTop" / "right" / "rightBottom" / "rightCenter" / "rightTop" )
+                                    / "tableCellAttributes" ":" ws array_of_string_like_value
+
+page_item_settings                  = indent "settings" ws "{" line_end page_item_settings_property_line* indent "}" line_end
+page_item_settings_property_line    = indent page_item_settings_property line_end
+page_item_settings_property         = "trimSpaces" ":" ws ( "none" / "something-else" )
+                                    / "dummy" ":" ws string_like_value
+
+
+page_item_layout                    = indent "layout" ws "{" line_end page_item_layout_property_line* indent "}" line_end
+page_item_layout_property_line      = indent page_item_layout_property line_end
+page_item_layout_property           = "sequence" ":" ws number
+                                    / "region" ":" ws reference
+                                    / "slot" ":" ws string_like_value
+                                    / "alignment" ":" ws ( "center" / "centerBottom" / "centerCenter" / "centerTop" / "left" / "leftBottom" / "leftCenter" / "leftTop" / "right" / "rightBottom" / "rightCenter" / "rightTop" )
+                                    / "startNewLayout" ":" ws boolean
+                                    / "startNewRow" ":" ws boolean
+                                    / "rowCssClasses" ":" ws array_of_string_like_value
+                                    / "column" ":" ws string_like_value
+                                    / "newColumn" ":" ws boolean
+                                    / "columnSpan" ":" ws string_like_value
+                                    / "rowSpan" ":" ws number
+                                    / "labelColumnSpan" ":" ws string_like_value
+                                    / "columnCssClasses" ":" ws array_of_string_like_value
+                                    / "columnAttributes" ":" ws array_of_string_like_value
+
+page_item_appearance                = indent "appearance" ws "{" line_end page_item_appearance_property_line* indent "}" line_end
+page_item_appearance_property_line  = indent page_item_appearance_property line_end
+page_item_appearance_property       = "template" ":" ws reference
+                                    / "templateOptions" ":" ws ( array_of_string_like_value / string_like_value )
+                                    / "cssClasses" ":" ws ( array_of_string_like_value / string_like_value )
+                                    / "icon" ":" ws string_like_value
+                                    / "formatMask" ":" ws string_like_value
+                                    / "valuePlaceholder" ":" ws string_like_value
+                                    / "width" ":" ws number
+                                    / "height" ":" ws number
+
+page_item_validation                = indent "validation" ws "{" line_end page_item_validation_property_line* indent "}" line_end
+page_item_validation_property_line  = indent page_item_validation_property line_end
+page_item_validation_property       = "valueRequired" ":" ws boolean
+                                    / "maxLength" ":" ws number
+
+page_item_advanced                  = indent "advanced" ws "{" line_end page_item_advanced_property_line* indent "}" line_end
+page_item_advanced_property_line    = indent page_item_advanced_property line_end
+page_item_advanced_property         = "cssClasses" ":" ws array_of_string_like_value
+                                    / "customAttributes" ":" ws string_like_value
+                                    / "optionHtmlAttributes" ":" ws array_of_string_like_value
+                                    / "preText" ":" ws ( string_like_value / multiline_string )
+                                    / "postText" ":" ws ( string_like_value / multiline_string )
+                                    / "warnOnUnsavedChanges" ":" ws ( "ignore" )
+                                    / "initJavaScriptFunction" ":" ws (string_like_value / multiline_string )
+
+page_item_session_state             = indent "sessionState" ws "{" line_end page_item_session_state_property_line* indent "}" line_end
+page_item_session_state_property_line  = indent page_item_session_state_property line_end
+page_item_session_state_property       = "dataType" ":" ws ( "varchar2" / "clob" / "boolean" / "number" )
+                                    / "storage" ":" ws ( "request" / "session" / "user" )
+
+page_item_security                  = indent "security" ws "{" line_end page_item_security_property_line* indent "}" line_end
+page_item_security_property_line    = indent page_item_security_property line_end
+page_item_security_property         = "authorizationScheme" ":" ws reference
+                                    / "sessionStateProtection" ":" ws ( "unrestricted" / "checksumRequiredAppLevel" / "checksumRequiredUserLevel" / "checksumRequiredSessionLevel" / "restricted" )
+                                    / "encryptSessionState" ":" ws boolean
+                                    / "escapeSpecialChars" ":" ws boolean
+                                    / "restrictedChars" ":" ws ( "alphanumWithSpace" / "webSafe" / "noSpecialChar" / "noSpecialCharNoNewline" / "workspaceSchema" / "workspaceUserSchema" / "workspaceUserSchemaId" )
+
+
+
+button                              = indent "button" (required_ws component_id)? ws "(" line_end button_body_line* indent ")" line_end
+button_body_line                    = button_direct_property_line
+                                    / button_group_block
+                                    
+button_direct_property_line         = indent button_direct_property line_end                              
+button_direct_property              = "buttonName" ":" ws string_like_value
+                                    / "label" ":" ws string_like_value
+
+button_group_block                  = button_layout
+                                    / button_appearance
+                                    / button_behavior
+
+button_layout                       = indent "layout" ws "{" line_end button_layout_property_line* indent "}" line_end
+button_layout_property_line         = indent page_item_layout_property line_end
+button_layout_property              = "sequence" ":" ws number
+                                    / "region" ":" ws reference
+                                    / "slot" ":" ws string_like_value
+                                    / "startNewLayout" ":" ws boolean
+                                    / "startNewRow" ":" ws boolean
+                                    / "rowCssClasses" ":" ws array_of_string_like_value
+                                    / "column" ":" ws string_like_value
+                                    / "newColumn" ":" ws boolean
+                                    / "columnSpan" ":" ws string_like_value
+                                    / "rowSpan" ":" ws number
+                                    / "columnCssClasses" ":" ws array_of_string_like_value
+                                    / "columnAttributes" ":" ws array_of_string_like_value
+                                    / "horizontalAlignment" ":" ws ( "left" / "right" )
+                                    / "alignment" ":" ws ( "center" / "centerBottom" / "centerCenter" / "centerTop" / "left" / "leftBottom" / "leftCenter" / "leftTop" / "right" / "rightBottom" / "rightCenter" / "rightTop" )
+
+button_appearance                   = indent "appearance" ws "{" line_end button_appearance_property_line* indent "}" line_end
+button_appearance_property_line     = indent button_appearance_property line_end
+button_appearance_property          = "buttonTemplate" ":" ws reference
+                                    / "hot" ":" ws boolean
+                                    / "showAsDisabled" ":" ws boolean
+                                    / "templateOptions" ":" ws ( array_of_string_like_value / string_like_value )
+                                    / "cssClasses" ":" ws ( array_of_string_like_value / string_like_value )
+                                    / "icon" ":" ws string_like_value
+
+button_behavior                    = indent "behavior" ws "{" line_end button_behavior_property_line* indent "}" line_end
+button_behavior_property_line       = indent button_behavior_property line_end
+button_behavior_property            = "type" ":" ws string_like_value
+                                    / "action" ":" ws ( "submitPage" / "triggerAction" / "redirectThisApp" / "redirectOtherApp" / "redirectUrl" / "definedByDynamicAction" / "resetPage" / "nextPage" / "previousPage" )
+                                    / "target" ":" ws value
+                                    / "targetUrl" ":" ws string_like_value
+                                    / "executeValidations" ":" ws boolean
+                                    / "showProcessing" ":" ws boolean
+                                    / "warnOnUnsavedChanges" ":" ws ( "doNotCheck" )
+                                    / "databaseAction" ":" ws ( "insert" / "update" / "delete" )
+                                    / "requiresConfirmation" ":" ws boolean
+
+process                             = indent "process" (required_ws component_id)? ws "(" line_end process_body_line* indent ")" line_end
+process_body_line                   = process_direct_property_line
+                                    / process_group_block
+
+process_direct_property_line        = indent process_direct_property line_end
+process_direct_property             = "name" ":" ws string_like_value
+                                    / "type" ":" ws string_like_value
+                                    / "executionChain" ":" ws string_like_value
+                                    / "formRegion" ":" ws reference
+                                    / "editableRegion" ":" ws reference
+
+process_group_block                 = process_execution
+                                    / process_source
+                                    / process_advanced
+
+process_source                      = "ERROR"
+process_execution                   = "ERROR"
+process_advanced                    = "ERROR"
+
+
+dynamic_action                      = indent "dynamicAction" (required_ws component_id)? ws "(" line_end dynamic_action_body_line* indent ")" line_end
+dynamic_action_body_line            = dynamic_action_direct_property_line
+                                    / dynamic_action_group_block
+                                    / dynamic_action_child_component
+
+dynamic_action_direct_property_line = indent dynamic_action_direct_property line_end
+dynamic_action_direct_property      = "name" ":" ws string_like_value
+                                    / "???" ":" ws string_like_value
+
+dynamic_action_group_block          = dynamic_action_execution
+                                    / dynamic_action_when
+                                    / dynamic_action_client_side_condition
+
+dynamic_action_execution            =  indent "execution" ws "{" line_end dynamic_action_execution_property_line* indent "}" line_end
+dynamic_action_execution_property_line =  indent dynamic_action_execution_property line_end
+dynamic_action_execution_property   =  "sequence" ":" ws number
+                                    / "eventScope" ":" ws ( "static" / "dynamic" / "once" )
+                                    / "staticContainer" ":" ws string_like_value
+                                    / "type" ":" ws ( "immediate" / "debounce" / "throttle" )
+                                    / "time" ":" ws number
+                                    / "immediate" ":" ws boolean
+
+dynamic_action_when                 = indent "when" ws "{" line_end dynamic_action_when_property_line* indent "}" line_end
+dynamic_action_when_property_line   = indent dynamic_action_when_property line_end
+dynamic_action_when_property        = "event" ":" ws string_like_value
+                                    / "customEvent" ":" ws string_like_value
+                                    / "selectionType" ":" ws ( "items" / "button" / "region" / "columns" / "domObject" / "jQuerySelector" / "jsExpression" )
+                                    / "region" ":" ws reference
+                                    / "interactiveGrid" ":" ws reference
+                                    / "columns" ":" ws array_of_string_like_value
+                                    / "button" ":" ws reference
+                                    / "items" ":" ws array_of_string_like_value
+                                    / "domObject" ":" ws string_like_value
+                                    / "jquerySelector" ":" ws string_like_value
+                                    / "javaScriptExpression" ":" ws multiline_string
+
+dynamic_action_client_side_condition = indent "clientSideCondition" ws "{" line_end dynamic_action_client_side_condition_property_line* indent "}" line_end
+dynamic_action_client_side_condition_property_line = indent dynamic_action_client_side_condition_property line_end
+dynamic_action_client_side_condition_property = "type" ":" ws ( "item=value" / "item!=value" / "item>value" / "item>=value" / "item<value" / "item<=value" / "itemIsNull" / "itemIsNotNull" / "itemIsInList" / "itemIsNotInList" / "jsExpression" )
+                                    / "item" ":" ws string_like_value
+                                    / "value" ":" ws string_like_value
+                                    / "list" ":" ws array_of_string_like_value
+                                    / "javaScriptExpression" ":" ws code_block
+                                    / "type" ":" ws ( "itemColumn=value" / "itemColumn!=value" / "itemColumn>value" / "itemColumn>=value" / "itemColumn<value" / "itemColumn<=value" / "itemColumnIsNull" / "itemColumnIsNotNull" / "itemColumnIsInList" / "itemColumnIsNotInList" / "jsExpression" )
+                                    / "componentType" ":" ws ( "item" / "column" )
+                                    / "column" ":" ws string_like_value
+
+dynamic_action_child_component      = action_c
+
+
+action_c                            = indent "action" (required_ws component_id)? ws "(" line_end action_c_body_line* indent ")" line_end
+action_c_body_line                  = action_c_direct_property_line
+                                    / action_c_group_block
+
+action_c_direct_property_line       = indent action_c_direct_property line_end
+action_c_direct_property            = "name" ":" ws string_like_value
+                                    / "action" ":" ws string_like_value
+
+action_c_group_block                = action_c_affected_elements
+                                    / action_c_execution
+
+action_c_affected_elements          = <indent> "affectedElements" ws "{" line_end action_c_affected_elements_property_line* indent "}" line_end
+action_c_affected_elements_property_line = indent action_c_affected_elements_property line_end
+action_c_affected_elements_property = "selectionType" ":" ws string_like_value
+                                    / "region" ":" ws reference
+                                    / "columns" ":" ws array_of_string_like_value
+                                    / "button" ":" ws reference
+                                    / "items" ":" ws array_of_string_like_value
+                                    / "domObject" ":" ws string_like_value
+                                    / "jquerySelector" ":" ws string_like_value
+                                    / "javaScriptExpression" ":" ws code_block
+
+action_c_execution                  = indent "execution" ws "{" line_end action_c_execution_property_line* indent "}" line_end
+action_c_execution_property_line    = indent action_c_execution_property line_end
+action_c_execution_property         = "sequence" ":" ws number
+                                    / "event" ":" ws reference
+                                    / "fireWhenEventResultIs" ":" ws string_like_value
+                                    / "fireOnInit" ":" ws boolean
+                                    / "stopExecutionOnError" ":" ws boolean
+                                    / "waitForResult" ":" ws boolean
 
 
 reference                       = "@" reference_character*
 component_id                    = string / identifier / number
+code_block                      = multiline_string
+                                / string_like_value
 multiline_string                = "```" ( any_character / nl )* "```"
 blank_lines                     = (ws nl)*
 ws                              = ~r"[ \t]*"
@@ -155,8 +364,11 @@ required_ws                     = ~r"[ \t]+"
 line_end                        = nl
 nl                              = "\n" / "\r\n"
 indent                          = ~r"[ \t]*"
-array_of_string_like_value      = "[" (line_end indent string_like_value)+ line_end indent "]"
+value                           = string / identifier / boolean / number / reference / multiline_string / array
+array                           = array_of_value
 array_separator                 = required_ws / line_end indent
+array_of_value                  = "[" ( ws value ( array_separator value )* ws / line_end ( indent value line_end )? indent )? "]"
+array_of_string_like_value      = "[" (line_end indent string_like_value)+ line_end indent "]"
 string_like_value               = ~r"[^\[\]\n\r]+"
 reference_character             = ~r"[A-Za-z0-9_/#-]*"
 string                          = ~r"\"[^\"]+\""

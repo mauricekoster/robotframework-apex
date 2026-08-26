@@ -2,6 +2,5 @@
     "terminal.integrated.env.linux": {
         "PYTHONPATH": "${workspaceFolder}"
     },
-    "python.defaultInterpreterPath": "/home/maurice/Projects/robotframework-apex/.venv/bin/python",
     "python.terminal.activateEnvInCurrentTerminal": true
 }
