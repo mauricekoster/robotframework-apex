@@ -20,7 +20,6 @@ class BrowserApex(Browser):
         
         # self.add_library_components()
         
-        self.browser = None
         self.container = None
         self.classic_report_row = None
 
@@ -77,8 +76,8 @@ class BrowserApex(Browser):
     def check_container_visible(self, container_name, container):
         try:
             container_prefix = selector_prefix.get(container[0],'id')
-            element = self.browser.get_element(f"{container_prefix}={container}")
-            self.browser.get_element_states(element, AssertionOperator.contains, 'visible')
+            element = self.get_element(f"{container_prefix}={container}")
+            self.get_element_states(element, AssertionOperator.contains, 'visible')
         except:
             raise AssertionError(f"Container '{container_name}' not avaiable or visible")
         
@@ -99,45 +98,45 @@ class BrowserApex(Browser):
     def fill_text_field(self, field_name, field_id, value, field_args):
         print(f"*INFO* Filling text field '{field_name}' with value: {value}")
         container_prefix = selector_prefix.get(self.container[0],'id')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id}")
-        self.browser.fill_text(element, value)
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}")
+        self.fill_text(element, value)
 
     @not_keyword
     def fill_number_field(self, field_name, field_id, value, field_args):
             print(f"*INFO* Filling text field '{field_name}' with value: {value}")
             container_prefix = selector_prefix.get(self.container[0],'id')
-            element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id}")
-            self.browser.fill_text(element, value)
+            element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}")
+            self.fill_text(element, value)
 
     @not_keyword
     def fill_password_field(self, field_name, field_id, value, field_args):
         print(f"*INFO* Filling password field '{field_name}'")
         container_prefix = selector_prefix.get(self.container[0],'id')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id}")
-        self.browser.fill_text(element, value)
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}")
+        self.fill_text(element, value)
 
     @not_keyword
     def fill_select_field(self, field_name, field_id, value, field_args):
         print(f"*INFO* Filling select field '{field_name}' with value: {value}")
         container_prefix = selector_prefix.get(self.container[0],'id')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id}")
-        self.browser.select_options_by(element, SelectAttribute.label, value)
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}")
+        self.select_options_by(element, SelectAttribute.label, value)
 
     @not_keyword
     def fill_radio_group(self, field_name, field_id, value, field_args):
         print(f"*INFO* Filling radio group '{field_name}' with value: {value}")
         container_prefix = selector_prefix.get(self.container[0],'id')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id} >> xpath=//label[normalize-space(text())='{value}']")
-        self.browser.click(element)
-        self.browser.wait_for_elements_state(f"{container_prefix}={self.container} >> id={field_id}", ElementState.stable)
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id} >> xpath=//label[normalize-space(text())='{value}']")
+        self.click(element)
+        self.wait_for_elements_state(f"{container_prefix}={self.container} >> id={field_id}", ElementState.stable)
 
 
     @not_keyword
     def fill_date_picker(self, field_name, field_id, value, field_args):
         print(f"*INFO* Filling date picker '{field_name}' with value: {value}")
         container_prefix = selector_prefix.get(self.container[0],'id')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id} >> xpath=//input")
-        self.browser.type_text(element, value)
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id} >> xpath=//input")
+        self.type_text(element, value)
 
 
     @not_keyword
@@ -146,54 +145,54 @@ class BrowserApex(Browser):
         # direct input = <id>
         # popup button = <id>_lov_btn
         container_prefix = selector_prefix.get(self.container[0],'id')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id}_lov_btn")
-        self.browser.click(element)
-        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}_lov_btn")
+        self.click(element)
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
         # zoeken zit buiten de dialog (in hoofdpagina) in de DOM
-        old_prefix = self.browser.set_selector_prefix("")
+        old_prefix = self.set_selector_prefix("")
         
         nr_retries = 5
         while nr_retries > 0:
             nr_retries -= 1
-            search_element = self.browser.get_element(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
+            search_element = self.get_element(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                        '>> xpath=//input[@aria-label="Zoeken"]')
-            self.browser.clear_text(search_element)
+            self.clear_text(search_element)
             BuiltIn().sleep(1)
-            self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
-            self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+            self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+            self.wait_for_load_state(PageLoadStates.networkidle, 10)
             
-            self.browser.type_text(search_element, value)
+            self.type_text(search_element, value)
             BuiltIn().sleep(1)
-            self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
-            self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+            self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+            self.wait_for_load_state(PageLoadStates.networkidle, 10)
             
-            old_mode = self.browser.set_strict_mode(False)
-            self.browser.wait_for_elements_state(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
+            old_mode = self.set_strict_mode(False)
+            self.wait_for_elements_state(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                 '>> xpath=//div[contains(@class, "a-PopupLOV-results")] '
                                                 '>> xpath=//tbody/tr')
-            self.browser.set_strict_mode(True)
+            self.set_strict_mode(True)
 
             if 'manualentry' in field_args:
-                search_element = self.browser.get_element(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
+                search_element = self.get_element(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                            '>> xpath=//input[@aria-label="Zoeken"]')
-                self.browser.press_keys(search_element, 'Enter')
+                self.press_keys(search_element, 'Enter')
 
-                self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
-                self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+                self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+                self.wait_for_load_state(PageLoadStates.networkidle, 10)
 
             else:
-                elements = self.browser.get_elements(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
+                elements = self.get_elements(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                 '>> xpath=//div[contains(@class, "a-PopupLOV-results")]'
                                                 f'>> xpath=//tbody/tr[contains(., "{value}")]')
 
                 if len(elements) > 0:
                     element = elements[0]
 
-                self.browser.click(element)
-                self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+                self.click(element)
+                self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
-            states = self.browser.get_element_states(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
+            states = self.get_element_states(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                             '>> xpath=//div[contains(@class, "a-PopupLOV-results")]')
 
             if 'visible' not in states:
@@ -201,7 +200,7 @@ class BrowserApex(Browser):
 
             # TODO: try, until selected value holds in input
 
-        self.browser.set_selector_prefix(old_prefix)
+        self.set_selector_prefix(old_prefix)
 
 
     @not_keyword
@@ -249,16 +248,16 @@ class BrowserApex(Browser):
                     cb(key, field_id, used_value, field_args)
 
                 # set focus on container, to trigger validation on focus lost of field
-                self.browser.focus(self.container)
-                self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+                self.focus(self.container)
+                self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
 
     @not_keyword
     def check_display_only(self, field_name, field_id, value):
         print(f"*INFO* Checking DisplayOnly '{field_name}' with value: {value}")
         container_prefix = selector_prefix.get(self.container[0],'id')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id}_DISPLAY")
-        real_value = self.browser.get_text(element)
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}_DISPLAY")
+        real_value = self.get_text(element)
         BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
         
 
@@ -282,7 +281,6 @@ class BrowserApex(Browser):
 
     @keyword
     def block_fill(self, block_name, field_definition, data):
-        self.browser = BuiltIn().get_library_instance('Browser')
         container = self.locators.get('block_container').replace('##TEXT##', block_name)
         self.check_container_visible(block_name, container)
         self.check_data_in_definition(block_name, field_definition, data)
@@ -292,7 +290,6 @@ class BrowserApex(Browser):
 
     @keyword
     def block_button(self, block_name, button_text):
-        self.browser = BuiltIn().get_library_instance('Browser')
         container = self.locators.get('block_container').replace('##TEXT##', block_name)
         self.check_container_visible(block_name, container)
         self.container = container
@@ -301,26 +298,26 @@ class BrowserApex(Browser):
 
         container_prefix = selector_prefix.get(self.container[0],'text')
         button_prefix = selector_prefix.get(locator[0],'text')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> {button_prefix}={locator}")
+        element = self.get_element(f"{container_prefix}={self.container} >> {button_prefix}={locator}")
 
-        self.browser.click(element)
-        self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.click(element)
+        self.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
         self.container = None
 
 
     @not_keyword
     def get_value_hidden(self, field_id):
         container_prefix = selector_prefix.get(self.container[0],'id')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id}")
-        value = self.browser.get_text(element)
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}")
+        value = self.get_text(element)
         return value
 
     @not_keyword
     def get_value_displayonly(self, field_id):
         container_prefix = selector_prefix.get(self.container[0],'id')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id}_DISPLAY")
-        value = self.browser.get_text(element)
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}_DISPLAY")
+        value = self.get_text(element)
         return value
 
     @not_keyword
@@ -341,7 +338,6 @@ class BrowserApex(Browser):
 
     @keyword
     def block_get_value(self, block_name, field_definition, field_name):
-        self.browser = BuiltIn().get_library_instance('Browser')
         container = self.locators.get('block_container').replace('##TEXT##', block_name)
         self.check_container_visible(block_name, container)
         self.container = container
@@ -358,7 +354,6 @@ class BrowserApex(Browser):
 
     @keyword
     def block_check(self, block_name, field_definition, data):
-        self.browser = BuiltIn().get_library_instance('Browser')
         container = self.locators.get('block_container').replace('##TEXT##', block_name)
         self.check_container_visible(block_name, container)
         self.check_data_in_definition(block_name, field_definition, data)
@@ -375,9 +370,9 @@ class BrowserApex(Browser):
         self.check_container_visible(f"{tab_name}.header", tab_header)
 
         header_prefix = selector_prefix.get(tab_header[0], 'id')
-        element = self.browser.get_element(f"{header_prefix}={tab_header}")
-        self.browser.click(element)
-        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        element = self.get_element(f"{header_prefix}={tab_header}")
+        self.click(element)
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
         self.check_container_visible(f"{tab_name}.body", tab_container)
         return tab_container
@@ -385,7 +380,6 @@ class BrowserApex(Browser):
 
     @keyword
     def tab_fill(self, tab_name, field_definition, data):
-        self.browser = BuiltIn().get_library_instance('Browser')
         tab_container = self.tab_select_helper(tab_name)
         
         self.container = tab_container
@@ -396,7 +390,6 @@ class BrowserApex(Browser):
 
     @keyword
     def tab_button(self, tab_name, button_text):
-        self.browser = BuiltIn().get_library_instance('Browser')
         tab_container = self.tab_select_helper(tab_name)
         
         self.container = tab_container
@@ -404,39 +397,36 @@ class BrowserApex(Browser):
         
         container_prefix = selector_prefix.get(self.container[0],'text')
         button_prefix = selector_prefix.get(locator[0],'text')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> {button_prefix}={locator}")
+        element = self.get_element(f"{container_prefix}={self.container} >> {button_prefix}={locator}")
 
-        self.browser.click(element)
-        self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.click(element)
+        self.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
         self.container = None
 
 
     @keyword
     def wizard_button(self, button_text):
-        self.browser = BuiltIn().get_library_instance('Browser')
         locator = self.locators.get('wizard_button').replace('##TEXT##', button_text)
         button_prefix = selector_prefix.get(locator[0],'text')
-        element = self.browser.get_element(f"{button_prefix}={locator}")
-        self.browser.click(element)
-        self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        element = self.get_element(f"{button_prefix}={locator}")
+        self.click(element)
+        self.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
     
     @keyword
     def page_button(self, button_text):
-        self.browser = BuiltIn().get_library_instance('Browser')
         locator = self.locators.get('page_button').replace('##TEXT##', button_text)
         button_prefix = selector_prefix.get(locator[0],'text')
-        element = self.browser.get_element(f"{button_prefix}={locator}")
+        element = self.get_element(f"{button_prefix}={locator}")
 
-        self.browser.click(element)
-        self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.click(element)
+        self.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
     @keyword
     def page_get_value(self, field_definition, field_name):
-        self.browser = BuiltIn().get_library_instance('Browser')
         self.container = ".t-Dialog-body"
         if field_name not in field_definition:
             raise AttributeError(f"*WARN* Field '{field_name}' not in definition of page")
@@ -448,7 +438,7 @@ class BrowserApex(Browser):
     @not_keyword
     def check_cell_plaintext(self, column_name, column_id, value):
         print(f"*INFO* Checking PlainText '{column_name}' with value: {value}")
-        text = self.browser.get_text(self.classic_report_row + f">> xpath=//td[@headers='{column_id}']")
+        text = self.get_text(self.classic_report_row + f">> xpath=//td[@headers='{column_id}']")
         BuiltIn().should_be_equal_as_strings(value, text, f"Field values not equal: {value} <-> {text}")
 
 
@@ -474,16 +464,16 @@ class BrowserApex(Browser):
     @not_keyword
     def _classic_report_select_row(self, rownumber):
         container_prefix = selector_prefix.get(self.container[0],'text')
-        element = self.browser.get_element(f'{container_prefix}={self.container} '
+        element = self.get_element(f'{container_prefix}={self.container} '
                                             '>> xpath=//table[@class="t-Report-report"] '
                                             f'>> xpath=//tbody/tr[{rownumber}]')
-        self.browser.click(element)
-        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.click(element)
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
     @not_keyword
     def _classic_report_check_row(self, columns_definition, rownumber, data):
         container_prefix = selector_prefix.get(self.container[0],'text')
-        row_element = self.browser.get_element(f'{container_prefix}={self.container} '
+        row_element = self.get_element(f'{container_prefix}={self.container} '
                                                     '>> xpath=//table[@class="t-Report-report"] '
                                                     f'>> xpath=//tbody/tr[{rownumber}]')
 
@@ -494,7 +484,6 @@ class BrowserApex(Browser):
 
     @keyword
     def block_classic_report_select_row(self, block_name, rownumber):
-        self.browser = BuiltIn().get_library_instance('Browser')
         container = self.locators.get('block_container').replace('##TEXT##', block_name)
         self.check_container_visible(block_name, container)
 
@@ -505,7 +494,6 @@ class BrowserApex(Browser):
 
     @keyword
     def block_classic_report_check_row(self, block_name, tab_columns_definition, rownumber, data):
-        self.browser = BuiltIn().get_library_instance('Browser')
         container = self.locators.get('block_container').replace('##TEXT##', block_name)
         
         self.container = container
@@ -515,7 +503,6 @@ class BrowserApex(Browser):
 
     @keyword
     def tab_classic_report_select_row(self, tab_name, rownumber):
-        self.browser = BuiltIn().get_library_instance('Browser')
         tab_container = self.tab_select_helper(tab_name)
         
         self.container = tab_container
@@ -524,7 +511,6 @@ class BrowserApex(Browser):
 
     @keyword
     def tab_classic_report_check_row(self, tab_name, tab_columns_definition, rownumber, data):
-        self.browser = BuiltIn().get_library_instance('Browser')
         tab_container = self.tab_select_helper(tab_name)
         
         self.container = tab_container
@@ -534,7 +520,6 @@ class BrowserApex(Browser):
     # Template: Login
     @keyword
     def login_fill(self, block_name, field_definition, data):
-        self.browser = BuiltIn().get_library_instance('Browser')
         container = self.locators.get('login_container').replace('##TEXT##', block_name)
 
         self.check_container_visible(block_name, container)
@@ -545,7 +530,6 @@ class BrowserApex(Browser):
 
     @keyword
     def login_button(self, block_name, button_text):
-        self.browser = BuiltIn().get_library_instance('Browser')
         
         container = self.locators.get('login_container').replace('##TEXT##', block_name)
         self.check_container_visible(block_name, container)
@@ -555,9 +539,9 @@ class BrowserApex(Browser):
 
         container_prefix = selector_prefix.get(self.container[0],'text')
         button_prefix = selector_prefix.get(locator[0],'text')
-        element = self.browser.get_element(f"{container_prefix}={self.container} >> {button_prefix}={locator}")
+        element = self.get_element(f"{container_prefix}={self.container} >> {button_prefix}={locator}")
 
-        self.browser.click(element)
-        self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.click(element)
+        self.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
         self.container = None
