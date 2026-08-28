@@ -54,7 +54,8 @@ class BrowserApex(Browser):
             'block_container': "//div[@aria-label='##TEXT##']",
             'block_button': "//button/span[contains(text(),'##TEXT##')]",
             'page_button': "//button/span[contains(text(),'##TEXT##')]",
-            'wizard_button': "//button/span[contains(text(),'##TEXT##')]"
+            'wizard_button': "//button/span[contains(text(),'##TEXT##')]",
+            'tab_button': "//button/span[contains(text(),'##TEXT##')]",
         }
 
 
@@ -147,6 +148,7 @@ class BrowserApex(Browser):
         container_prefix = selector_prefix.get(self.container[0],'id')
         element = self.browser.get_element(f"{container_prefix}={self.container} >> id={field_id}_lov_btn")
         self.browser.click(element)
+        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
         # zoeken zit buiten de dialog (in hoofdpagina) in de DOM
         old_prefix = self.browser.set_selector_prefix("")
@@ -157,9 +159,15 @@ class BrowserApex(Browser):
             search_element = self.browser.get_element(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                        '>> xpath=//input[@aria-label="Zoeken"]')
             self.browser.clear_text(search_element)
-            self.browser.type_text(search_element, value)
-
             BuiltIn().sleep(1)
+            self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+            self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+            
+            self.browser.type_text(search_element, value)
+            BuiltIn().sleep(1)
+            self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+            self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+            
             old_mode = self.browser.set_strict_mode(False)
             self.browser.wait_for_elements_state(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                 '>> xpath=//div[contains(@class, "a-PopupLOV-results")] '
@@ -171,6 +179,9 @@ class BrowserApex(Browser):
                                                            '>> xpath=//input[@aria-label="Zoeken"]')
                 self.browser.press_keys(search_element, 'Enter')
 
+                self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+                self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+
             else:
                 elements = self.browser.get_elements(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                 '>> xpath=//div[contains(@class, "a-PopupLOV-results")]'
@@ -180,6 +191,7 @@ class BrowserApex(Browser):
                     element = elements[0]
 
                 self.browser.click(element)
+                self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
             states = self.browser.get_element_states(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                             '>> xpath=//div[contains(@class, "a-PopupLOV-results")]')
@@ -292,7 +304,8 @@ class BrowserApex(Browser):
         element = self.browser.get_element(f"{container_prefix}={self.container} >> {button_prefix}={locator}")
 
         self.browser.click(element)
-
+        self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
         self.container = None
 
 
@@ -364,6 +377,7 @@ class BrowserApex(Browser):
         header_prefix = selector_prefix.get(tab_header[0], 'id')
         element = self.browser.get_element(f"{header_prefix}={tab_header}")
         self.browser.click(element)
+        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
         self.check_container_visible(f"{tab_name}.body", tab_container)
         return tab_container
@@ -393,7 +407,8 @@ class BrowserApex(Browser):
         element = self.browser.get_element(f"{container_prefix}={self.container} >> {button_prefix}={locator}")
 
         self.browser.click(element)
-
+        self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
         self.container = None
 
 
@@ -404,6 +419,8 @@ class BrowserApex(Browser):
         button_prefix = selector_prefix.get(locator[0],'text')
         element = self.browser.get_element(f"{button_prefix}={locator}")
         self.browser.click(element)
+        self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
     
     @keyword
@@ -414,6 +431,8 @@ class BrowserApex(Browser):
         element = self.browser.get_element(f"{button_prefix}={locator}")
 
         self.browser.click(element)
+        self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
     @keyword
     def page_get_value(self, field_definition, field_name):
@@ -429,8 +448,8 @@ class BrowserApex(Browser):
     @not_keyword
     def check_cell_plaintext(self, column_name, column_id, value):
         print(f"*INFO* Checking PlainText '{column_name}' with value: {value}")
-        td = self.classic_report_row.get_element(f"xpath=//td[headers='{column_id}']")
-        pass
+        text = self.browser.get_text(self.classic_report_row + f">> xpath=//td[@headers='{column_id}']")
+        BuiltIn().should_be_equal_as_strings(value, text, f"Field values not equal: {value} <-> {text}")
 
 
     @not_keyword
@@ -459,6 +478,7 @@ class BrowserApex(Browser):
                                             '>> xpath=//table[@class="t-Report-report"] '
                                             f'>> xpath=//tbody/tr[{rownumber}]')
         self.browser.click(element)
+        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
     @not_keyword
     def _classic_report_check_row(self, columns_definition, rownumber, data):
@@ -480,6 +500,7 @@ class BrowserApex(Browser):
 
         self.container = container
         self._classic_report_select_row(rownumber)
+        
         self.container = None
 
     @keyword
@@ -537,5 +558,6 @@ class BrowserApex(Browser):
         element = self.browser.get_element(f"{container_prefix}={self.container} >> {button_prefix}={locator}")
 
         self.browser.click(element)
-
+        self.browser.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.browser.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
         self.container = None

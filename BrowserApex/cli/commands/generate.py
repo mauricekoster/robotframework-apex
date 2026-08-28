@@ -138,7 +138,7 @@ def page_generate(
     result = []
     inside_block = False
     for line in lines:
-        l = line.strip()
+        l = line.rstrip()
 
         if l.startswith('### PAGEGEN:BEGIN:SETTINGS'):
             inside_block = True
