@@ -1,3 +1,3 @@
-from .version import __VERSION__
+from .version import __version__
 
 from .browser import BrowserApex

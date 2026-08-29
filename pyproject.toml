@@ -8,7 +8,7 @@ module-name = "BrowserApex"
 [project]
 name = "robotframework-apex"
 
-version = "0.0.0"
+version = "0.0.1"
 dependencies = [
     "robotframework >= 7.1.1, < 9.0.0",
     "robotframework-browser >= 20.0.0, < 21.0.0",
@@ -45,7 +45,7 @@ classifiers = [
 dev = ["pytest", "coverage"]
 
 [project.scripts]
-apexcli = "BrowserApex.cli.main:main"
+rfapex = "BrowserApex.cli.main:main"
 
 [[tool.uv.index]]
 name = "testpypi"

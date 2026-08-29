@@ -220,6 +220,10 @@ class DynamicAction(ApexObject):
 class ActionAffectedElements(ApexGroup):
     pass
 
+class ActionExecution(ApexGroup):
+    pass
+
+
 class Action(ApexObject):
     pass
 

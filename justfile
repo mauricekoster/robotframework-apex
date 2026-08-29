@@ -83,3 +83,12 @@ clean:
 # Recreate project virtualenv from nothing
 [group('lifecycle')]
 fresh: clean install
+
+# Dump patch version
+[group('packaging')]
+patch:
+    uv version --bump patch
+    echo "__version__ = '$(uv version --short)'" >| src/BrowserApex/version.py 
+
+publish:
+    uv publish

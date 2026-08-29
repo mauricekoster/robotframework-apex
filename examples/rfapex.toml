@@ -1,0 +1,3 @@
+[output]
+folder = "generated"
+mainresource = "pages.resource"

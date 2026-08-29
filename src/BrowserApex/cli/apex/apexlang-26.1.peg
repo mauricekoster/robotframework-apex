@@ -62,6 +62,7 @@ page_child_component                = region
 region                              = indent "region" (required_ws component_id)? ws "(" line_end region_body_line* indent ")" line_end
 region_body_line                    = region_direct_property_line
                                     / region_group_block
+                                    / blank_lines
 
 region_direct_property_line         = indent region_direct_property line_end                               
 region_direct_property              = "name" ":" ws string_like_value
@@ -117,6 +118,7 @@ region_advanced_property            = "savedReportMappingIdentifier" ":" ws stri
 page_item                           = indent "pageItem" (required_ws component_id)? ws "(" line_end page_item_body_line* indent ")" line_end
 page_item_body_line                 = page_item_direct_property_line
                                     / page_item_group_block
+                                    / blank_lines
 
 page_item_direct_property_line      = indent page_item_direct_property line_end
 page_item_direct_property           = "name" ":" ws string_like_value
@@ -204,6 +206,7 @@ page_item_security_property         = "authorizationScheme" ":" ws reference
 button                              = indent "button" (required_ws component_id)? ws "(" line_end button_body_line* indent ")" line_end
 button_body_line                    = button_direct_property_line
                                     / button_group_block
+                                    / blank_lines
                                     
 button_direct_property_line         = indent button_direct_property line_end                              
 button_direct_property              = "buttonName" ":" ws string_like_value
@@ -254,6 +257,7 @@ button_behavior_property            = "type" ":" ws string_like_value
 process                             = indent "process" (required_ws component_id)? ws "(" line_end process_body_line* indent ")" line_end
 process_body_line                   = process_direct_property_line
                                     / process_group_block
+                                    / blank_lines
 
 process_direct_property_line        = indent process_direct_property line_end
 process_direct_property             = "name" ":" ws string_like_value
@@ -275,6 +279,7 @@ dynamic_action                      = indent "dynamicAction" (required_ws compon
 dynamic_action_body_line            = dynamic_action_direct_property_line
                                     / dynamic_action_group_block
                                     / dynamic_action_child_component
+                                    / blank_lines
 
 dynamic_action_direct_property_line = indent dynamic_action_direct_property line_end
 dynamic_action_direct_property      = "name" ":" ws string_like_value
@@ -324,6 +329,7 @@ dynamic_action_child_component      = action_c
 action_c                            = indent "action" (required_ws component_id)? ws "(" line_end action_c_body_line* indent ")" line_end
 action_c_body_line                  = action_c_direct_property_line
                                     / action_c_group_block
+                                    / blank_lines
 
 action_c_direct_property_line       = indent action_c_direct_property line_end
 action_c_direct_property            = "name" ":" ws string_like_value
@@ -332,13 +338,13 @@ action_c_direct_property            = "name" ":" ws string_like_value
 action_c_group_block                = action_c_affected_elements
                                     / action_c_execution
 
-action_c_affected_elements          = <indent> "affectedElements" ws "{" line_end action_c_affected_elements_property_line* indent "}" line_end
+action_c_affected_elements          = indent "affectedElements" ws "{" line_end action_c_affected_elements_property_line* indent "}" line_end
 action_c_affected_elements_property_line = indent action_c_affected_elements_property line_end
 action_c_affected_elements_property = "selectionType" ":" ws string_like_value
                                     / "region" ":" ws reference
                                     / "columns" ":" ws array_of_string_like_value
                                     / "button" ":" ws reference
-                                    / "items" ":" ws array_of_string_like_value
+                                    / "items" ":" ws ( array_of_string_like_value / string_like_value )
                                     / "domObject" ":" ws string_like_value
                                     / "jquerySelector" ":" ws string_like_value
                                     / "javaScriptExpression" ":" ws code_block

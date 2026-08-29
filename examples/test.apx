@@ -162,7 +162,7 @@ page 110 (
             type: jsExpression
             javaScriptExpression: ( $v( "P101_USERNAME" ) === "" )
         }
-
+        
         action native-set-focus (
             action: setFocus
             affectedElements {

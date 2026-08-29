@@ -182,6 +182,9 @@ class ApxNodeVisitor(NodeVisitor):
                     region.add_group(item[0], item[1])
                 else:
                     region.add_property(item[0], item[1])
+            elif item is None:
+                # blanklines
+                continue
             else:
                 raise RuleNotImplemented(f"unprocessed: {item}")
         return region
@@ -312,6 +315,8 @@ class ApxNodeVisitor(NodeVisitor):
                     page_item.add_group(item[0], item[1])
                 else:
                     page_item.add_property(item[0], item[1])
+            elif item is None:
+                continue
             else:
                 raise RuleNotImplemented(f"unprocessed: {item}")
         return page_item
@@ -537,6 +542,8 @@ class ApxNodeVisitor(NodeVisitor):
                     button.add_group(item[0], item[1])
                 else:
                     button.add_property(item[0], item[1])
+            elif item is None:
+                continue
             else:
                 raise RuleNotImplemented(f"unprocessed: {item}")
         return button
@@ -651,6 +658,10 @@ class ApxNodeVisitor(NodeVisitor):
                     dynact.add_group(item[0], item[1])
                 else:
                     dynact.add_property(item[0], item[1])
+            elif isinstance(item, ApexObject):
+                dynact.add_child(item)
+            elif item is None:
+                continue
             else:
                 raise RuleNotImplemented(f"unprocessed: {item}")
         return dynact
@@ -761,6 +772,8 @@ class ApxNodeVisitor(NodeVisitor):
                     act.add_group(item[0], item[1])
                 else:
                     act.add_property(item[0], item[1])
+            elif item is None:
+                continue
             else:
                 raise RuleNotImplemented(f"unprocessed: {item}")
         return act
@@ -787,7 +800,7 @@ class ApxNodeVisitor(NodeVisitor):
                 d[item[0]] = item[1]
             else:
                 raise RuleNotImplemented()
-        return ('affectedElements', DynamicActionWhen(d) )
+        return ('affectedElements', ActionAffectedElements(d) )
     
     def visit_action_c_affected_elements_property_line(self, node, visited_children):
         return visited_children[1]
@@ -795,7 +808,7 @@ class ApxNodeVisitor(NodeVisitor):
     def visit_action_c_affected_elements_property(self, node, visited_children):
         v = visited_children[0]
         match v[0].text:
-            case 'event':
+            case 'selectionType' | 'items':
                 return (v[0].text, v[3])
             # case 'alignment':
             #     return (v[0].text, v[3][0].text)
@@ -803,6 +816,32 @@ class ApxNodeVisitor(NodeVisitor):
             #     return (v[0].text, v[3])
             case _:
                 raise RuleNotImplemented()
+
+    def visit_action_c_execution(self, node, visited_children):
+        parts = visited_children[5]
+        d = {}
+        for item in parts:
+            if type(item) is tuple:
+                d[item[0]] = item[1]
+            else:
+                raise RuleNotImplemented()
+        return ('execution', ActionExecution(d) )
+    
+    def visit_action_c_execution_property_line(self, node, visited_children):
+        return visited_children[1]
+
+    def visit_action_c_execution_property(self, node, visited_children):
+        v = visited_children[0]
+        match v[0].text:
+            case 'sequence' | 'fireWhenEventResultIs':
+                return (v[0].text, v[3])
+            # case 'alignment':
+            #     return (v[0].text, v[3][0].text)
+            # case 'enableMetaTags' | 'enableDuplicatePageSubmissions':
+            #     return (v[0].text, v[3])
+            case _:
+                raise RuleNotImplemented()
+
 
 
     def visit_process(self, node, visited_children):
@@ -822,6 +861,8 @@ class ApxNodeVisitor(NodeVisitor):
                     proc.add_group(item[0], item[1])
                 else:
                     proc.add_property(item[0], item[1])
+            elif item is None:
+                continue
             else:
                 raise RuleNotImplemented(f"unprocessed: {item}")
         return proc
