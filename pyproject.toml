@@ -8,7 +8,7 @@ module-name = "BrowserApex"
 [project]
 name = "robotframework-apex"
 
-version = "0.0.1"
+version = "0.0.2"
 dependencies = [
     "robotframework >= 7.1.1, < 9.0.0",
     "robotframework-browser >= 20.0.0, < 21.0.0",
@@ -18,11 +18,12 @@ dependencies = [
     "Jinja2 >= 3.1.6",
     "python-dotenv",
     "parsimonious>=0.11.0",
+    "python-oracle-apex>=0.0.0",
 ]
 
 
 
-requires-python = ">= 3.10"
+requires-python = ">= 3.13"
 authors = [
     { name = "Maurice Koster", email = "maurice@mauricekoster.com" },
 ]

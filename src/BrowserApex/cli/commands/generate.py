@@ -9,7 +9,7 @@ from operator import itemgetter
 
 from BrowserApex.cli.main import app
 from BrowserApex.cli.utils import get_config_path, get_config, get_template
-from BrowserApex.cli.apex import *
+from python_oracle_apex import *
 
 current_page = None
 

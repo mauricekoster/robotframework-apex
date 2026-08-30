@@ -91,4 +91,6 @@ patch:
     echo "__version__ = '$(uv version --short)'" >| src/BrowserApex/version.py 
 
 publish:
+    rm -rf dist/
+    uv build
     uv publish

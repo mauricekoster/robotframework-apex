@@ -6,7 +6,7 @@ from pathlib import Path
 
 #from BrowserApex.cli.utils import get_template
 from BrowserApex.cli.main import app
-from BrowserApex.cli.apex.grammar import parse_apex_file
+from python_oracle_apex import parse_apex_file
 
 @app.command(name='parse')
 def project_parse(
