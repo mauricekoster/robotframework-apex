@@ -401,15 +401,15 @@ wheels = [
 
 [[package]]
 name = "python-oracle-apex"
-version = "0.0.0"
+version = "0.0.1"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
     { name = "parsimonious" },
     { name = "pyyaml" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/2b/3c/8729dd007e830232119d2acb4a1880cbef87b2196ee703c7e154c31ff7fd/python_oracle_apex-0.0.0.tar.gz", hash = "sha256:8ca9f7942c388513125c39f868861d96c32bab40a30e5b04f750dcf68f5db63d", size = 9051, upload-time = "2026-08-30T12:56:41.394Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/1a/14/3b5477afb902d205422e05c2f4e7222e72d70c65c19cbd5c4df5e4587a04/python_oracle_apex-0.0.1.tar.gz", hash = "sha256:6d74c2a0c8c99ea8f51103ff8f82bd2851f9d44150dca9227fb03ace16ad8bce", size = 9093, upload-time = "2026-09-02T17:20:42.703Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/c1/d6/bc01acbaec55cb90005af79ff1371b911e4c0386f65442507fcc22d2e654/python_oracle_apex-0.0.0-py3-none-any.whl", hash = "sha256:ef3f268687f666d9ca6e3a281b5ba35fb08de9ff668ca07cd524eaab7ce52916", size = 11331, upload-time = "2026-08-30T12:56:40.126Z" },
+    { url = "https://files.pythonhosted.org/packages/42/de/b2709e5f32316d1889afe10f3c39e8edddd7b62e26269df7ba320b545b08/python_oracle_apex-0.0.1-py3-none-any.whl", hash = "sha256:c654421cc4f8be297c27328ee3625c487a0f8a9e257e0f349b0647a53f22d542", size = 11371, upload-time = "2026-09-02T17:20:41.695Z" },
 ]
 
 [[package]]
@@ -569,7 +569,7 @@ requires-dist = [
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "parsimonious", specifier = ">=0.11.0" },
     { name = "python-dotenv" },
-    { name = "python-oracle-apex", specifier = ">=0.0.0" },
+    { name = "python-oracle-apex", specifier = ">=0.0.1" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "rich", specifier = ">=15.0.0" },
     { name = "robotframework", specifier = ">=7.1.1,<9.0.0" },

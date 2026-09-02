@@ -18,7 +18,7 @@ dependencies = [
     "Jinja2 >= 3.1.6",
     "python-dotenv",
     "parsimonious>=0.11.0",
-    "python-oracle-apex>=0.0.0",
+    "python-oracle-apex>=0.0.1",
 ]
 
 
