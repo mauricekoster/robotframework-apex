@@ -44,7 +44,7 @@ jobs:
       - build
     runs-on: ubuntu-latest
     environment:
-      name: pypi
+      name: pypi    # noqa
     permissions:
       id-token: write
     steps:
