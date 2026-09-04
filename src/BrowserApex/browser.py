@@ -2,10 +2,14 @@
 Oracle APEX support
 """
 
+from robot.api import FatalError
 from robot.libraries.BuiltIn import BuiltIn
 from robot.api.deco import keyword, not_keyword, library
 from Browser import AssertionOperator, SelectAttribute, ElementState, Browser
 from Browser.utils import PageLoadStates
+
+from .keywords import FieldCommand
+
 
 selector_prefix = {
     '/': 'xpath', 
@@ -17,8 +21,12 @@ selector_prefix = {
 class BrowserApex(Browser):
     def __init__(self, **kwargs):
         Browser.__init__(self, **kwargs)
+
+        self._field_commands = FieldCommand(self)
         
-        # self.add_library_components()
+        self.add_library_components([
+            self._field_commands
+        ])
         
         self.container = None
         self.classic_report_row = None
@@ -37,11 +45,12 @@ class BrowserApex(Browser):
             'DisplayOnly': self.get_value_displayonly
         }
         self.field_check_callbacks = {
-            'DisplayOnly': self.check_display_only
+            'DisplayOnly': self.check_display_only,
+            'TextField': self.check_text_field,
+            'SelectList': self.check_select_list,
+            'DatePicker': self.check_date_picker,
         }
-        self.field_commands = {
-            'var': self.command_var
-        }
+        
 
         self.cell_check_callbacks = {
             'PlainText': self.check_cell_plaintext
@@ -58,19 +67,7 @@ class BrowserApex(Browser):
         }
 
 
-    @not_keyword
-    def command_var(self, *args):
-        print(f"*DEBUG* COMMAND VAR args: {args}")
-        value = BuiltIn().get_variable_value(args[0])
-        return value
-
-    @keyword
-    def register_field_commands(self, **commands_to_register):
-        if type(commands_to_register) is not dict:
-            raise AttributeError(f"Register Field Commands expect a dictionary as argument")
-
-        self.field_commands.update(commands_to_register)
-        print(f"*INFO* Test")
+    
 
     @not_keyword
     def check_container_visible(self, container_name, container):
@@ -83,10 +80,15 @@ class BrowserApex(Browser):
         
     @not_keyword
     def check_data_in_definition(self, block_name, field_definition, data):
-
+        fail_missing = BuiltIn().get_variable_value("${fail_missing_field_definition}", False)
+        nr_def_missing = 0
         for key, _ in data.items():
             if key not in field_definition:
+                nr_def_missing += 1
                 print(f"*WARN* Data field '{key}' not found in definition of block '{block_name}'" )
+
+        if fail_missing and nr_def_missing > 0:
+            raise FatalError(f"Missing definitions (count: {nr_def_missing}) in block '{block_name}'. See warnings." )
 
 
     @not_keyword
@@ -99,14 +101,14 @@ class BrowserApex(Browser):
         print(f"*INFO* Filling text field '{field_name}' with value: {value}")
         container_prefix = selector_prefix.get(self.container[0],'id')
         element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}")
-        self.fill_text(element, value)
+        self.fill_text(element, str(value))
 
     @not_keyword
     def fill_number_field(self, field_name, field_id, value, field_args):
             print(f"*INFO* Filling text field '{field_name}' with value: {value}")
             container_prefix = selector_prefix.get(self.container[0],'id')
             element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}")
-            self.fill_text(element, value)
+            self.fill_text(element, str(value))
 
     @not_keyword
     def fill_password_field(self, field_name, field_id, value, field_args):
@@ -159,13 +161,13 @@ class BrowserApex(Browser):
                                                        '>> xpath=//input[@aria-label="Zoeken"]')
             self.clear_text(search_element)
             BuiltIn().sleep(1)
-            self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
             self.wait_for_load_state(PageLoadStates.networkidle, 10)
+            self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
             
             self.type_text(search_element, value)
             BuiltIn().sleep(1)
-            self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
             self.wait_for_load_state(PageLoadStates.networkidle, 10)
+            self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
             
             old_mode = self.set_strict_mode(False)
             self.wait_for_elements_state(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
@@ -178,8 +180,8 @@ class BrowserApex(Browser):
                                                            '>> xpath=//input[@aria-label="Zoeken"]')
                 self.press_keys(search_element, 'Enter')
 
-                self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
                 self.wait_for_load_state(PageLoadStates.networkidle, 10)
+                self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
             else:
                 elements = self.get_elements(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
@@ -203,31 +205,7 @@ class BrowserApex(Browser):
         self.set_selector_prefix(old_prefix)
 
 
-    @not_keyword
-    def process_command(self, value):
-        used_value = None
-        if value[0] in ['&', '!', '$']:
-            args = value[1:].split(':')
-            cmd_name = args.pop(0)
-            print(f"*INFO* command: {cmd_name}  args: {args}")
-            if cmd_name in self.field_commands:
-                cmd = self.field_commands[cmd_name]
-                if type(cmd) is str:
-                    # run as keyword
-                    used_value = BuiltIn().run_keyword(cmd, *args)
-
-                else:
-                    # run as function
-                    used_value = cmd(*args)
-
-            else:
-                raise AttributeError(f"Field command `{cmd_name}` not found")
-            print(f"*INFO* command: {cmd_name}  returned: {used_value}")
-
-        else:
-            used_value = value
-
-        return used_value
+   
     
     @not_keyword
     def fill_fields(self, field_definition, data):
@@ -240,7 +218,7 @@ class BrowserApex(Browser):
                 print(f'*INFO* field_id: {field_id} field_type: {field_type} field_args: {field_args}')
                 cb = self.field_input_callbacks.get(field_type)
 
-                used_value = self.process_command(value)
+                used_value = self._field_commands.process_command(value)
 
                 if used_value:
                     if cb is None:
@@ -256,11 +234,36 @@ class BrowserApex(Browser):
     def check_display_only(self, field_name, field_id, value):
         print(f"*INFO* Checking DisplayOnly '{field_name}' with value: {value}")
         container_prefix = selector_prefix.get(self.container[0],'id')
-        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}_DISPLAY")
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}")
         real_value = self.get_text(element)
         BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
         
+    @not_keyword
+    def check_text_field(self, field_name, field_id, value):
+        print(f"*INFO* Checking TextField '{field_name}' with value: {value}")
+        container_prefix = selector_prefix.get(self.container[0],'id')
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}")
+        real_value = self.get_text(element)
+        BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
 
+    @not_keyword
+    def check_select_list(self, field_name, field_id, value):
+        print(f"*INFO* Checking SelectList '{field_name}' with value: {value}")
+        container_prefix = selector_prefix.get(self.container[0],'id')
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id}")
+        real_value = self.get_selected_options(element)
+        if len(real_value) != 1:
+            raise AssertionError("Expected 1 selected option")
+        BuiltIn().should_be_equal_as_strings(value, real_value[0], f"Field values not equal: {value} <-> {real_value}")
+    
+    @not_keyword
+    def check_date_picker(self, field_name, field_id, value):
+        print(f"*INFO* Checking DatePicker '{field_name}' with value: {value}")
+        container_prefix = selector_prefix.get(self.container[0],'id')
+        element = self.get_element(f"{container_prefix}={self.container} >> id={field_id} >> //input")
+        real_value = self.get_text(element)
+        BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
+    
     @not_keyword
     def check_fields(self, field_definition, data):
         for key, value in data.items():
@@ -272,12 +275,13 @@ class BrowserApex(Browser):
                 print(f'*INFO* field_id: {field_id} field_type: {field_type} field_args: {field_args}')
                 cb = self.field_check_callbacks.get(field_type)
 
-                used_value = self.process_command(value)
+                used_value = self._field_commands.process_command(value)
 
                 if used_value:
                     if cb is None:
                         raise RuntimeError(f"Field type {field_type} not supported")
                     cb(key, field_id, used_value)
+                
 
     @keyword
     def block_fill(self, block_name, field_definition, data):
@@ -365,13 +369,14 @@ class BrowserApex(Browser):
     @not_keyword
     def tab_select_helper(self, tab_name):
         
-        tab_header = f"//a/span[text()='{tab_name}']"
-        tab_container = f"//div[@aria-label='{tab_name}']"
+        tab_header = f"//a[span[text()='{tab_name}']]/.."
+        tab_container = f"//div[@data-label='{tab_name}']"
         self.check_container_visible(f"{tab_name}.header", tab_header)
 
         header_prefix = selector_prefix.get(tab_header[0], 'id')
         element = self.get_element(f"{header_prefix}={tab_header}")
         self.click(element)
+        self.wait_for_load_state(PageLoadStates.networkidle, 10)
         self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
         self.check_container_visible(f"{tab_name}.body", tab_container)
@@ -380,6 +385,9 @@ class BrowserApex(Browser):
 
     @keyword
     def tab_fill(self, tab_name, field_definition, data):
+        """
+        Assumes the tab contains 1 region with same label as tab
+        """
         tab_container = self.tab_select_helper(tab_name)
         
         self.container = tab_container
@@ -387,6 +395,51 @@ class BrowserApex(Browser):
         self.fill_fields(field_definition, data)
 
         self.container = None
+
+
+    @keyword
+    def tab_check(self, tab_name, field_definition, data):
+        tab_container = self.tab_select_helper(tab_name)
+                
+        self.container = tab_container
+        self.check_data_in_definition(tab_name, field_definition, data)
+        self.check_fields(field_definition, data)
+        self.container = None
+
+
+    @keyword
+    def tab_subregion_fill(self, tab_name, region, field_definition, data):
+        """
+        Assumes the tab contains several regions with own label name
+        """
+        tab_container = self.tab_select_helper(tab_name)
+
+        region_locator = self.locators.get('block_container').replace('##TEXT##', region)
+
+        container = self.get_element(tab_container + ' >> ' + region_locator)
+        self.check_container_visible(region, container)
+        self.check_data_in_definition(region, field_definition, data)
+        
+        self.container = container
+
+        self.fill_fields(field_definition, data)
+
+        self.container = None
+
+    @keyword
+    def tab_subregion_check(self, tab_name, region, field_definition, data):
+        tab_container = self.tab_select_helper(tab_name)
+
+        region_locator = self.locators.get('block_container').replace('##TEXT##', region)
+        
+        container = self.get_element(tab_container + ' >> ' + region_locator)
+        self.check_container_visible(region, container)
+
+        self.container = container
+        self.check_data_in_definition(region, field_definition, data)
+        self.check_fields(field_definition, data)
+        self.container = None
+
 
     @keyword
     def tab_button(self, tab_name, button_text):
@@ -398,6 +451,26 @@ class BrowserApex(Browser):
         container_prefix = selector_prefix.get(self.container[0],'text')
         button_prefix = selector_prefix.get(locator[0],'text')
         element = self.get_element(f"{container_prefix}={self.container} >> {button_prefix}={locator}")
+
+        self.click(element)
+        self.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.container = None
+
+    @keyword
+    def tab_subregion_button(self, tab_name, region, button):
+        tab_container = self.tab_select_helper(tab_name)
+        
+        region_locator = self.locators.get('block_container').replace('##TEXT##', region)
+
+        container = self.get_element(tab_container + ' >> ' + region_locator)
+        self.check_container_visible(region, container)
+
+
+        locator = self.locators.get('tab_button').replace('##TEXT##', button)
+        
+        button_prefix = selector_prefix.get(locator[0],'text')
+        element = self.get_element(f"{container} >> {button_prefix}={locator}")
 
         self.click(element)
         self.wait_for_load_state(PageLoadStates.networkidle, 10)
@@ -453,7 +526,7 @@ class BrowserApex(Browser):
                 print(f'*INFO* field_id: {field_id} field_type: {field_type} field_args: {field_args}')
                 cb = self.cell_check_callbacks.get(field_type)
 
-                used_value = self.process_command(value)
+                used_value = self._field_commands.process_command(value)
 
                 if used_value:
                     if cb is None:
@@ -468,18 +541,30 @@ class BrowserApex(Browser):
                                             '>> xpath=//table[@class="t-Report-report"] '
                                             f'>> xpath=//tbody/tr[{rownumber}]')
         self.click(element)
+        self.wait_for_load_state(PageLoadStates.networkidle, 10)
         self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
     @not_keyword
-    def _classic_report_check_row(self, columns_definition, rownumber, data):
+    def _classic_report_check_row(self, columns_definition, rownumber, data, table_number=1):
         container_prefix = selector_prefix.get(self.container[0],'text')
         row_element = self.get_element(f'{container_prefix}={self.container} '
-                                                    '>> xpath=//table[@class="t-Report-report"] '
+                                                    f'>> xpath=//table[@class="t-Report-report"][{table_number}] '
                                                     f'>> xpath=//tbody/tr[{rownumber}]')
 
         self.classic_report_row = row_element
         self._check_columns(columns_definition, data)
         self.classic_report_row = None
+
+    @not_keyword
+    def _classic_report_row_count(self):
+        container_prefix = selector_prefix.get(self.container[0],'text')
+        self.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        row_elements = self.get_elements(f'{container_prefix}={self.container} '
+                                                    '>> xpath=//table[@class="t-Report-report"] '
+                                                    f'>> xpath=//tbody/tr')
+        return len(row_elements)
+
         
 
     @keyword
@@ -493,13 +578,23 @@ class BrowserApex(Browser):
         self.container = None
 
     @keyword
-    def block_classic_report_check_row(self, block_name, tab_columns_definition, rownumber, data):
+    def block_classic_report_check_row(self, block_name, columns_definition, rownumber, data, table_number=1):
         container = self.locators.get('block_container').replace('##TEXT##', block_name)
         
         self.container = container
-        self._classic_report_check_row(tab_columns_definition, rownumber, data)
+        self._classic_report_check_row(columns_definition, rownumber, data, table_number)
         self.container = None
 
+    @keyword
+    def block_classic_report_row_count(self, block_name, expected_row_count=None):
+        container = self.locators.get('block_container').replace('##TEXT##', block_name)
+        
+        self.container = container
+        count = self._classic_report_row_count()
+        if expected_row_count is not None:
+            BuiltIn().should_be_equal_as_numbers(count, int(expected_row_count), "Number of report rows incorrect")
+        self.container = None
+        return count
 
     @keyword
     def tab_classic_report_select_row(self, tab_name, rownumber):
@@ -516,6 +611,29 @@ class BrowserApex(Browser):
         self.container = tab_container
         self._classic_report_check_row(tab_columns_definition, rownumber, data)
         self.container = None
+
+
+    @keyword
+    def tab_subregion_select_row(self, tab_name, region, rownumber):
+        tab_container = self.tab_select_helper(tab_name)
+        
+        region_locator = self.locators.get('block_container').replace('##TEXT##', region)
+
+        container = self.get_element(tab_container + ' >> ' + region_locator)
+        self.check_container_visible(region, container)
+        
+        self.container = container
+        self._classic_report_select_row(rownumber)
+        self.container = None
+
+    @keyword
+    def tab_subregion_check_row(self, tab_name, tab_columns_definition, rownumber, data):
+        tab_container = self.tab_select_helper(tab_name)
+        
+        self.container = tab_container
+        self._classic_report_check_row(tab_columns_definition, rownumber, data)
+        self.container = None
+
 
     # Template: Login
     @keyword
