@@ -8,9 +8,7 @@ from robot.api.deco import keyword, not_keyword, library
 from Browser import AssertionOperator, SelectAttribute, ElementState, Browser
 from Browser.utils import PageLoadStates, logger
 
-from .keywords import FieldCommand, Region
-
-
+from .keywords import Breadcrumb, Dialog, FieldCommand, LoginTemplate, Region, Tab
 
 
 @library(scope='GLOBAL', auto_keywords=True)
@@ -47,23 +45,20 @@ class BrowserApex(Browser):
         }
 
         self.locators = {
-            'login_container': ".t-Login-region",
-            'login_button': "//button/span[contains(text(),'##TEXT##')]",
             'block_container': "//div[@aria-label='##TEXT##']",
-            'block_button': "//button/span[contains(text(),'##TEXT##')]",
-            'page_button': "//button/span[contains(text(),'##TEXT##')]",
-            'wizard_button': "//button/span[contains(text(),'##TEXT##')]",
-            'tab_button': "//button/span[contains(text(),'##TEXT##')]",
             'tab_header': "//a[span[text()='##NAME##']]/..",
             'tab_container': "//div[@data-label='##NAME##']",
-
         }
 
         self._field_commands = FieldCommand(self)
                 
         self.add_library_components([
+            Breadcrumb(self),
+            Dialog(self),
             self._field_commands,
+            LoginTemplate(self),
             Region(self),
+            Tab(self),
 
         ])
         
@@ -103,11 +98,7 @@ class BrowserApex(Browser):
             raise FatalError(f"Missing definitions (count: {nr_def_missing}) in block '{block_name}'. See warnings." )
 
 
-    @not_keyword
-    def check_button(self, block_name, button_fields, button_name):
-        if button_name not in button_fields:
-            raise AssertionError(f"Button '{button_name}' not in button definition for block '{block_name}'")
-
+ 
     @not_keyword
     def fill_text_field(self, field_name, field_id, value, field_args):
         print(f"*INFO* Filling text field '{field_name}' with value: {value}")
@@ -211,15 +202,10 @@ class BrowserApex(Browser):
 
         self.set_selector_prefix(old_prefix)
 
-
+  
     @not_keyword
-    def fill_fields_new(self, locator, field_definition, data):
+    def fill_fields(self, locator, field_definition, data):
         self.container = locator
-        self.fill_fields(field_definition, data)
-        self.container = None
-    
-    @not_keyword
-    def fill_fields(self, field_definition, data):
         for key, value in data.items():
             if key in field_definition:
                 field = field_definition[key]
@@ -239,6 +225,7 @@ class BrowserApex(Browser):
                 # set focus on container, to trigger validation on focus lost of field
                 self.focus(self.container)
                 self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.container = None
 
 
     @not_keyword
@@ -272,7 +259,8 @@ class BrowserApex(Browser):
         BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
     
     @not_keyword
-    def check_fields(self, field_definition, data):
+    def check_fields(self, locator, field_definition, data):
+        self.container = locator
         for key, value in data.items():
             if key in field_definition:
                 field = field_definition[key]
@@ -288,32 +276,7 @@ class BrowserApex(Browser):
                     if cb is None:
                         raise RuntimeError(f"Field type {field_type} not supported")
                     cb(key, field_id, used_value)
-                
-
-    @keyword
-    def block_fill(self, block_name, field_definition, data):
-        container = self.get_locator('block_container', {'##TEXT##': block_name})
-        self.check_container_visible(block_name, container)
-        self.check_data_in_definition(block_name, field_definition, data)
-        self.container = container
-        self.fill_fields(field_definition, data)
         self.container = None
-
-    @keyword
-    def block_button(self, block_name, button_text):
-        container = self.get_locator('block_container', {'##TEXT##': block_name})
-        self.check_container_visible(block_name, container)
-        self.container = container
-
-        locator = self.get_locator('block_button', {'##TEXT##': button_text}) 
-
-        element = self.get_element(f"{self.container} >> {locator}")
-
-        self.click(element)
-        self.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
-        self.container = None
-
 
     @not_keyword
     def get_value_hidden(self, field_id):
@@ -328,7 +291,8 @@ class BrowserApex(Browser):
         return value
 
     @not_keyword
-    def _get_field_value(self, field_definition, field_name):
+    def get_field_value(self, container, field_definition, field_name):
+        self.container = container
         field = field_definition[field_name]
         if ':' not in field:
             raise AssertionError(f"Field '{field_name}' has invalid definition: '{field}'")
@@ -340,34 +304,8 @@ class BrowserApex(Browser):
 
         value = cb(field_id)
         print(f"*INFO* get value from: '{field_name}' of type '{field_type}'  returned: {value}")
-        return value
-
-
-    @keyword
-    def block_get_value(self, block_name, field_definition, field_name):
-        container = self.locators.get('block_container').replace('##TEXT##', block_name)
-        self.check_container_visible(block_name, container)
-        self.container = container
-
-        if field_name not in field_definition:
-            raise AttributeError(f"*WARN* Field '{field_name}' not in definition of block {block_name}")
-        
-        self.container = container
-        value = self._get_field_value(field_definition, field_name)
         self.container = None
-        
         return value
-
-
-    @keyword
-    def block_check(self, block_name, field_definition, data):
-        container = self.get_locator('block_container', {'##TEXT##': block_name})
-        self.check_container_visible(block_name, container)
-        self.check_data_in_definition(block_name, field_definition, data)
-        self.container = container
-        self.check_fields(field_definition, data)
-        self.container = None
-    
 
     @not_keyword
     def tab_select_helper(self, tab_name):
@@ -383,167 +321,8 @@ class BrowserApex(Browser):
         return tab_container
     
 
-    @not_keyword
-    def tab_select_helper_sub(self, container, tab_name):
-        tab_header = self.get_locator('tab_header', {'##NAME##': tab_name})
-        tab_container = self.get_locator('tab_container', {'##NAME##': tab_name})
-        self.check_container_visible(f"{tab_name}.header", tab_header)
 
-        element = self.get_element(f"{container} >> {tab_header}")
-        self.click(element)
-        self.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
-        
-        self.check_container_visible(f"{tab_name}.body", f"{container} >> {tab_container}")
-        return f"{container} >> {tab_container}"
-    
-
-    @keyword
-    def tab_fill(self, tab_name, field_definition, data):
-        """
-        Assumes the tab contains 1 region with same label as tab
-        """
-        tab_container = self.tab_select_helper(tab_name)
-        
-        self.container = tab_container
-
-        self.fill_fields(field_definition, data)
-
-        self.container = None
-
-
-    @keyword
-    def tab_check(self, tab_name, field_definition, data):
-        tab_container = self.tab_select_helper(tab_name)
-                
-        self.container = tab_container
-        self.check_data_in_definition(tab_name, field_definition, data)
-        self.check_fields(field_definition, data)
-        self.container = None
-
-
-    @keyword
-    def tab_subregion_fill(self, tab_name, region, field_definition, data):
-        """
-        Assumes the tab contains several regions with own label name
-        """
-        tab_container = self.tab_select_helper(tab_name)
-
-        region_locator = self.get_locator('block_container', {'##TEXT##': region})
-
-        container = self.get_element(tab_container + ' >> ' + region_locator)
-        self.check_container_visible(region, container)
-        self.check_data_in_definition(region, field_definition, data)
-        
-        self.container = container
-
-        self.fill_fields(field_definition, data)
-
-        self.container = None
-
-    @keyword
-    def tab_subregion_check(self, tab_name, region, field_definition, data):
-        tab_container = self.tab_select_helper(tab_name)
-
-        region_locator = self.get_locator('block_container', {'##TEXT##': region})
-        container = self.get_element(tab_container + ' >> ' + region_locator)
-        self.check_container_visible(region, container)
-
-        self.container = container
-        self.check_data_in_definition(region, field_definition, data)
-        self.check_fields(field_definition, data)
-        self.container = None
-
-
-    # @keyword
-    # def tab_subregion_tab_fill(self, tab_name, sub_tab_name, field_definition, data):
-    #     """
-    #     Assumes the tab contains several regions with own label name
-    #     """
-    #     tab_container = self.tab_select_helper(tab_name)
-
-    #     subtab_locator = self.locators.get('block_container').replace('##TEXT##', region)
-
-    #     container = self.get_element(tab_container + ' >> ' + region_locator)
-    #     self.check_container_visible(region, container)
-    #     self.check_data_in_definition(region, field_definition, data)
-        
-    #     self.container = container
-
-    #     self.fill_fields(field_definition, data)
-
-    #     self.container = None
-
-    # @keyword
-    # def tab_subregion_tab_check(self, tab_name, region, field_definition, data):
-    #     tab_container = self.tab_select_helper(tab_name)
-
-    #     region_locator = self.locators.get('block_container').replace('##TEXT##', region)
-        
-    #     container = self.get_element(tab_container + ' >> ' + region_locator)
-    #     self.check_container_visible(region, container)
-
-    #     self.container = container
-    #     self.check_data_in_definition(region, field_definition, data)
-    #     self.check_fields(field_definition, data)
-    #     self.container = None
-
-
-    @keyword
-    def tab_button(self, tab_name, button_text):
-        tab_container = self.tab_select_helper(tab_name)
-        
-        self.container = tab_container
-        locator = self.get_locator('tab_button', {'##TEXT##': button_text})
-        element = self.get_element(f"{self.container} >> {locator}")
-
-        self.click(element)
-        self.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
-        self.container = None
-
-    @keyword
-    def tab_subregion_button(self, tab_name, region, button):
-        tab_container = self.tab_select_helper(tab_name)
-        
-        region_locator = self.get_locator('block_container', {'##TEXT##': region})
-
-        container = self.get_element(tab_container + ' >> ' + region_locator)
-        self.check_container_visible(region, container)
-
-        locator = self.get_locator('tab_button', {'##TEXT##': button})
-        element = self.get_element(f"{container} >> {locator}")
-
-        self.click(element)
-        self.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
-        self.container = None
-
-
-    @keyword
-    def wizard_button(self, button_text):
-        locator = self.get_locator('wizard_button', {'##TEXT##': button_text})
-        self.click(locator)
-        self.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
-
-    
-    @keyword
-    def page_button(self, button_text):
-        locator = self.get_locator('page_button', {'##TEXT##': button_text})
-        self.click(locator)
-        self.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
-
-    @keyword
-    def page_get_value(self, field_definition, field_name):
-        self.container = ".t-Dialog-body"
-        if field_name not in field_definition:
-            raise AttributeError(f"*WARN* Field '{field_name}' not in definition of page")
-
-        value = self._get_field_value(field_definition, field_name)
-        self.container = None
-        return value
+   
 
     @not_keyword
     def check_cell_plaintext(self, column_name, column_id, value):
@@ -668,30 +447,3 @@ class BrowserApex(Browser):
         self._classic_report_check_row(tab_columns_definition, rownumber, data)
         self.container = None
 
-
-    # Template: Login
-    @keyword
-    def login_fill(self, block_name, field_definition, data):
-        container = self.locators.get('login_container').replace('##TEXT##', block_name)
-
-        self.check_container_visible(block_name, container)
-        self.check_data_in_definition(block_name, field_definition, data)
-        self.container = container
-        self.fill_fields(field_definition, data)
-        self.container = None
-
-    @keyword
-    def login_button(self, block_name, button_text):
-        
-        container = self.get_locator('login_container', {'##TEXT##': block_name})
-        self.check_container_visible(block_name, container)
-        self.container = container
-
-        locator = self.get_locator('login_button', {'##TEXT##': button_text})
-
-        element = self.get_element(f"{self.container} >> {locator}")
-
-        self.click(element)
-        self.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
-        self.container = None

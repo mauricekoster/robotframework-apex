@@ -47,7 +47,7 @@ class FieldCommand(LibraryComponent):
         Now it can be used for filling:
         |    Some region fill
         |    ...    text=$generatetext:10
-        (``Some region fill`` is a wrapper arround one of the Apex Fill keywords: `Block Fill`, `Tab Fill`, `Tab Subregion Fill`)
+        (``Some region fill`` is a wrapper arround one of the Apex Fill keyword: `Region Fill`)
 
         The value part will be split on ``:`` and passed to the registed function. In this case: ``['10']``
         """
