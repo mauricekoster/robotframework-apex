@@ -3,7 +3,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from Browser.utils import PageLoadStates, logger
 from robot.api.deco import keyword, not_keyword
 from ..librarycomponent import LibraryComponent
-
+from ..utils import check_data_in_definition
 
 class LoginTemplate(LibraryComponent):
     """
@@ -13,12 +13,12 @@ class LoginTemplate(LibraryComponent):
         super().__init__(library)
 
         self.library.locators.update({
-            'login_container': ".t-Login-region",
-            'login_button': "//button/span[contains(text(),'##TEXT##')]",
+            'login_container': "css=.t-Login-region",
+            'login_button': "xpath=//button/span[contains(text(),'##TEXT##')]",
         })
 
     @not_keyword
-    def _check_container_visible(self, container):
+    def _check_login_visible(self, container):
         try:
             element = self.library.get_element(container)
             self.library.get_element_states(element, AssertionOperator.contains, 'visible')
@@ -30,14 +30,14 @@ class LoginTemplate(LibraryComponent):
     def login_fill(self, field_definition, data):
         container = self.library.get_locator('login_container')
 
-        self._check_container_visible(container)
-        self.library.check_data_in_definition('Login', field_definition, data)
+        self._check_login_visible(container)
+        check_data_in_definition('Login', field_definition, data)
         self.library.fill_fields(container, field_definition, data)
 
     @keyword(tags=('Apex', 'Login'))
     def login_button(self, button_text):
         container = self.library.get_locator('login_container')
-        self.library.check_container_visible('Login', container)
+        self._check_login_visible(container)
         locator = self.library.get_locator('login_button', {'##TEXT##': button_text})
 
         self.library.click(f"{container} >> {locator}")

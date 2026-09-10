@@ -13,8 +13,8 @@ class Breadcrumb(LibraryComponent):
         super().__init__(library)
 
         self.library.locators.update({
-            'breadcrumb_container': ".t-BreadcrumbRegion",
-            'breadcrumb_button': "//button/span[contains(text(),'##TEXT##')]",
+            'breadcrumb_container': "css=.t-BreadcrumbRegion",
+            'breadcrumb_button': "xpath=//button/span[contains(text(),'##TEXT##')]",
         })
 
     @keyword(tags=('Apex', 'Breadcrumb'))

@@ -3,7 +3,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from Browser.utils import PageLoadStates, logger
 from robot.api.deco import keyword, not_keyword
 from ..librarycomponent import LibraryComponent
-
+from ..utils import check_data_in_definition
 
 class Region(LibraryComponent):
     """
@@ -15,9 +15,9 @@ class Region(LibraryComponent):
         super().__init__(library)
 
         self.library.locators.update({
-            'region': "//div[@role='region' and @aria-label='##NAME##']",
-            'region_id': "#R##ID##",
-            'region_button': "//button/span[contains(text(),'##TEXT##')]"
+            'region': "xpath=//div[@role='region' and @aria-label='##NAME##']",
+            'region_id': "id=R##ID##",
+            'region_button': "xpath=//button/span[contains(text(),'##TEXT##')]"
         })
 
     @not_keyword
@@ -30,7 +30,7 @@ class Region(LibraryComponent):
             else:
                 raise AttributeError("No name in region")
 
-        return self.library.get_locator('region', {'##NAME##': region_name}, 'id')    
+        return self.library.get_locator('region', {'##NAME##': region_name})    
 
     @not_keyword
     def _check_region_visible(self, region, locator):
@@ -64,7 +64,7 @@ class Region(LibraryComponent):
 
     @keyword(tags=('Apex', 'Region'))
     def select_region_by_id(self, region_id, parent=None):
-        region_locator = self.library.get_locator('region_id', {'##ID##': region_id}, 'id')  
+        region_locator = self.library.get_locator('region_id', {'##ID##': region_id})  
         if parent:
             locator = self.library.get_element(f"{parent} >> {region_locator}")
         else:
@@ -80,7 +80,7 @@ class Region(LibraryComponent):
         """
         region_name = self._get_region_name(locator)
 
-        self.library.check_data_in_definition(region_name, field_definition, data)
+        check_data_in_definition(region_name, field_definition, data)
         self.library.fill_fields(locator, field_definition, data)
 
 
@@ -90,7 +90,7 @@ class Region(LibraryComponent):
         Check the fields inside the region.
         """
         region_name = self._get_region_name(locator)
-        self.library.check_data_in_definition(region_name, field_definition, data)
+        check_data_in_definition(region_name, field_definition, data)
         self.library.check_fields(locator, field_definition, data)
 
     @keyword(tags=('Apex', 'Region'))

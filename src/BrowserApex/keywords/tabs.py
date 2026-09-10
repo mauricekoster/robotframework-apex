@@ -9,9 +9,9 @@ class Tab(LibraryComponent):
     def __init__(self, library):
         super().__init__(library)
         self.library.locators.update({
-            'tab_header': "//a[span[text()='##NAME##']]/..",
-            'tab_container': "//div[@data-label='##NAME##']",
-            'tab_panel': "//div[@role='tabpanel' and @data-label='##NAME##']",
+            'tab_header': "xpath=//a[span[text()='##NAME##']]/..",
+            'tab_container': "xpath=//div[@data-label='##NAME##']",
+            'tab_panel': "xpath=//div[@role='tabpanel' and @data-label='##NAME##']",
         })
 
     @not_keyword
@@ -24,7 +24,7 @@ class Tab(LibraryComponent):
             else:
                 raise AttributeError("No name in tab")
 
-        return self.library.get_locator('tab_header', {'##NAME##': tab_name}, 'id')    
+        return self.library.get_locator('tab_header', {'##NAME##': tab_name})    
 
     @not_keyword
     def _check_tab_visible(self, tab, locator):
@@ -52,7 +52,7 @@ class Tab(LibraryComponent):
         self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
         self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
-        panel = self.library.get_locator('tab_panel', {'##NAME##': tab_name}, 'id') 
+        panel = self.library.get_locator('tab_panel', {'##NAME##': tab_name}) 
         if parent:
             locator = f"{parent} >> {panel}"
         else:
