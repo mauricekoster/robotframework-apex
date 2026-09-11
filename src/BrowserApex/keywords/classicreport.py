@@ -14,6 +14,7 @@ class ClassicReport(LibraryComponent):
 
         self.library.locators.update({
             'report_container': "css=.t-Report",
+            'report_no_data_found': 'css=.nodatafound',
             'report_table': "xpath=//table[@class='t-Report-report']",
             'report_select_row': "xpath=//tbody/tr[##ROWNR##]",
             'report_all_rows': "xpath=//tbody/tr",
@@ -99,6 +100,20 @@ class ClassicReport(LibraryComponent):
         container = f'{locator} >> {table_locator} >> {row_locator}'
         self._check_columns(container, columns_definition, data)
 
+    @keyword(tags=('Apex', 'Classic Report'))
+    def classic_report_no_data_found(self, locator, message=None):
+        """
+        locator = Region
+
+        Check if region contains a Classic report, this is in case no data is found, there is no Classic Report.
+        """
+        table_locator = self.library.get_locator('report_table')
+        elems = self.library.get_elements(f"{locator} >> {table_locator}")
+        BuiltIn().should_be_equal_as_numbers(len(elems), 0, "Unexpected Classic Report found.")
+
+        if message:
+            msg_locator=self.library.get_locator('report_no_data_found')
+            self.library.get_text(f"{locator} >> {msg_locator}", AssertionOperator.contains, message)
 
     
     @keyword(tags=('Apex', 'Classic Report'))
