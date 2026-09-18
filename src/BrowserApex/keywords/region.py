@@ -94,6 +94,17 @@ class Region(LibraryComponent):
         self.library.check_fields(locator, field_definition, data)
 
     @keyword(tags=('Apex', 'Region'))
+    def region_check_states(self, locator, field_definition, data):
+        """
+        Check the fields inside the region if expected states apply to the element states.
+        """
+        region_name = self._get_region_name(locator)
+        check_data_in_definition(region_name, field_definition, data)
+        logger.warn("region_check_states: NOT YET IMPLEMENTED")
+        # TODO: self.library.check_field_states(locator, field_definition, data)
+
+
+    @keyword(tags=('Apex', 'Region'))
     def region_button(self, locator, button):
         """
         Click the button within the given region locator.

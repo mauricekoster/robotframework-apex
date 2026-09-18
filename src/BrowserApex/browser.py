@@ -6,6 +6,7 @@ from robot.libraries.BuiltIn import BuiltIn
 from robot.api.deco import  not_keyword, library
 from Browser import  SelectAttribute, ElementState, Browser
 from Browser.utils import PageLoadStates, logger
+from datetime import datetime
 
 from .keywords import (
     Breadcrumb, 
@@ -21,12 +22,22 @@ from .keywords import (
 @library(scope='GLOBAL', auto_keywords=True)
 class BrowserApex(Browser):
     def __init__(self, **kwargs):
+        if 'test_date_format' in kwargs:
+            self.test_date_format = kwargs['test_date_format']
+            del kwargs['test_date_format']
+        else:
+            self.test_date_format = '%m/%d/%Y'
+
         Browser.__init__(self, **kwargs)
+
+        
 
         self.container = None
 
         self.field_input_callbacks = {
             'TextField': self.fill_text_field,
+            'Textarea': self.fill_textarea_field,
+            'TextFieldwithautocomplete': self.fill_text_autocomplete_field,
             'NumberField': self.fill_number_field,
             'Password': self.fill_password_field,
             'SelectList': self.fill_select_field,
@@ -78,6 +89,18 @@ class BrowserApex(Browser):
         self.fill_text(element, str(value))
 
     @not_keyword
+    def fill_text_autocomplete_field(self, field_name, field_id, value, field_args):
+        print(f"*INFO* Filling text field with autocomplete '{field_name}' with value: {value}")
+        element = self.get_element(f"{self.container} >> id={field_id} >> xpath=//input")
+        self.fill_text(element, str(value))
+
+    @not_keyword
+    def fill_textarea_field(self, field_name, field_id, value, field_args):
+        print(f"*INFO* Filling textarea field '{field_name}' with value: {value}")
+        element = self.get_element(f"{self.container} >> id={field_id}")
+        self.fill_text(element, str(value))
+
+    @not_keyword
     def fill_number_field(self, field_name, field_id, value, field_args):
         print(f"*INFO* Filling text field '{field_name}' with value: {value}")
         element = self.get_element(f"{self.container} >> id={field_id}")
@@ -106,9 +129,25 @@ class BrowserApex(Browser):
     @not_keyword
     def fill_date_picker(self, field_name, field_id, value, field_args):
         print(f"*INFO* Filling date picker '{field_name}' with value: {value}")
-        element = self.get_element(f"{self.container} >> id={field_id} >> xpath=//input")
-        self.type_text(element, value)
+        datepicker_element = self.get_element(f"{self.container} >> id={field_id}")
+        display_as = 'native'
+        attrs = self.get_attribute_names(datepicker_element)
+        if 'display-as' in attrs:
+            display_as = self.get_attribute(datepicker_element, 'display-as')
 
+        match display_as:
+            case 'native':
+                date_format = BuiltIn().get_variable_value("${datepicker_native_dateformat}", self.test_date_format)
+            case 'popup':
+                date_format = BuiltIn().get_variable_value("${datepicker_popup_dateformat}", self.test_date_format)
+            case _:
+                raise f"Unexpected 'display-as' attribute '{display_as}' of datapicker for {field_name}"
+        element = f"{datepicker_element} >> xpath=//input"
+        
+        d = datetime.strptime(value, self.test_date_format)
+        print(f"*INFO* datepicker variant: {display_as}. Using date format to type text: {date_format}")
+        self.type_text(element, d.strftime(format=date_format))
+        
 
     @not_keyword
     def fill_popup_lov(self, field_name, field_id, value, field_args):
@@ -156,13 +195,14 @@ class BrowserApex(Browser):
 
                 elements = self.get_elements(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                 '>> xpath=//div[contains(@class, "a-PopupLOV-results")]'
-                                                f'>> xpath=//tbody/tr[contains(., "{value}")]')
+                                                f'>> xpath=//tbody/tr')
 
                 if len(elements) > 0:
                     element = elements[0]
 
+
                 self.click(element)
-                self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+                self.wait_for_load_state(PageLoadStates.domcontentloaded, 10)
 
             states = self.get_element_states(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                             '>> xpath=//div[contains(@class, "a-PopupLOV-results")]')

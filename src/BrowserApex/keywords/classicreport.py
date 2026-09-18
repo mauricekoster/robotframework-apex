@@ -107,12 +107,13 @@ class ClassicReport(LibraryComponent):
 
         Check if region contains a Classic report, this is in case no data is found, there is no Classic Report.
         """
-        table_locator = self.library.get_locator('report_table')
-        elems = self.library.get_elements(f"{locator} >> {table_locator}")
-        BuiltIn().should_be_equal_as_numbers(len(elems), 0, "Unexpected Classic Report found.")
+        msg_locator=self.library.get_locator('report_no_data_found')
+        elems = self.library.get_elements(f"{locator} >> {msg_locator}")
+        old_time_out = self.library.set_browser_timeout(1)
+        BuiltIn().should_be_equal_as_numbers(len(elems), 1, "no-data-found section not found. Unexpected Classic Report found.")
+        self.library.set_browser_timeout(old_time_out)
 
         if message:
-            msg_locator=self.library.get_locator('report_no_data_found')
             self.library.get_text(f"{locator} >> {msg_locator}", AssertionOperator.contains, message)
 
     
@@ -123,7 +124,7 @@ class ClassicReport(LibraryComponent):
         table_locator = self.library.get_locator('report_table')
         row_locator = self.library.get_locator('report_all_rows')
         
-        row_elements = self.get_elements(f'{locator} >> {table_locator} >> {row_locator}')
+        row_elements = self.library.get_elements(f'{locator} >> {table_locator} >> {row_locator}')
         count = len(row_elements)
         if expected_row_count is not None:
             BuiltIn().should_be_equal_as_numbers(count, int(expected_row_count), "Number of report rows incorrect")
