@@ -190,6 +190,15 @@ wheels = [
 ]
 
 [[package]]
+name = "invoke"
+version = "3.0.3"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/33/f6/227c48c5fe47fa178ccf1fda8f047d16c97ba926567b661e9ce2045c600c/invoke-3.0.3.tar.gz", hash = "sha256:437b6a622223824380bfb4e64f612711a6b648c795f565efc8625af66fb57f0c", size = 343419, upload-time = "2026-04-07T15:17:48.307Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/5a/de/bbc12563bbf979618d17625a4e753ff7a078523e28d870d3626daa97261a/invoke-3.0.3-py3-none-any.whl", hash = "sha256:f11327165e5cbb89b2ad1d88d3292b5113332c43b8553b494da435d6ec6f5053", size = 160958, upload-time = "2026-04-07T15:17:46.875Z" },
+]
+
+[[package]]
 name = "jinja2"
 version = "3.1.6"
 source = { registry = "https://pypi.org/simple" }
@@ -401,15 +410,17 @@ wheels = [
 
 [[package]]
 name = "python-oracle-apex"
-version = "0.0.1"
+version = "0.0.4"
 source = { registry = "https://pypi.org/simple" }
 dependencies = [
+    { name = "invoke" },
+    { name = "jinja2" },
     { name = "parsimonious" },
-    { name = "pyyaml" },
+    { name = "pyyaml-pure" },
 ]
-sdist = { url = "https://files.pythonhosted.org/packages/1a/14/3b5477afb902d205422e05c2f4e7222e72d70c65c19cbd5c4df5e4587a04/python_oracle_apex-0.0.1.tar.gz", hash = "sha256:6d74c2a0c8c99ea8f51103ff8f82bd2851f9d44150dca9227fb03ace16ad8bce", size = 9093, upload-time = "2026-09-02T17:20:42.703Z" }
+sdist = { url = "https://files.pythonhosted.org/packages/b6/66/6ebfa690e7a966f00fac848a9d78d58837b1364077653267f6d85e695d27/python_oracle_apex-0.0.4.tar.gz", hash = "sha256:defbf673b88a878b7367c32a5c5d22dc1ba22dffc3804b4077143f65e89c7643", size = 13389, upload-time = "2026-09-19T14:20:01.374Z" }
 wheels = [
-    { url = "https://files.pythonhosted.org/packages/42/de/b2709e5f32316d1889afe10f3c39e8edddd7b62e26269df7ba320b545b08/python_oracle_apex-0.0.1-py3-none-any.whl", hash = "sha256:c654421cc4f8be297c27328ee3625c487a0f8a9e257e0f349b0647a53f22d542", size = 11371, upload-time = "2026-09-02T17:20:41.695Z" },
+    { url = "https://files.pythonhosted.org/packages/a5/37/eb644359aa99073a1112a019389951e40a4355e6e7cce7d34bbe8e70a1a7/python_oracle_apex-0.0.4-py3-none-any.whl", hash = "sha256:fdd681d51fe66825dbca304fc4a5ecb3698b57233d773b2aa589d989d6be561a", size = 25956, upload-time = "2026-09-19T14:19:59.784Z" },
 ]
 
 [[package]]
@@ -446,6 +457,15 @@ wheels = [
     { url = "https://files.pythonhosted.org/packages/da/92/1446574745d74df0c92e6aa4a7b0b3130706a4142b2d1a5869f2eaa423c6/pyyaml-6.0.3-cp314-cp314t-musllinux_1_2_x86_64.whl", hash = "sha256:16249ee61e95f858e83976573de0f5b2893b3677ba71c9dd36b9cf8be9ac6d65", size = 829923, upload-time = "2025-09-25T21:32:54.537Z" },
     { url = "https://files.pythonhosted.org/packages/f0/7a/1c7270340330e575b92f397352af856a8c06f230aa3e76f86b39d01b416a/pyyaml-6.0.3-cp314-cp314t-win_amd64.whl", hash = "sha256:4ad1906908f2f5ae4e5a8ddfce73c320c2a1429ec52eafd27138b7f1cbe341c9", size = 174062, upload-time = "2025-09-25T21:32:55.767Z" },
     { url = "https://files.pythonhosted.org/packages/f1/12/de94a39c2ef588c7e6455cfbe7343d3b2dc9d6b6b2f40c4c6565744c873d/pyyaml-6.0.3-cp314-cp314t-win_arm64.whl", hash = "sha256:ebc55a14a21cb14062aa4162f906cd962b28e2e9ea38f9b4391244cd8de4ae0b", size = 149341, upload-time = "2025-09-25T21:32:56.828Z" },
+]
+
+[[package]]
+name = "pyyaml-pure"
+version = "0.1.0"
+source = { registry = "https://pypi.org/simple" }
+sdist = { url = "https://files.pythonhosted.org/packages/9d/51/5bdc8a3c5055cc910a02e5f784cc916908f485d3cc6de391962ae2aab79b/pyyaml_pure-0.1.0.tar.gz", hash = "sha256:fb359fef4d23239abf99d4c50c31214c24eb86d50ff6f801610aa879453cc56e", size = 122260, upload-time = "2026-01-09T17:57:59.406Z" }
+wheels = [
+    { url = "https://files.pythonhosted.org/packages/2f/30/c3b115e2a8f2ceea9049ceff268c40d2fb08b28bba9db2c9d83efda80b74/pyyaml_pure-0.1.0-py3-none-any.whl", hash = "sha256:db903ab1cec81037fe5cd369cc24652e44f5383073c07a23eccc1efb6c977a4b", size = 67942, upload-time = "2026-01-09T17:57:58.22Z" },
 ]
 
 [[package]]
@@ -544,7 +564,7 @@ wheels = [
 
 [[package]]
 name = "robotframework-apex"
-version = "0.0.3"
+version = "0.0.4"
 source = { editable = "." }
 dependencies = [
     { name = "jinja2" },
@@ -569,7 +589,7 @@ requires-dist = [
     { name = "jinja2", specifier = ">=3.1.6" },
     { name = "parsimonious", specifier = ">=0.11.0" },
     { name = "python-dotenv" },
-    { name = "python-oracle-apex", specifier = ">=0.0.1" },
+    { name = "python-oracle-apex", specifier = ">=0.0.4" },
     { name = "pyyaml", specifier = ">=6.0.3" },
     { name = "rich", specifier = ">=15.0.0" },
     { name = "robotframework", specifier = ">=7.1.1,<9.0.0" },

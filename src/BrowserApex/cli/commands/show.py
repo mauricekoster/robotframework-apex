@@ -5,7 +5,7 @@ from rich.table import Table
 from pathlib import Path
 
 from BrowserApex.cli.main import app
-from python_oracle_apex import parse_yaml_file, parse_apex_file
+from python_oracle_apex import parse_page_file, parse_apex_file
 
 @app.command(name='show')
 def project_show(
@@ -21,7 +21,7 @@ def project_show(
         case '.apx':
             page = parse_apex_file(fn)
         case '.yaml' | '.yml':
-            page = parse_yaml_file(fn)
+            page = parse_page_file(fn)
         case _:
             raise RuntimeWarning("Unsupported file")
 
