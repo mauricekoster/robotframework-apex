@@ -94,3 +94,7 @@ publish:
     rm -rf dist/
     uv build
     uv publish
+
+tag:
+    git tag -a v$(uv version --short) -m v$(uv version --short)
+    git push --tags
