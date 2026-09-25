@@ -1,8 +1,8 @@
 {% for block in blocks.values() %}
 {%- if block.fields %}
-&{{ '{' }}{{page.component_id}}_{{ block.name | upper | replace(" ","_") }}_FIELDS{{ '}' }}
+&{{ '{' }}{{page.component_id}}_{{ block.name_rf | upper | replace(" ","_") | replace("-", "_") }}_FIELDS{{ '}' }}
 {%- for label, name, type in block.fields %}
-...    {{ label }}={{ name }}:{{ type | replace(" ","") }}
+...    {{ label | replace("  ", " ")}}={{ name }}:{{ type | replace(" ","") }}
 {%- endfor -%}
 {%- endif -%}
 

@@ -37,9 +37,16 @@ def project_show(
     table.add_column("Type")
     table.add_column("Template")
     table.add_column("Parent")
+    table.add_column("Slot")
 
     for region in page.regions:
-        table.add_row(str(region.component_id), region.name, region.type, region.appearance['template'],region.layout['parentRegion'])
+        table.add_row(str(region.component_id), 
+                      region.name, 
+                      region.type, 
+                      region.appearance['template'],
+                      region.layout['parentRegion'],
+                      region.layout['slot'],
+                      )
 
     print(table)
     
@@ -61,3 +68,7 @@ def project_show(
     for button in page.buttons:
         table.add_row(str(button.layout['sequence']), button['buttonName'], button['label'], button.layout['region'])
     print(table)
+
+
+if __name__=='__main__':
+    project_show('P:/Downloads/brookstrut_page_1.apx')
