@@ -14,8 +14,20 @@ class Breadcrumb(LibraryComponent):
 
         self.library.locators.update({
             'breadcrumb_container': "css=.t-BreadcrumbRegion",
+            'breadcrumb_is_active': "xpath=//li[contains(@class,'is-active')]/h1",
             'breadcrumb_button': "xpath=//button/span[contains(text(),'##TEXT##')]",
         })
+
+    @keyword(tags=('Apex', 'Breadcrumb'))
+    def breadcrumb_active(self, expected_title):
+        """
+        Check if active breadcrumb is expected_title.
+        """
+        container = self.library.get_locator('breadcrumb_container') 
+        active_locator = self.library.get_locator('breadcrumb_is_active') 
+        locator = f"{container} >> {active_locator}"
+        self.library.get_text(locator, AssertionOperator.equals, expected_title, f"Page does not contain active breadcrumb: {expected_title}")
+
 
     @keyword(tags=('Apex', 'Breadcrumb'))
     def breadcrumb_button(self, button):

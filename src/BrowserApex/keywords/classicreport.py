@@ -65,6 +65,21 @@ class ClassicReport(LibraryComponent):
         self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
         self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
 
+    @keyword(tags=('Apex', 'Classic Report'))
+    def classic_report_row_action(self, locator, columns_definition, row_number, column_name):
+        table_locator = self.library.get_locator('report_table')
+        row_locator = self.library.get_locator('report_select_row', {"##ROWNR##": row_number})
+        column_id = columns_definition.get(column_name, None)
+        if column_id is None:
+            raise AssertionError(f"Column '{column_name}' not in column definition")
+        cell_locator = self.library.get_locator('report_cell', {'##COL##': column_id})
+
+        # Click in the link inside the table cell
+        logger.info(f"Clicking link inside table cell '{column_name}'")
+        self.library.click(f'{locator} >> {table_locator} >> {row_locator} >> {cell_locator} >> xpath=//a')
+        self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
+        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+
 
     @not_keyword
     def check_cell_plaintext(self, locator, column_name, column_id, value, *field_args):
