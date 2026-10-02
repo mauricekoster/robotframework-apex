@@ -1,1 +1,11 @@
-# TODO: KEYWORDS
+{%- if breadcrumb %}
+{% include "breadcrumb.template" %}
+{% endif -%}
+
+{%- for comp_id, region in regions.items() %}
+{%- if region.template in ['Login'] -%}
+{%- include "login.template" -%}
+{%- else -%}
+{%- include "region.template" -%}
+{% endif -%}
+{% endfor -%}

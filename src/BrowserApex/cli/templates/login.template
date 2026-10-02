@@ -1,0 +1,15 @@
+{%- if region.fields %}
+Login {{ keywords.fill }}
+    No Operation
+
+{% endif -%}
+{%- if region.buttons %}
+{%- if region.buttons | length == 1 %}
+Login {{ keywords.press_button }}
+    Login Button    {{ region.buttons[0].label }}
+{% else %}
+Login {{ keywords.press_button }}
+    [Arguments]    ${button_name}={{ region.buttons[0].label }}
+    Login Button    ${button_name}
+{% endif %}
+{% endif -%}

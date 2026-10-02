@@ -1,7 +1,7 @@
-{% for block in blocks.values() %}
-{%- if block.fields %}
-&{{ '{' }}{{page.component_id}}_{{ block.name_rf | upper | replace(" ","_") | replace("-", "_") }}_FIELDS{{ '}' }}
-{%- for label, name, type in block.fields %}
+{% for region in regions.values() %}
+{%- if region.fields %}
+&{{ '{' }}{{page.component_id}}_{{ region.name_rf }}_FIELDS{{ '}' }}
+{%- for label, name, type in region.fields %}
 ...    {{ label | replace("  ", " ")}}={{ name }}:{{ type | replace(" ","") }}
 {%- endfor -%}
 {%- endif -%}

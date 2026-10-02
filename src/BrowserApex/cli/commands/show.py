@@ -1,22 +1,44 @@
 import typer
+import sys
 from rich import print
 from typing import Annotated
 from rich.table import Table
 from pathlib import Path
 
 from BrowserApex.cli.main import app
+from BrowserApex.cli.utils import get_config_path, get_config, get_page_file
 from python_oracle_apex import parse_page_file, parse_apex_file
 
 @app.command(name='show')
 def project_show(
-    pagefile: Annotated[str, typer.Argument(help="The filename of exported page (yaml)")]
+        pagefile: Annotated[str, typer.Argument(help="The filename of exported page (yaml or apx)")] = None,
+        page_id: Annotated[int, typer.Option("--page", "-p", help="Page ID.")] = None
     ):
     """
     Show project.
 
     """
     data = None
-    fn = Path(pagefile)
+    p = get_config_path()
+    print(f":beer: Reading config from: {p}")
+    cnf = get_config(p)
+    
+    if p is None:
+        print(f"No configuration found. Exitting...")
+        sys.exit(1)
+
+
+    if page_id:
+        print(f"Page: {page_id}")
+        fn = get_page_file(cnf, page_id=page_id)
+
+    elif pagefile is not None:
+        fn = Path(pagefile)
+        
+    else:
+        print("No page id or page file found.")
+        sys.exit(1)
+
     match fn.suffix:
         case '.apx':
             page = parse_apex_file(fn)

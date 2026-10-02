@@ -1,4 +1,5 @@
 from pathlib import Path
+import sys
 import tomllib
 from jinja2 import FileSystemLoader, Environment, ChoiceLoader, PackageLoader, TemplateNotFound, TemplateSyntaxError
 
@@ -38,4 +39,74 @@ def get_template(template_name, template_path: Path):
     except TemplateSyntaxError:
         print("Template has syntax error")
         return None
+
+
+
+def _get_export_and_type(cnf):
+    if 'export' not in cnf:
+        raise RuntimeWarning(f"No config for exported application. Section: '[export]'")
+
+    folder  = cnf['export'].get('folder', None)
+    if folder is None:
+        raise RuntimeWarning(f"No config for 'folder' in section [export]")
+
+    folder = Path(folder)
+    if not folder.exists():
+        raise RuntimeWarning(f"Configure 'folder' in section [export] does not exist.")
+
+    app_type = cnf['export'].get('type', 'apx')
+
+    if app_type not in ['yaml', 'apx']:
+        raise RuntimeWarning(f"Unsupported file format {app_type}. Use 'apx' or 'yaml'")
+                    
+    return folder, app_type
+
+
+def get_page_file(cnf, page_id) -> Path:
     
+    try:
+        folder, app_type = _get_export_and_type(cnf)
+    except RuntimeWarning as e:
+        print(e)
+        sys.exit(2)
+    
+
+    match app_type:
+        case "apx":
+            p = folder / "pages"
+            page_fn = list(p.glob(f"p{page_id:05d}*.apx"))
+            print(page_fn)
+            if page_fn:
+                p = folder / "pages" / page_fn[-1]
+            else:
+                print(f"File {p} does not exists.")
+                sys.exit(2)
+        case "yaml":
+            page_fn = f"p{page_id:05d}.yaml"
+            p = folder / "pages" / page_fn
+            if not p.exists():
+                print(f"File {p} does not exists.")
+                sys.exit(2)
+
+    return p
+
+
+def get_breadcrumb_file(cnf) -> Path:
+
+    try:
+        folder, app_type = _get_export_and_type(cnf)
+    except RuntimeWarning as e:
+        print(e)
+        sys.exit(2)
+
+    match app_type:
+        case "apx":
+            p = folder / "shared-components" / "breadcrumbs.apx"
+        case "yaml":
+            p = folder / "shared_components" / "breadcrumbs.yaml"
+
+    if not p.exists():
+        print(f"File {p} does not exists.")
+        return None
+
+    return p

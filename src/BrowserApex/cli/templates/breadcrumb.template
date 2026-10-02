@@ -1,0 +1,8 @@
+{{ keywords.getoond }}
+    Breadcrumb Active    {{ active_breadcrumb }}
+
+{% if breadcrumb.page_buttons %}
+{{ keywords.press_button }}
+    [Arguments]    ${buttonname}
+    Breadcrumb Button    ${button_name}
+{% endif %}
