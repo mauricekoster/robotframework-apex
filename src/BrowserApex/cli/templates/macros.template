@@ -2,5 +2,5 @@
     VAR    ${locator}    ${None}
 {% for (type, name) in lpath %}
     ${locator}=    Select {{ type }}    {{ name }}    ${locator}
-{% endfor %}
+{%- endfor -%}
 {%- endmacro %}

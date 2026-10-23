@@ -6,4 +6,11 @@
 {%- endfor -%}
 {%- endif -%}
 
+{%- if region.columns %}
+&{{ '{' }}{{page.component_id}}_{{ region.name_rf }}_COLS{{ '}' }}
+{%- for label, name, type in region.columns %}
+...    {{ label | replace("  ", " ")}}={{ name }}:{{ type | replace(" ","") }}
+{%- endfor -%}
+{%- endif -%}
+
 {% endfor %}

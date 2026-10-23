@@ -59,6 +59,9 @@ class FieldCommand(LibraryComponent):
 
     @not_keyword
     def process_command(self, value):
+        if value == "" or value is None:
+            return value
+        
         if type(value) is not str:
             return value
         

@@ -35,6 +35,11 @@ def build_structure():
         region_type = region.type
         region_template = region.appearance['template']
         has_classic_report = region_type in ['Classic Report']
+
+        # proces column if any
+        columns = [(col.heading.heading or col.columnName, col.columnName, col.type) for col in region.columns]
+            
+
         regions[str(region.component_id)] = dict(
             region=region,
             slot=region.layout['slot'],
@@ -42,12 +47,10 @@ def build_structure():
             type=region_type,
             template=region_template,
             fields=[],
+            columns=columns,
             buttons=[],
             locator_path=[],
             has_classic_report=has_classic_report,
-            has_form=False,
-            is_wizard=False,
-            has_tabs=False
         )
 
     for pageitem in current_page.page_items:
@@ -97,7 +100,20 @@ def build_structure():
         # List is also sorted on sequence
 
         newlist = [(x.label.label or x.name, x.name, x.type[0].upper() + x.type[1:]) for x in sorted(r['fields'], key=lambda d: d['layout']['sequence'])]
+        hiddenonly = True
+        readonly = True
+        for f in newlist:
+            if f[2] not in ['Hidden']:
+                hiddenonly = False
+            if f[2] not in ['Hidden', 'DisplayOnly']:
+                readonly = False
         r['fields'] = newlist
+
+        
+
+
+        r['hiddenonly'] = hiddenonly
+        r['readonly'] = readonly
         r['fullname'] = r['name']
         if len(newlist) > 0:
             region_name = r['name']
@@ -111,7 +127,30 @@ def build_structure():
 
         # determine locator path
         if r['template'] in ['Standard', 'standard']:
-            r['locator_path'].append(('Region', r['name']))
+
+            print(f"Determine Region Location Path: {r['name']}")
+            current_r = r['region']
+            location_path = []
+            while True:
+                region_ref = current_r.layout['parentRegion']
+                if region_ref in ['', None, 'No Parent']:
+                    if current_r.appearance['template'] in ['Standard', 'standard']:
+                        location_path.append(('Region', current_r['name']))
+                    break
+
+                parent = _get_region(region_ref)
+
+                if parent.appearance['template'] in ['Tabs Container']:
+                    location_path.append(('Tab', current_r['name']))
+                else:
+                    if current_r.appearance['template'] in ['Standard', 'standard']:
+                        location_path.append(('Region', current_r['name']))
+
+                current_r = parent
+
+            location_path.reverse()
+            r['locator_path'] = location_path
+            print(f"    {location_path}")
 
     for k, v in region_names.items():
         if type(v) is list:
@@ -120,15 +159,17 @@ def build_structure():
             for r in v:
                 region_ref = r['region'].layout['parentRegion']
                 parent = _get_region(region_ref)
-
-                r['name_rf'] = r['name'].upper() + '_' + parent.name.upper()
+                name = r['name'].upper() + '_' + parent.name.upper()
+                name = name.replace(" ", "_")
+                name = name.replace("-", "_")
+                r['name_rf'] = name
                 r['fullname'] = r['name'] + ' ' + parent.name
                 nr += 1
         else:
             v['name_rf'] = v['name'].upper()
+            v['name_rf'] = v['name_rf'].replace(" ", "_")
+            v['name_rf'] = v['name_rf'].replace("-", "_")
 
-        v['name_rf'] = v['name_rf'].replace(" ", "_")
-        v['name_rf'] = v['name_rf'].replace("-", "_")
     return regions
 
 
@@ -265,22 +306,29 @@ def page_generate(
 
     print(f":lab_coat: Processing page {current_page.component_id} - {current_page.name}")
     breadcrumb_region = None
+    breadcrumb_id = None
     regions = build_structure()
     for component_id, region in regions.items():
         nr_fields = len(region['fields'])
         nr_buttons = len(region['buttons'])
         if region['type'] in ['Breadcrumb']:
             breadcrumb_region = region
+            breadcrumb_id = component_id
         if nr_fields > 0 or nr_buttons > 0:
             print(f"'{region['name']} ({component_id})' "
                   f"fullname: '{region.get("fullname", "-")}' "
                   f"slot: {region['slot']}  parent: {region['region'].layout.parentRegion}   nr fields: {nr_fields} button: {nr_buttons}")
 
+    if breadcrumb_region:
+        del regions[breadcrumb_id]
 
     keywords = {
         'page_is_shown': "Page Is Shown",
         'press_button': "Page Press Button",
-        'fill': "Fill"
+        'select_row': 'Select Row',
+        'check_row': "Check Row",
+        'fill': "Fill",
+        'check': 'Check'
     }
     keywords.update(cnf['keywords'])
     print(keywords)
@@ -337,4 +385,4 @@ if __name__ == '__main__':    # pragma: no cover
     # page_generate('examples/f300_page_9999.yaml')
     # page_generate('examples/f300_page_9999.yaml')
     # page_generate('P:/Downloads/f300_page_1100.yaml')
-    page_generate('P:/Downloads/f300_page_2000.yaml')
+    page_generate(page_id=1000)

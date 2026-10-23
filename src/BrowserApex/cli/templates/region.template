@@ -1,15 +1,22 @@
 {% from 'macros.template' import locator %}
 {%- if region.fields %}
-{{ region.name }} {{ keywords.fill }}
+{{ region.fullname }} {{ keywords.fill }}
     [Arguments]    &{data}
     &{extra}    Get Variable Value    &{{ '{' }}{{page.component_id}}_{{ region.name_rf }}_EXTRA_FIELDS{{ '}' }}   # robotcode: ignore[variable-not-found]
     &{d}    Create Dictionary    &{{ '{' }}{{page.component_id}}_{{ region.name_rf }}_FIELDS{{ '}' }}    &{extra}
     {{ locator(region.locator_path) }}
     Region Fill     ${locator}    ${d}     ${data}
 
+{{ region.fullname }} {{ keywords.check }}
+    [Arguments]    &{data}
+    &{extra}    Get Variable Value    &{{ '{' }}{{page.component_id}}_{{ region.name_rf }}_EXTRA_FIELDS{{ '}' }}   # robotcode: ignore[variable-not-found]
+    &{d}    Create Dictionary    &{{ '{' }}{{page.component_id}}_{{ region.name_rf }}_FIELDS{{ '}' }}    &{extra}
+    {{ locator(region.locator_path) }}
+    Region Check     ${locator}    ${d}     ${data}
+
 {% endif -%}
 {%- if region.buttons %}
-{{ region.name }} {{ keywords.press_button }}
+{{ region.fullname }} {{ keywords.press_button }}
     [Arguments]    ${button_name}
     {{ locator(region.locator_path) }}
     Region Button    ${locator}    ${button_name}

@@ -1,0 +1,11 @@
+{% from 'macros.template' import locator %}
+
+{{ region.fullname }} {{ keywords.select_row }}
+    [Arguments]    ${rownumber}
+    {{ locator(region.locator_path) }}
+    Classic Report Select Row    ${locator}    ${rownumber}
+
+{{ region.fullname }} {{ keywords.check_row }}
+    [Arguments]    ${rownumber}    &{data}
+    {{ locator(region.locator_path) }}
+    Classic Report Check Row    ${locator}    ${{ '{' }}{{page.component_id}}_{{ region.name_rf }}_COLS{{ '}' }}    ${rownumber}    ${data}

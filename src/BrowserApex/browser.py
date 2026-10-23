@@ -4,7 +4,7 @@ Oracle APEX support
 
 from robot.libraries.BuiltIn import BuiltIn
 from robot.api.deco import  not_keyword, library
-from Browser import  SelectAttribute, ElementState, Browser
+from Browser import  SelectAttribute, ElementState, Browser, AssertionOperator
 from Browser.utils import PageLoadStates, logger
 from datetime import datetime
 
@@ -54,6 +54,7 @@ class BrowserApex(Browser):
             'TextField': self.check_text_field,
             'SelectList': self.check_select_list,
             'DatePicker': self.check_date_picker,
+            'RadioGroup': self.check_radio_group,
         }
 
         self.locators = {}
@@ -236,26 +237,32 @@ class BrowserApex(Browser):
 
                 # set focus on container, to trigger validation on focus lost of field
                 self.focus(self.container)
-                self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+                self.wait_for_load_state(PageLoadStates.domcontentloaded, 5)
+                self.wait_for_load_state(PageLoadStates.networkidle, 15)
         self.container = None
 
 
     @not_keyword
-    def check_display_only(self, field_name, field_id, value):
+    def check_display_only(self, field_name, field_id, value, field_args):
         print(f"*INFO* Checking DisplayOnly '{field_name}' with value: {value}")
-        element = self.get_element(f"{self.container} >> id={field_id}")
-        real_value = self.get_text(element)
-        BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
+        display_elements = self.get_elements(f"{self.container} >> id={field_id}_DISPLAY")
+        if display_elements:
+            real_value = self.get_text(display_elements[0])
+            BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
+        else:
+            element = self.get_element(f"{self.container} >> id={field_id}")
+            real_value = self.get_text(element)
+            BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
         
     @not_keyword
-    def check_text_field(self, field_name, field_id, value):
+    def check_text_field(self, field_name, field_id, value, field_args):
         print(f"*INFO* Checking TextField '{field_name}' with value: {value}")
         element = self.get_element(f"{self.container} >> id={field_id}")
         real_value = self.get_text(element)
         BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
 
     @not_keyword
-    def check_select_list(self, field_name, field_id, value):
+    def check_select_list(self, field_name, field_id, value, field_args):
         print(f"*INFO* Checking SelectList '{field_name}' with value: {value}")
         element = self.get_element(f"{self.container} >> id={field_id}")
         real_value = self.get_selected_options(element)
@@ -264,11 +271,28 @@ class BrowserApex(Browser):
         BuiltIn().should_be_equal_as_strings(value, real_value[0], f"Field values not equal: {value} <-> {real_value}")
     
     @not_keyword
-    def check_date_picker(self, field_name, field_id, value):
+    def check_date_picker(self, field_name, field_id, value, field_args):
         print(f"*INFO* Checking DatePicker '{field_name}' with value: {value}")
         element = self.get_element(f"{self.container} >> id={field_id} >> //input")
         real_value = self.get_text(element)
         BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
+
+
+    @not_keyword
+    def check_radio_group(self, field_name, field_id, value, field_args):
+        print(f"*INFO* Checking Radio group '{field_name}' with value: {value}")
+        #
+        self.get_element_states(f"{self.container} >> id={field_id}", AssertionOperator.contains, ElementState.visible)
+        old_timeout = self.set_browser_timeout(0.5)
+        elements = self.get_elements(f"{self.container} >> id={field_id} >> //input[@type='radio' and @checked='checked']")
+        self.set_browser_timeout(old_timeout)
+
+        if not elements:
+            if value:
+                raise AssertionError(f"Expected selected option {value}, but no option is selected")
+        else:
+            self.get_attribute(elements[0], 'aria-label', AssertionOperator.equals, value, f"Selected option is not same as expected {value}")
+    
     
     @not_keyword
     def check_fields(self, locator, field_definition, data):
@@ -284,10 +308,10 @@ class BrowserApex(Browser):
 
                 used_value = self._field_commands.process_command(value)
 
-                if used_value:
+                if used_value is not None:
                     if cb is None:
                         raise RuntimeError(f"Field type {field_type} not supported")
-                    cb(key, field_id, used_value)
+                    cb(key, field_id, used_value, field_args)
         self.container = None
 
     @not_keyword
