@@ -115,8 +115,7 @@ class Region(LibraryComponent):
         btn_locator = self.library.get_locator('region_button', {'##TEXT##': button}) 
 
         self.library.click(f"{locator} >> {btn_locator}")
-        self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.library.wait_for_load()
 
     @keyword(tags=('Apex', 'Region'))
     def region_get_value(self, locator, field_definition, field_name):

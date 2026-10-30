@@ -41,5 +41,4 @@ class LoginTemplate(LibraryComponent):
         locator = self.library.get_locator('login_button', {'##TEXT##': button_text})
 
         self.library.click(f"{container} >> {locator}")
-        self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.library.wait_for_load()

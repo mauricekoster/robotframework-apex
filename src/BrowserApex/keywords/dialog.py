@@ -42,8 +42,7 @@ class Dialog(LibraryComponent):
         self.library.wait_for_elements_state(btn, ElementState.visible)
 
         self.library.click(btn)
-        self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.library.wait_for_load()
 
     @keyword(tags=('Apex', 'Dialog'))
     def dialog_close(self):
@@ -61,6 +60,5 @@ class Dialog(LibraryComponent):
         # self.library.wait_for_elements_state(btn, ElementState.visible)
 
         self.library.click(btn)
-        self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.library.wait_for_load()
         self.library.set_selector_prefix(old_prefix)

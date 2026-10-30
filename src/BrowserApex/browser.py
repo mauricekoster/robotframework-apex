@@ -82,6 +82,11 @@ class BrowserApex(Browser):
         return locator
 
 
+    @not_keyword
+    def wait_for_load(self, timeout=15):
+        self.wait_for_load_state(PageLoadStates.domcontentloaded, 5)
+        self.wait_for_load_state(PageLoadStates.load, timeout=timeout)
+        self.wait_for_load_state(PageLoadStates.networkidle, 10)
  
     @not_keyword
     def fill_text_field(self, field_name, field_id, value, field_args):
@@ -157,7 +162,7 @@ class BrowserApex(Browser):
         # popup button = <id>_lov_btn
         element = self.get_element(f"{self.container} >> id={field_id}_lov_btn")
         self.click(element)
-        self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.wait_for_load(5)
 
         # zoeken zit buiten de dialog (in hoofdpagina) in de DOM
         old_prefix = self.set_selector_prefix("")
@@ -169,22 +174,18 @@ class BrowserApex(Browser):
                                                        '>> xpath=//input[@aria-label="Zoeken"]')
             self.clear_text(search_element)
             BuiltIn().sleep(1)
-            self.wait_for_load_state(PageLoadStates.networkidle, 10)
-            self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+            self.wait_for_load()
             
             self.type_text(search_element, value)
             BuiltIn().sleep(1)
-            self.wait_for_load_state(PageLoadStates.networkidle, 10)
-            self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+            self.wait_for_load()
 
             if 'manualentry' in field_args:
                 logger.info('PopupLOV: Entering manualentry')
                 search_element = self.get_element(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                            '>> xpath=//input[@aria-label="Zoeken"]')
                 self.press_keys(search_element, 'Enter')
-
-                self.wait_for_load_state(PageLoadStates.networkidle, 10)
-                self.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+                self.wait_for_load()
 
             else:
                 # Wait for results, when expecting a row to match
@@ -201,9 +202,8 @@ class BrowserApex(Browser):
                 if len(elements) > 0:
                     element = elements[0]
 
-
                 self.click(element)
-                self.wait_for_load_state(PageLoadStates.domcontentloaded, 10)
+                self.wait_for_load()
 
             states = self.get_element_states(f'xpath=//div[contains(@class, "a-PopupLOV-dialog") and contains(@id, "{field_id}")] '
                                                             '>> xpath=//div[contains(@class, "a-PopupLOV-results")]')
@@ -237,8 +237,7 @@ class BrowserApex(Browser):
 
                 # set focus on container, to trigger validation on focus lost of field
                 self.focus(self.container)
-                self.wait_for_load_state(PageLoadStates.domcontentloaded, 5)
-                self.wait_for_load_state(PageLoadStates.networkidle, 15)
+                self.wait_for_load(30)
         self.container = None
 
 
@@ -248,17 +247,18 @@ class BrowserApex(Browser):
         display_elements = self.get_elements(f"{self.container} >> id={field_id}_DISPLAY")
         if display_elements:
             real_value = self.get_text(display_elements[0])
-            BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
         else:
             element = self.get_element(f"{self.container} >> id={field_id}")
             real_value = self.get_text(element)
-            BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
+        real_value = real_value.strip()
+        BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
         
     @not_keyword
     def check_text_field(self, field_name, field_id, value, field_args):
         print(f"*INFO* Checking TextField '{field_name}' with value: {value}")
         element = self.get_element(f"{self.container} >> id={field_id}")
         real_value = self.get_text(element)
+        real_value = real_value.strip()
         BuiltIn().should_be_equal_as_strings(value, real_value, f"Field values not equal: {value} <-> {real_value}")
 
     @not_keyword

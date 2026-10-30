@@ -40,5 +40,4 @@ class Breadcrumb(LibraryComponent):
         btn_locator = self.library.get_locator('breadcrumb_button', {'##TEXT##': button}) 
 
         self.library.click(f"{container} >> {btn_locator}")
-        self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.library.wait_for_load()

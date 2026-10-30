@@ -62,8 +62,7 @@ class ClassicReport(LibraryComponent):
         table_locator = self.library.get_locator('report_table')
         row_locator = self.library.get_locator('report_select_row', {"##ROWNR##": row_number})
         self.library.click(f'{locator} >> {table_locator} >> {row_locator}')
-        self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.library.wait_for_load()
 
     @keyword(tags=('Apex', 'Classic Report'))
     def classic_report_row_action(self, locator, columns_definition, row_number, column_name):
@@ -77,17 +76,16 @@ class ClassicReport(LibraryComponent):
         # Click in the link inside the table cell
         logger.info(f"Clicking link inside table cell '{column_name}'")
         self.library.click(f'{locator} >> {table_locator} >> {row_locator} >> {cell_locator} >> xpath=//a')
-        self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.library.wait_for_load()
 
 
     @not_keyword
     def check_cell_plaintext(self, locator, column_name, column_id, value, *field_args):
         logger.info(f"Checking PlainText '{column_name}' with value: {value}. Arguments: {field_args}")
         cell_locator = self.library.get_locator('report_cell', {'##COL##': column_id})
-        self.library.get_text(locator + f" >> {cell_locator}", 
-                            AssertionOperator.equal, value)
-
+        real_value = self.library.get_text(locator + f" >> {cell_locator}")
+        real_value = real_value.strip()
+        BuiltIn().should_be_equal_as_strings(value, real_value, f"Column values not equal: {value} <-> {real_value}")
 
     @not_keyword
     def _check_columns(self, locator, column_definition, data):
@@ -134,8 +132,7 @@ class ClassicReport(LibraryComponent):
     
     @keyword(tags=('Apex', 'Classic Report'))
     def classic_report_row_count(self, locator, expected_row_count=None):
-        self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.library.wait_for_load()
         table_locator = self.library.get_locator('report_table')
         row_locator = self.library.get_locator('report_all_rows')
         

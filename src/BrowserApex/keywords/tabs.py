@@ -48,10 +48,8 @@ class Tab(LibraryComponent):
         self._check_tab_visible(tab_name, locator)
 
         # Click the header
-        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 10)
         self.library.click(locator)
-        self.library.wait_for_load_state(PageLoadStates.networkidle, 10)
-        self.library.wait_for_load_state(PageLoadStates.domcontentloaded, 1)
+        self.library.wait_for_load()
 
         panel = self.library.get_locator('tab_panel', {'##NAME##': tab_name}) 
         if parent:
