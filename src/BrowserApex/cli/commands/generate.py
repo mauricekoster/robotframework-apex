@@ -270,13 +270,18 @@ def page_generate(
         sys.exit(1)
     
     
-    breadcrumbs: Breadcrumb = read_breadcrumbs(cnf)
-    active_breadcrumb = 'CHANGEME'
+    breadcrumbs: list[Breadcrumb] = read_breadcrumbs(cnf)
+    
     if breadcrumbs:
-        crumb = breadcrumbs.get_by('pageNumber', page_id)
-        if crumb:
-            active_breadcrumb = crumb.name
-        print(f"active breadcrumb: {active_breadcrumb}")
+        active_breadcrumb = []
+        for b in breadcrumbs:
+            crumb = b.get_by('pageNumber', page_id)
+            if crumb:
+                active_breadcrumb.append(crumb.name)
+        active_breadcrumb = list(set(active_breadcrumb))
+    else:
+        active_breadcrumb = ['CHANGEME']
+    print(f"active breadcrumb: {active_breadcrumb}")
     
 
     

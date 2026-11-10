@@ -1,5 +1,6 @@
-{{ keywords.getoond }}
-    Breadcrumb Active    {{ active_breadcrumb }}
+{{ keywords.page_is_shown }}
+    Set Tags    p{{ '%04d' % page.component_id }}
+    Breadcrumb Active    {{ '   '.join(active_breadcrumb) }}
 
 {% if breadcrumb.buttons %}
 {{ keywords.press_button }}

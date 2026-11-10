@@ -3,7 +3,7 @@ Oracle APEX support
 """
 
 from robot.libraries.BuiltIn import BuiltIn
-from robot.api.deco import  not_keyword, library
+from robot.api.deco import  not_keyword, library, keyword
 from Browser import  SelectAttribute, ElementState, Browser, AssertionOperator
 from Browser.utils import PageLoadStates, logger
 from datetime import datetime
@@ -87,6 +87,17 @@ class BrowserApex(Browser):
         self.wait_for_load_state(PageLoadStates.domcontentloaded, 5)
         self.wait_for_load_state(PageLoadStates.load, timeout=timeout)
         self.wait_for_load_state(PageLoadStates.networkidle, 10)
+
+    @keyword
+    def wait_for_wait_overlay(self, timeout_overlay_appears=1, timeout_overlay_disappears=60):
+        try:
+            selector = "xpath=//*[@class='apex_wait_overlay']"
+            self.wait_for_elements_state(selector, ElementState.visible, timeout=timeout_overlay_appears)
+            self.wait_for_elements_state(selector, ElementState.detached, timeout=timeout_overlay_disappears)
+        except:
+            # ignore, in case no wait_overlay appears
+            pass
+ 
  
     @not_keyword
     def fill_text_field(self, field_name, field_id, value, field_args):
